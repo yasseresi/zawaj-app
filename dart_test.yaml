@@ -1,0 +1,14 @@
+# Test runner config for `flutter test`.
+#
+# concurrency: 1 serializes test compilation and execution.
+#
+# Why: `flutter test` compiles every test file against one shared incremental
+# kernel cache (.dart_tool/). Running them concurrently lets the shared
+# frontend_server race — after new/changed files it can serve a stale snapshot
+# and emit phantom compile errors ("Dart compiler exited unexpectedly",
+# "No such file or directory", "missing implementations") on whichever file
+# loses the race, most often test/unit/wedding_model_test.dart. The tests
+# themselves are correct (flutter analyze is clean); the flake is purely the
+# concurrent-compile race. Serializing removes it deterministically. The suite
+# is small and fast, so the lost parallelism costs ~nothing.
+concurrency: 1

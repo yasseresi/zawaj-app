@@ -1,0 +1,101 @@
+{
+  "app_name": "Zawaj",
+  "onboarding": {
+    "skip": "Skip",
+    "next": "Next",
+    "get_started": "Get Started",
+    "title_1": "Organize your guest list with ease",
+    "subtitle_1": "Create your event lists and manage all your guests in one place.",
+    "title_2": "Collaborate together",
+    "subtitle_2": "Invite partners to manage the list with you using roles and editors.",
+    "title_3": "Track RSVPs in real time",
+    "subtitle_3": "See who confirmed, who declined, and who's still pending."
+  },
+  "auth": {
+    "login_title": "Log in",
+    "login_subtitle": "Enter your username and password",
+    "username": "Username",
+    "username_required": "Username is required",
+    "username_too_short": "Username is too short (min 3 characters)",
+    "username_no_spaces": "Username cannot contain spaces",
+    "display_name": "Display name",
+    "display_name_required": "Display name is required",
+    "password": "Password",
+    "password_required": "Password is required",
+    "password_too_short": "Password is too short (min 8 characters)",
+    "confirm_password": "Confirm password",
+    "confirm_password_required": "Please confirm your password",
+    "passwords_do_not_match": "Passwords do not match",
+    "new_password": "New password",
+    "forgot_password": "Forgot password?",
+    "login_button": "Log in",
+    "no_account": "Don't have an account?",
+    "sign_up": "Sign up",
+    "signup_title": "Create account",
+    "signup_subtitle": "Create a new account to get started",
+    "signup_button": "Create account",
+    "have_account": "Already have an account?",
+    "sign_in": "Sign in",
+    "recover_title": "Recover account",
+    "recover_subtitle": "Enter your username, recovery code, and a new password",
+    "recovery_code": "Recovery code",
+    "recovery_code_required": "Recovery code is required",
+    "recover_button": "Recover account",
+    "recovery_title": "Save your recovery code",
+    "recovery_desc": "This is the only way to recover your account. Store it somewhere safe — it won't be shown again.",
+    "recovery_copied": "Recovery code copied",
+    "recovery_saved": "I've saved it safely"
+  },
+  "home": {
+    "title": "My Lists",
+    "welcome": "Welcome, {name}",
+    "subtitle": "Your event lists will appear here soon."
+  },
+  "weddings": {
+    "create": "New wedding",
+    "loading": "Loading your lists…",
+    "empty_title": "No weddings yet",
+    "empty_subtitle": "Create your first list to start inviting guests.",
+    "error_title": "Couldn't load your lists",
+    "guests_count": {
+      "zero": "No guests",
+      "one": "1 guest",
+      "other": "{} guests"
+    },
+    "coming_soon": "This feature is under construction.",
+    "create_title": "New wedding",
+    "name_label": "Wedding name",
+    "name_hint": "e.g. Leila & Karim's wedding",
+    "name_required": "Wedding name is required",
+    "name_too_long": "Name is too long (120 characters max)",
+    "date_label": "Event date (optional)",
+    "date_hint": "Pick a date",
+    "description_label": "Description (optional)",
+    "description_hint": "Extra details about the event",
+    "description_too_long": "Description is too long (2000 characters max)",
+    "created_toast": "Wedding created"
+  },
+  "actions": {
+    "cancel": "Cancel",
+    "done": "Done"
+  },
+  "settings": {
+    "language": "Language",
+    "theme": "Theme",
+    "logout": "Log out"
+  },
+  "errors": {
+    "no_connection": "No internet connection. Check your connection and try again.",
+    "timeout": "The connection timed out. Please try again.",
+    "cancelled": "The request was cancelled.",
+    "unknown": "An unexpected error occurred.",
+    "server": "Something went wrong. Please try again later.",
+    "validation": "Please check your input and try again.",
+    "unauthenticated": "Invalid username or password.",
+    "forbidden": "You don't have permission for this action.",
+    "not_found": "The item was not found.",
+    "conflict": "There is a data conflict.",
+    "locked": "Account temporarily locked after too many attempts. Try again later.",
+    "rate_limited": "Too many attempts. Please wait a moment and try again."
+  }
+}

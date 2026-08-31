@@ -1,0 +1,101 @@
+{
+  "app_name": "Zawaj",
+  "onboarding": {
+    "skip": "Passer",
+    "next": "Suivant",
+    "get_started": "Commencer",
+    "title_1": "Organisez votre liste d'invités facilement",
+    "subtitle_1": "Créez vos listes d'événements et gérez tous vos invités au même endroit.",
+    "title_2": "Collaborez ensemble",
+    "subtitle_2": "Invitez des partenaires à gérer la liste avec vous grâce aux rôles et éditeurs.",
+    "title_3": "Suivez les réponses en temps réel",
+    "subtitle_3": "Voyez qui a confirmé, qui a décliné et qui est encore en attente."
+  },
+  "auth": {
+    "login_title": "Connexion",
+    "login_subtitle": "Saisissez votre nom d'utilisateur et votre mot de passe",
+    "username": "Nom d'utilisateur",
+    "username_required": "Le nom d'utilisateur est requis",
+    "username_too_short": "Nom d'utilisateur trop court (3 caractères min)",
+    "username_no_spaces": "Le nom d'utilisateur ne peut pas contenir d'espaces",
+    "display_name": "Nom affiché",
+    "display_name_required": "Le nom affiché est requis",
+    "password": "Mot de passe",
+    "password_required": "Le mot de passe est requis",
+    "password_too_short": "Mot de passe trop court (8 caractères min)",
+    "confirm_password": "Confirmer le mot de passe",
+    "confirm_password_required": "Veuillez confirmer votre mot de passe",
+    "passwords_do_not_match": "Les mots de passe ne correspondent pas",
+    "new_password": "Nouveau mot de passe",
+    "forgot_password": "Mot de passe oublié ?",
+    "login_button": "Se connecter",
+    "no_account": "Vous n'avez pas de compte ?",
+    "sign_up": "S'inscrire",
+    "signup_title": "Créer un compte",
+    "signup_subtitle": "Créez un nouveau compte pour commencer",
+    "signup_button": "Créer le compte",
+    "have_account": "Vous avez déjà un compte ?",
+    "sign_in": "Se connecter",
+    "recover_title": "Récupérer le compte",
+    "recover_subtitle": "Saisissez votre nom d'utilisateur, le code de récupération et un nouveau mot de passe",
+    "recovery_code": "Code de récupération",
+    "recovery_code_required": "Le code de récupération est requis",
+    "recover_button": "Récupérer le compte",
+    "recovery_title": "Enregistrez votre code de récupération",
+    "recovery_desc": "C'est le seul moyen de récupérer votre compte. Conservez-le en lieu sûr — il ne sera plus affiché.",
+    "recovery_copied": "Code de récupération copié",
+    "recovery_saved": "Je l'ai enregistré en lieu sûr"
+  },
+  "home": {
+    "title": "Mes listes",
+    "welcome": "Bienvenue, {name}",
+    "subtitle": "Vos listes d'événements apparaîtront bientôt ici."
+  },
+  "weddings": {
+    "create": "Nouveau mariage",
+    "loading": "Chargement de vos listes…",
+    "empty_title": "Aucun mariage pour l'instant",
+    "empty_subtitle": "Créez votre première liste pour inviter des convives.",
+    "error_title": "Impossible de charger vos listes",
+    "guests_count": {
+      "zero": "Aucun invité",
+      "one": "1 invité",
+      "other": "{} invités"
+    },
+    "coming_soon": "Cette fonctionnalité est en cours de construction.",
+    "create_title": "Nouveau mariage",
+    "name_label": "Nom du mariage",
+    "name_hint": "ex. Mariage de Leila et Karim",
+    "name_required": "Le nom du mariage est requis",
+    "name_too_long": "Nom trop long (120 caractères max)",
+    "date_label": "Date de l'événement (facultatif)",
+    "date_hint": "Choisir une date",
+    "description_label": "Description (facultatif)",
+    "description_hint": "Détails supplémentaires sur l'événement",
+    "description_too_long": "Description trop longue (2000 caractères max)",
+    "created_toast": "Mariage créé"
+  },
+  "actions": {
+    "cancel": "Annuler",
+    "done": "Terminé"
+  },
+  "settings": {
+    "language": "Langue",
+    "theme": "Thème",
+    "logout": "Déconnexion"
+  },
+  "errors": {
+    "no_connection": "Pas de connexion Internet. Vérifiez votre connexion et réessayez.",
+    "timeout": "La connexion a expiré. Veuillez réessayer.",
+    "cancelled": "La requête a été annulée.",
+    "unknown": "Une erreur inattendue s'est produite.",
+    "server": "Une erreur s'est produite. Réessayez plus tard.",
+    "validation": "Veuillez vérifier votre saisie et réessayer.",
+    "unauthenticated": "Nom d'utilisateur ou mot de passe invalide.",
+    "forbidden": "Vous n'avez pas la permission pour cette action.",
+    "not_found": "Élément introuvable.",
+    "conflict": "Il y a un conflit de données.",
+    "locked": "Compte temporairement verrouillé après trop de tentatives. Réessayez plus tard.",
+    "rate_limited": "Trop de tentatives. Patientez un instant et réessayez."
+  }
+}
