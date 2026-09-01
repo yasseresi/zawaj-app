@@ -1,3 +1,4 @@
+import '../models/guest_detail_model.dart';
 import '../models/guest_model.dart';
 import '../../services/guest_service.dart';
 import '../../utils/typedefs.dart';
@@ -17,6 +18,10 @@ class GuestRepositoryImpl implements GuestRepository {
     String? query,
   }) =>
       _service.list(weddingId, status: status, query: query);
+
+  @override
+  FutureEither<GuestDetail> get(String weddingId, String guestId) =>
+      _service.get(weddingId, guestId);
 
   @override
   FutureEither<Guest> create(

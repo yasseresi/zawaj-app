@@ -244,16 +244,18 @@ class _GuestBody extends StatelessWidget {
             AppSpacing.lg.w, AppSpacing.sm.h, AppSpacing.lg.w, AppSpacing.xl.h),
         itemCount: provider.guests.length,
         separatorBuilder: (_, __) => SizedBox(height: AppSpacing.sm.h),
-        itemBuilder: (_, i) => _GuestTile(guest: provider.guests[i]),
+        itemBuilder: (_, i) =>
+            _GuestTile(guest: provider.guests[i], weddingId: provider.weddingId),
       ),
     );
   }
 }
 
 class _GuestTile extends StatelessWidget {
-  const _GuestTile({required this.guest});
+  const _GuestTile({required this.guest, required this.weddingId});
 
   final Guest guest;
+  final String weddingId;
 
   @override
   Widget build(BuildContext context) {
@@ -261,6 +263,11 @@ class _GuestTile extends StatelessWidget {
     final tt = context.textTheme;
 
     return AppCard(
+      onTap: () => context.pushNamed(
+        'guest_detail',
+        pathParameters: {'id': weddingId, 'gid': guest.id},
+        extra: guest,
+      ),
       child: Row(
         children: [
           CircleAvatar(

@@ -1,3 +1,4 @@
+import '../data/models/guest_detail_model.dart';
 import '../data/models/guest_model.dart';
 import '../data/services/api_client.dart';
 import '../utils/typedefs.dart';
@@ -28,6 +29,14 @@ class GuestService {
           if (query != null && query.isNotEmpty) 'q': query,
         },
         parse: GuestListResult.fromJson,
+      );
+
+  /// `GET /weddings/:id/guests/:gid` → the guest with its notes and change
+  /// history (`{ guest, notes, history }`).
+  FutureEither<GuestDetail> get(String weddingId, String guestId) =>
+      _api.get<GuestDetail>(
+        '/weddings/$weddingId/guests/$guestId',
+        parse: GuestDetail.fromJson,
       );
 
   /// `POST /weddings/:id/guests` → the created guest (201, editor+). Only

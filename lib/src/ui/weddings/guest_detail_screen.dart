@@ -1,0 +1,377 @@
+import 'package:zawaj_app/src/imports/core_imports.dart';
+import 'package:zawaj_app/src/imports/packages_imports.dart';
+
+import 'package:zawaj_app/src/data/models/guest_detail_model.dart';
+import 'package:zawaj_app/src/data/models/guest_model.dart';
+import 'package:zawaj_app/src/ui/weddings/providers/guest_detail_provider.dart';
+
+/// Colors shared by the status pill and history timeline dots.
+Color _statusColor(RsvpStatus s) => switch (s) {
+      RsvpStatus.confirmed => const Color(0xFF2E7D5B),
+      RsvpStatus.pending => const Color(0xFFB8860B),
+      RsvpStatus.declined => const Color(0xFFC84B3A),
+    };
+
+String _statusLabel(RsvpStatus s) => switch (s) {
+      RsvpStatus.confirmed => 'guests.status_confirmed'.tr(),
+      RsvpStatus.pending => 'guests.status_pending'.tr(),
+      RsvpStatus.declined => 'guests.status_declined'.tr(),
+    };
+
+/// Screen 7 (guest detail) wired to `GET /weddings/:id/guests/:gid`. Shows the
+/// guest's identity + status, an info card, the notes thread, and the change
+/// history timeline. [initial] (passed via nav `extra`) renders the header while
+/// the fetch is in flight. RTL-first per the mockup.
+class GuestDetailScreen extends StatelessWidget {
+  const GuestDetailScreen({
+    super.key,
+    required this.weddingId,
+    required this.guestId,
+    this.initial,
+  });
+
+  final String weddingId;
+  final String guestId;
+  final Guest? initial;
+
+  @override
+  Widget build(BuildContext context) {
+    return ChangeNotifierProvider<GuestDetailProvider>(
+      create: (_) => GuestDetailProvider(weddingId: weddingId, guestId: guestId)
+        ..load(),
+      child: _GuestDetailView(initial: initial),
+    );
+  }
+}
+
+class _GuestDetailView extends StatelessWidget {
+  const _GuestDetailView({this.initial});
+
+  final Guest? initial;
+
+  @override
+  Widget build(BuildContext context) {
+    final provider = context.watch<GuestDetailProvider>();
+    final detail = provider.detail;
+    final guest = detail?.guest ?? initial;
+
+    return Scaffold(
+      appBar: AppTopBar(title: 'guests.detail_title'.tr()),
+      body: SafeArea(
+        top: false,
+        child: _body(context, provider, detail, guest),
+      ),
+    );
+  }
+
+  Widget _body(
+    BuildContext context,
+    GuestDetailProvider provider,
+    GuestDetail? detail,
+    Guest? guest,
+  ) {
+    // Failure with nothing to show falls back to the error state; if we have an
+    // `initial` guest we still show the header and surface the error inline.
+    if (provider.status.isFailure && guest == null) {
+      return AppErrorWidget(
+        title: 'guests.detail_error_title'.tr(),
+        message: provider.errorMessage,
+        onRetry: () => context.read<GuestDetailProvider>().load(),
+      );
+    }
+    if (guest == null) {
+      return AppLoading(message: 'guests.loading'.tr());
+    }
+
+    return RefreshIndicator(
+      onRefresh: () => context.read<GuestDetailProvider>().load(),
+      child: ListView(
+        padding: EdgeInsets.fromLTRB(
+            AppSpacing.lg.w, AppSpacing.md.h, AppSpacing.lg.w, AppSpacing.xl.h),
+        children: [
+          _Identity(guest: guest),
+          SizedBox(height: AppSpacing.lg.h),
+          _InfoCard(guest: guest),
+          SizedBox(height: AppSpacing.lg.h),
+          _SectionTitle(title: 'guests.notes_title'.tr(), count: detail?.notes.length),
+          SizedBox(height: AppSpacing.sm.h),
+          _Notes(notes: detail?.notes ?? const []),
+          SizedBox(height: AppSpacing.lg.h),
+          _SectionTitle(title: 'guests.history_title'.tr()),
+          SizedBox(height: AppSpacing.sm.h),
+          _History(history: detail?.history ?? const []),
+        ],
+      ),
+    );
+  }
+}
+
+class _Identity extends StatelessWidget {
+  const _Identity({required this.guest});
+  final Guest guest;
+
+  @override
+  Widget build(BuildContext context) {
+    final cs = context.colors;
+    final tt = context.textTheme;
+    return Row(
+      children: [
+        CircleAvatar(
+          radius: 34.r,
+          backgroundColor: cs.primary.withValues(alpha: 0.12),
+          child: Text(
+            guest.initial,
+            style: tt.headlineSmall
+                ?.copyWith(color: cs.primary, fontWeight: FontWeight.bold),
+          ),
+        ),
+        SizedBox(width: AppSpacing.md.w),
+        Expanded(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(guest.fullName,
+                  style: tt.titleLarge?.copyWith(fontWeight: FontWeight.bold)),
+              if (guest.relationship.isNotEmpty) ...[
+                SizedBox(height: 2.h),
+                Text(guest.relationship,
+                    style: tt.bodySmall?.copyWith(color: cs.onSurfaceVariant)),
+              ],
+              SizedBox(height: AppSpacing.sm.h),
+              _StatusPill(status: guest.status),
+            ],
+          ),
+        ),
+      ],
+    );
+  }
+}
+
+class _StatusPill extends StatelessWidget {
+  const _StatusPill({required this.status});
+  final RsvpStatus status;
+
+  @override
+  Widget build(BuildContext context) {
+    final color = _statusColor(status);
+    return Container(
+      padding: EdgeInsets.symmetric(horizontal: 10.w, vertical: 4.h),
+      decoration: BoxDecoration(
+        color: color.withValues(alpha: 0.12),
+        borderRadius: BorderRadius.circular(999),
+      ),
+      child: Text(
+        _statusLabel(status),
+        style: context.textTheme.labelMedium
+            ?.copyWith(color: color, fontWeight: FontWeight.w600),
+      ),
+    );
+  }
+}
+
+class _InfoCard extends StatelessWidget {
+  const _InfoCard({required this.guest});
+  final Guest guest;
+
+  @override
+  Widget build(BuildContext context) {
+    final rows = <(IconData, String, String)>[
+      if (guest.contact.isNotEmpty)
+        (Icons.mail_outline, 'guests.info_contact'.tr(), guest.contact),
+      (Icons.group_outlined, 'guests.info_companions'.tr(), '${guest.companions}'),
+      if (guest.tableLabel.isNotEmpty)
+        (Icons.table_restaurant_outlined, 'guests.info_table'.tr(), guest.tableLabel),
+      if (guest.meal.isNotEmpty)
+        (Icons.restaurant_outlined, 'guests.info_meal'.tr(), guest.meal),
+    ];
+
+    return AppCard(
+      child: Column(
+        children: [
+          for (final (i, row) in rows.indexed) ...[
+            if (i > 0) const AppDivider(),
+            _InfoRow(icon: row.$1, label: row.$2, value: row.$3),
+          ],
+        ],
+      ),
+    );
+  }
+}
+
+class _InfoRow extends StatelessWidget {
+  const _InfoRow({required this.icon, required this.label, required this.value});
+  final IconData icon;
+  final String label;
+  final String value;
+
+  @override
+  Widget build(BuildContext context) {
+    final cs = context.colors;
+    final tt = context.textTheme;
+    return Padding(
+      padding: EdgeInsets.symmetric(vertical: AppSpacing.sm.h),
+      child: Row(
+        children: [
+          Icon(icon, size: 18.sp, color: cs.primary),
+          SizedBox(width: AppSpacing.sm.w),
+          Expanded(
+            child: Text(label,
+                style: tt.bodyMedium?.copyWith(color: cs.onSurfaceVariant)),
+          ),
+          Text(value,
+              style: tt.bodyMedium?.copyWith(fontWeight: FontWeight.w600)),
+        ],
+      ),
+    );
+  }
+}
+
+class _SectionTitle extends StatelessWidget {
+  const _SectionTitle({required this.title, this.count});
+  final String title;
+  final int? count;
+
+  @override
+  Widget build(BuildContext context) {
+    final tt = context.textTheme;
+    final cs = context.colors;
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: [
+        Text(title, style: tt.titleMedium?.copyWith(fontWeight: FontWeight.bold)),
+        if (count != null && count! > 0)
+          Text('$count', style: tt.bodySmall?.copyWith(color: cs.onSurfaceVariant)),
+      ],
+    );
+  }
+}
+
+class _Notes extends StatelessWidget {
+  const _Notes({required this.notes});
+  final List<GuestNote> notes;
+
+  @override
+  Widget build(BuildContext context) {
+    if (notes.isEmpty) {
+      return _EmptyLine(text: 'guests.notes_empty'.tr());
+    }
+    return Column(
+      children: [
+        for (final note in notes) ...[
+          _NoteCard(note: note),
+          SizedBox(height: AppSpacing.sm.h),
+        ],
+      ],
+    );
+  }
+}
+
+class _NoteCard extends StatelessWidget {
+  const _NoteCard({required this.note});
+  final GuestNote note;
+
+  @override
+  Widget build(BuildContext context) {
+    final cs = context.colors;
+    final tt = context.textTheme;
+    return AppCard(
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(note.body, style: tt.bodyMedium),
+          if (note.createdAt != null) ...[
+            SizedBox(height: AppSpacing.sm.h),
+            Align(
+              alignment: AlignmentDirectional.centerEnd,
+              child: Text(note.createdAt!.toIso8601DateOnly,
+                  style: tt.labelSmall?.copyWith(color: cs.onSurfaceVariant)),
+            ),
+          ],
+        ],
+      ),
+    );
+  }
+}
+
+class _History extends StatelessWidget {
+  const _History({required this.history});
+  final List<ActivityLog> history;
+
+  @override
+  Widget build(BuildContext context) {
+    if (history.isEmpty) {
+      return _EmptyLine(text: 'guests.history_empty'.tr());
+    }
+    return AppCard(
+      child: Column(
+        children: [
+          for (final (i, entry) in history.indexed)
+            _TimelineRow(entry: entry, last: i == history.length - 1),
+        ],
+      ),
+    );
+  }
+}
+
+class _TimelineRow extends StatelessWidget {
+  const _TimelineRow({required this.entry, required this.last});
+  final ActivityLog entry;
+  final bool last;
+
+  static String _label(ActivityAction a) => switch (a) {
+        ActivityAction.guestAdded => 'guests.act_guest_added'.tr(),
+        ActivityAction.guestUpdated => 'guests.act_guest_updated'.tr(),
+        ActivityAction.guestStatusChanged => 'guests.act_guest_status_changed'.tr(),
+        ActivityAction.noteAdded => 'guests.act_note_added'.tr(),
+        ActivityAction.collaboratorJoined => 'guests.act_collaborator_joined'.tr(),
+        ActivityAction.listExported => 'guests.act_list_exported'.tr(),
+        ActivityAction.unknown => 'guests.act_unknown'.tr(),
+      };
+
+  @override
+  Widget build(BuildContext context) {
+    final cs = context.colors;
+    final tt = context.textTheme;
+    return Padding(
+      padding: EdgeInsets.only(bottom: last ? 0 : AppSpacing.md.h),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Padding(
+            padding: EdgeInsets.only(top: 4.h),
+            child: Container(
+              width: 10.r,
+              height: 10.r,
+              decoration: BoxDecoration(color: cs.primary, shape: BoxShape.circle),
+            ),
+          ),
+          SizedBox(width: AppSpacing.sm.w),
+          Expanded(
+            child: Text(_label(entry.action), style: tt.bodyMedium),
+          ),
+          if (entry.createdAt != null)
+            Text(entry.createdAt!.toIso8601DateOnly,
+                style: tt.labelSmall?.copyWith(color: cs.onSurfaceVariant)),
+        ],
+      ),
+    );
+  }
+}
+
+class _EmptyLine extends StatelessWidget {
+  const _EmptyLine({required this.text});
+  final String text;
+
+  @override
+  Widget build(BuildContext context) {
+    final cs = context.colors;
+    return Padding(
+      padding: EdgeInsets.symmetric(vertical: AppSpacing.md.h),
+      child: Text(
+        text,
+        style: context.textTheme.bodyMedium?.copyWith(color: cs.onSurfaceVariant),
+        textAlign: TextAlign.center,
+      ),
+    );
+  }
+}

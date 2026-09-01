@@ -1,3 +1,4 @@
+import '../models/guest_detail_model.dart';
 import '../models/guest_model.dart';
 import '../../utils/typedefs.dart';
 
@@ -12,6 +13,9 @@ abstract interface class GuestRepository {
     String? status,
     String? query,
   });
+
+  /// `GET /weddings/:id/guests/:gid` — the guest with its notes and history.
+  FutureEither<GuestDetail> get(String weddingId, String guestId);
 
   /// `POST /weddings/:id/guests` — add a guest (editor+). [fullName] required;
   /// the rest are optional and omitted when blank. Returns the created guest.

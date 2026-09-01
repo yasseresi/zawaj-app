@@ -1,5 +1,6 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:fpdart/fpdart.dart';
+import 'package:zawaj_app/src/data/models/guest_detail_model.dart';
 import 'package:zawaj_app/src/data/models/guest_model.dart';
 import 'package:zawaj_app/src/data/repositories/guest_repository.dart';
 import 'package:zawaj_app/src/shared/enums/app_status.dart';
@@ -24,6 +25,10 @@ class _FakeGuestRepository implements GuestRepository {
     String? status,
     String? query,
   }) async =>
+      throw UnimplementedError();
+
+  @override
+  FutureEither<GuestDetail> get(String weddingId, String guestId) async =>
       throw UnimplementedError();
 
   @override
