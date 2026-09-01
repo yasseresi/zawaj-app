@@ -4,6 +4,7 @@ import 'package:zawaj_app/src/imports/packages_imports.dart';
 import 'package:zawaj_app/src/data/models/guest_detail_model.dart';
 import 'package:zawaj_app/src/data/models/guest_model.dart';
 import 'package:zawaj_app/src/ui/weddings/providers/guest_detail_provider.dart';
+import 'package:zawaj_app/src/ui/weddings/widgets/edit_status_sheet.dart';
 
 /// Colors shared by the status pill and history timeline dots.
 Color _statusColor(RsvpStatus s) => switch (s) {
@@ -18,6 +19,14 @@ String _statusLabel(RsvpStatus s) => switch (s) {
       RsvpStatus.declined => 'guests.status_declined'.tr(),
     };
 
+/// Navigation payload for the guest-detail route: the tapped guest (for an
+/// instant header) plus whether the caller may edit it.
+class GuestDetailArgs {
+  const GuestDetailArgs({this.initial, this.canEdit = false});
+  final Guest? initial;
+  final bool canEdit;
+}
+
 /// Screen 7 (guest detail) wired to `GET /weddings/:id/guests/:gid`. Shows the
 /// guest's identity + status, an info card, the notes thread, and the change
 /// history timeline. [initial] (passed via nav `extra`) renders the header while
@@ -28,26 +37,49 @@ class GuestDetailScreen extends StatelessWidget {
     required this.weddingId,
     required this.guestId,
     this.initial,
+    this.canEdit = false,
   });
 
   final String weddingId;
   final String guestId;
   final Guest? initial;
 
+  /// Whether the caller may edit this guest (owner/editor). Gates the
+  /// edit-status action. Defaults to false (e.g. deep-linked, role unknown).
+  final bool canEdit;
+
   @override
   Widget build(BuildContext context) {
     return ChangeNotifierProvider<GuestDetailProvider>(
       create: (_) => GuestDetailProvider(weddingId: weddingId, guestId: guestId)
         ..load(),
-      child: _GuestDetailView(initial: initial),
+      child: _GuestDetailView(initial: initial, canEdit: canEdit),
     );
   }
 }
 
 class _GuestDetailView extends StatelessWidget {
-  const _GuestDetailView({this.initial});
+  const _GuestDetailView({this.initial, this.canEdit = false});
 
   final Guest? initial;
+  final bool canEdit;
+
+  Future<void> _editStatus(BuildContext context, RsvpStatus current) async {
+    final provider = context.read<GuestDetailProvider>();
+    final picked = await showAppSheet<RsvpStatus>(
+      child: EditStatusSheet(current: current),
+    );
+    if (picked == null || picked == current) return;
+    final ok = await provider.setStatus(picked);
+    if (!context.mounted) return;
+    if (!ok) {
+      showToast(context,
+          message: provider.errorMessage ?? 'errors.server'.tr(),
+          status: 'error');
+      return;
+    }
+    showToast(context, message: 'guests.status_toast'.tr(), status: 'success');
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -56,7 +88,17 @@ class _GuestDetailView extends StatelessWidget {
     final guest = detail?.guest ?? initial;
 
     return Scaffold(
-      appBar: AppTopBar(title: 'guests.detail_title'.tr()),
+      appBar: AppTopBar(
+        title: 'guests.detail_title'.tr(),
+        actions: (canEdit && guest != null)
+            ? [
+                IconButton(
+                  icon: const Icon(Icons.edit_outlined),
+                  onPressed: () => _editStatus(context, guest.status),
+                ),
+              ]
+            : null,
+      ),
       body: SafeArea(
         top: false,
         child: _body(context, provider, detail, guest),

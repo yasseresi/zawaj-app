@@ -30,4 +30,8 @@ abstract interface class GuestRepository {
     String? meal,
     String? note,
   });
+
+  /// `PATCH /weddings/:id/guests/:gid/status` — set a guest's RSVP status
+  /// (editor+). [status] is a wire value. Returns the updated guest.
+  FutureEither<Guest> setStatus(String weddingId, String guestId, String status);
 }

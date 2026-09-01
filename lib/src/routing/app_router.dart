@@ -7,7 +7,6 @@ import '../ui/auth/recover_screen.dart';
 import '../ui/auth/providers/session_provider.dart';
 import '../ui/home/home_page.dart';
 import '../ui/onboarding/onboarding_page.dart';
-import '../data/models/guest_model.dart';
 import '../data/models/wedding_model.dart';
 import '../ui/weddings/create_wedding_screen.dart';
 import '../ui/weddings/guest_detail_screen.dart';
@@ -66,11 +65,17 @@ final GoRouter appRouter = GoRouter(
     GoRoute(
       path: AppRoutes.guestDetail,
       name: 'guest_detail',
-      builder: (context, state) => GuestDetailScreen(
-        weddingId: state.pathParameters['id'] ?? '',
-        guestId: state.pathParameters['gid'] ?? '',
-        initial: state.extra is Guest ? state.extra as Guest : null,
-      ),
+      builder: (context, state) {
+        final args = state.extra is GuestDetailArgs
+            ? state.extra as GuestDetailArgs
+            : const GuestDetailArgs();
+        return GuestDetailScreen(
+          weddingId: state.pathParameters['id'] ?? '',
+          guestId: state.pathParameters['gid'] ?? '',
+          initial: args.initial,
+          canEdit: args.canEdit,
+        );
+      },
     ),
   ],
 );

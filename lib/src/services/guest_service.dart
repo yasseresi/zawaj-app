@@ -68,4 +68,13 @@ class GuestService {
         },
         parse: (d) => Guest.fromJson((d as Map).cast<String, dynamic>()),
       );
+
+  /// `PATCH /weddings/:id/guests/:gid/status` → the updated guest (200,
+  /// editor+). [status] is a wire value (`pending|confirmed|declined`).
+  FutureEither<Guest> setStatus(String weddingId, String guestId, String status) =>
+      _api.patch<Guest>(
+        '/weddings/$weddingId/guests/$guestId/status',
+        body: {'status': status},
+        parse: (d) => Guest.fromJson((d as Map).cast<String, dynamic>()),
+      );
 }

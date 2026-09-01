@@ -121,7 +121,13 @@
     "act_note_added": "Note ajoutée",
     "act_collaborator_joined": "Collaborateur ajouté",
     "act_list_exported": "Liste exportée",
-    "act_unknown": "Mis à jour"
+    "act_unknown": "Mis à jour",
+    "edit_status_title": "Modifier le statut",
+    "status_confirmed_desc": "L'invité sera présent",
+    "status_pending_desc": "En attente de la réponse",
+    "status_declined_desc": "L'invité ne viendra pas",
+    "save_status": "Enregistrer le statut",
+    "status_toast": "Statut de l'invité mis à jour"
   },
   "actions": {
     "cancel": "Annuler",

@@ -4,6 +4,7 @@ import 'package:zawaj_app/src/imports/packages_imports.dart';
 import 'package:zawaj_app/src/data/models/guest_model.dart';
 import 'package:zawaj_app/src/data/models/wedding_model.dart';
 import 'package:zawaj_app/src/ui/weddings/add_guest_screen.dart';
+import 'package:zawaj_app/src/ui/weddings/guest_detail_screen.dart';
 import 'package:zawaj_app/src/ui/weddings/providers/guests_provider.dart';
 
 /// Screen 5 (guest list) wired to `GET /weddings/:id/guests`. Header shows the
@@ -93,7 +94,7 @@ class _GuestListViewState extends State<_GuestListView> {
               ),
             ),
             const _FilterTabs(),
-            const Expanded(child: _GuestBody()),
+            Expanded(child: _GuestBody(canEdit: canEdit)),
           ],
         ),
       ),
@@ -198,7 +199,9 @@ class _FilterChip extends StatelessWidget {
 
 /// Body: loading / error / empty / guest list, driven by [GuestsProvider].
 class _GuestBody extends StatelessWidget {
-  const _GuestBody();
+  const _GuestBody({required this.canEdit});
+
+  final bool canEdit;
 
   @override
   Widget build(BuildContext context) {
@@ -244,18 +247,26 @@ class _GuestBody extends StatelessWidget {
             AppSpacing.lg.w, AppSpacing.sm.h, AppSpacing.lg.w, AppSpacing.xl.h),
         itemCount: provider.guests.length,
         separatorBuilder: (_, __) => SizedBox(height: AppSpacing.sm.h),
-        itemBuilder: (_, i) =>
-            _GuestTile(guest: provider.guests[i], weddingId: provider.weddingId),
+        itemBuilder: (_, i) => _GuestTile(
+          guest: provider.guests[i],
+          weddingId: provider.weddingId,
+          canEdit: canEdit,
+        ),
       ),
     );
   }
 }
 
 class _GuestTile extends StatelessWidget {
-  const _GuestTile({required this.guest, required this.weddingId});
+  const _GuestTile({
+    required this.guest,
+    required this.weddingId,
+    required this.canEdit,
+  });
 
   final Guest guest;
   final String weddingId;
+  final bool canEdit;
 
   @override
   Widget build(BuildContext context) {
@@ -266,7 +277,7 @@ class _GuestTile extends StatelessWidget {
       onTap: () => context.pushNamed(
         'guest_detail',
         pathParameters: {'id': weddingId, 'gid': guest.id},
-        extra: guest,
+        extra: GuestDetailArgs(initial: guest, canEdit: canEdit),
       ),
       child: Row(
         children: [

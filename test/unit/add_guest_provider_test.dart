@@ -32,6 +32,11 @@ class _FakeGuestRepository implements GuestRepository {
       throw UnimplementedError();
 
   @override
+  FutureEither<Guest> setStatus(
+          String weddingId, String guestId, String status) async =>
+      throw UnimplementedError();
+
+  @override
   FutureEither<Guest> create(
     String weddingId, {
     required String fullName,

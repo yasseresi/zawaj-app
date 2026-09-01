@@ -121,7 +121,13 @@
     "act_note_added": "Note added",
     "act_collaborator_joined": "Collaborator joined",
     "act_list_exported": "List exported",
-    "act_unknown": "Updated"
+    "act_unknown": "Updated",
+    "edit_status_title": "Change status",
+    "status_confirmed_desc": "Guest will attend",
+    "status_pending_desc": "Awaiting the guest's reply",
+    "status_declined_desc": "Guest won't attend",
+    "save_status": "Save status",
+    "status_toast": "Guest status updated"
   },
   "actions": {
     "cancel": "Cancel",

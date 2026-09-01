@@ -1,6 +1,7 @@
 import 'package:flutter/foundation.dart';
 
 import '../../../data/models/guest_detail_model.dart';
+import '../../../data/models/guest_model.dart';
 import '../../../data/repositories/guest_repository.dart';
 import '../../../data/repositories/guest_repository_impl.dart';
 import '../../../shared/enums/app_status.dart';
@@ -46,6 +47,26 @@ class GuestDetailProvider extends ChangeNotifier {
         _detail = detail;
         _status = AppStatus.success;
         notifyListeners();
+      },
+    );
+  }
+
+  /// Set the guest's RSVP status (editor+), then reload so the header status and
+  /// history timeline reflect the change. Returns true on success; on failure
+  /// the detail stays visible and [errorMessage] carries the reason (the view
+  /// shows a toast).
+  Future<bool> setStatus(RsvpStatus status) async {
+    _errorMessage = null;
+    final result = await _repository.setStatus(_weddingId, _guestId, status.wire);
+    return result.match(
+      (failure) async {
+        _errorMessage = failure.message;
+        notifyListeners();
+        return false;
+      },
+      (_) async {
+        await load();
+        return true;
       },
     );
   }

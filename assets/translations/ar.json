@@ -124,7 +124,13 @@
     "act_note_added": "إضافة ملاحظة",
     "act_collaborator_joined": "انضمام متعاون",
     "act_list_exported": "تصدير القائمة",
-    "act_unknown": "تحديث"
+    "act_unknown": "تحديث",
+    "edit_status_title": "تعديل الحالة",
+    "status_confirmed_desc": "الضيف سيحضر الحفل",
+    "status_pending_desc": "بانتظار رد الضيف",
+    "status_declined_desc": "الضيف لن يحضر",
+    "save_status": "حفظ الحالة",
+    "status_toast": "تم تحديث حالة الضيف"
   },
   "actions": {
     "cancel": "إلغاء",
