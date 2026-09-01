@@ -1,5 +1,4 @@
 import '../../imports/core_imports.dart';
-import '../../utils/platform_info.dart';
 
 /// Platform-adaptive date picker.
 ///

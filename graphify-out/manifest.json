@@ -30,28 +30,28 @@
     "semantic_hash": ""
   },
   "assets/translations/ar.json": {
-    "mtime": 1788188469.3256986,
-    "ast_hash": "4f737155b1bee45c7e89fb548f212ab1",
+    "mtime": 1788211091.7664635,
+    "ast_hash": "22112c533d3bcbde08cd7d972c2a92bb",
     "semantic_hash": ""
   },
   "assets/translations/en.json": {
-    "mtime": 1788188484.8345377,
-    "ast_hash": "f80bf60f4dbb6f7f81c06852b2a710f7",
+    "mtime": 1788211079.8985813,
+    "ast_hash": "c148ea87ba20b1f68642a54399cd6414",
     "semantic_hash": ""
   },
   "assets/translations/fr.json": {
-    "mtime": 1788188503.2852657,
-    "ast_hash": "9fd5c654d892e84961afb0f400055416",
+    "mtime": 1788211103.0459177,
+    "ast_hash": "c0eea7e5ae1d4fbcbfe8467834c2cf1e",
     "semantic_hash": ""
   },
   "ios/Flutter/ephemeral/flutter_lldb_helper.py": {
-    "mtime": 1788188819.5066535,
+    "mtime": 1788210481.5479493,
     "ast_hash": "98fc75412162af387e2e3461e4e58094",
     "semantic_hash": ""
   },
   "ios/Flutter/flutter_export_environment.sh": {
-    "mtime": 1788208639.28991,
-    "ast_hash": "e8f1343ea4072d33ed917bcaef5038f8",
+    "mtime": 1788210484.0414126,
+    "ast_hash": "e330e5844a094a15f0dbc5e72fa8ff24",
     "semantic_hash": ""
   },
   "ios/Pods/Local Podspecs/Flutter.podspec.json": {
@@ -285,13 +285,13 @@
     "semantic_hash": ""
   },
   "lib/src/data/repositories/wedding_repository.dart": {
-    "mtime": 1788209497.7708204,
-    "ast_hash": "739cc2fb05809036b4699912784b6bf2",
+    "mtime": 1788210012.8037615,
+    "ast_hash": "4115511300d3cd383cdda3e8b773e022",
     "semantic_hash": ""
   },
   "lib/src/data/repositories/wedding_repository_impl.dart": {
-    "mtime": 1788209530.1850927,
-    "ast_hash": "946057c58e7d93062e0d607723c4d240",
+    "mtime": 1788210029.4457357,
+    "ast_hash": "a8b47f425d9cedb9ea86cdfce84b6ffc",
     "semantic_hash": ""
   },
   "lib/src/data/services/api_client.dart": {
@@ -355,8 +355,8 @@
     "semantic_hash": ""
   },
   "lib/src/routing/app_router.dart": {
-    "mtime": 1788188623.3758223,
-    "ast_hash": "1c40b9df158949162bd67a978c7ece15",
+    "mtime": 1788210144.3908584,
+    "ast_hash": "978b8cd452584ae3995caeb2e347d76f",
     "semantic_hash": ""
   },
   "lib/src/routing/app_routes.dart": {
@@ -430,8 +430,8 @@
     "semantic_hash": ""
   },
   "lib/src/services/wedding_service.dart": {
-    "mtime": 1788209515.6679573,
-    "ast_hash": "c66097543e0d99c23c9af469c6fcd4c1",
+    "mtime": 1788210021.634774,
+    "ast_hash": "6d7ed7338451253ddcfe5bf6015bb230",
     "semantic_hash": ""
   },
   "lib/src/shared/app_assets.dart": {
@@ -465,8 +465,8 @@
     "semantic_hash": ""
   },
   "lib/src/shared/helpers/imports.dart": {
-    "mtime": 1788180202.0,
-    "ast_hash": "fbfbca2a47beab05e8d360471ab53add",
+    "mtime": 1788211110.485583,
+    "ast_hash": "ae9f7a5ad2c94c762ab57ba50d3d769e",
     "semantic_hash": ""
   },
   "lib/src/shared/helpers/show_app_sheet.dart": {
@@ -710,8 +710,8 @@
     "semantic_hash": ""
   },
   "lib/src/ui/home/home_page.dart": {
-    "mtime": 1788209617.6343536,
-    "ast_hash": "acd9055c04cbb0ce74e3f976c80cba3d",
+    "mtime": 1788210191.261181,
+    "ast_hash": "b031415edbbe6f41b332d868a8f8eac0",
     "semantic_hash": ""
   },
   "lib/src/ui/onboarding/onboarding_page.dart": {
@@ -795,13 +795,13 @@
     "semantic_hash": ""
   },
   "test/unit/wedding_model_test.dart": {
-    "mtime": 1788209581.2018054,
-    "ast_hash": "1c6bb330c54898faafff952f6074face",
+    "mtime": 1788209863.5594509,
+    "ast_hash": "27c6e1ade3bcd26a68480d26a7a7399d",
     "semantic_hash": ""
   },
   "test/unit/weddings_provider_test.dart": {
-    "mtime": 1788209456.4240835,
-    "ast_hash": "e23f55e5bfaf54fb6865e584ace8c5c8",
+    "mtime": 1788210052.012682,
+    "ast_hash": "6953abf43829d08914e10b6087409626",
     "semantic_hash": ""
   },
   "test/widget_test.dart": {
@@ -815,8 +815,8 @@
     "semantic_hash": ""
   },
   "CLAUDE.md": {
-    "mtime": 1788180202.0,
-    "ast_hash": "17ffc693b9244cf1819ff8417a32fcab",
+    "mtime": 1788210925.3762233,
+    "ast_hash": "08bb7c5d3dc1b1ed6c84cec71710bbb9",
     "semantic_hash": ""
   },
   "DESIGN.md": {
@@ -987,6 +987,71 @@
   "ios/Runner/Assets.xcassets/LaunchImage.imageset/LaunchImage@3x.png": {
     "mtime": 1764412757.2626295,
     "ast_hash": "978c1bee49d7ad5fc1a4d81099b13e18",
+    "semantic_hash": ""
+  },
+  "lib/src/data/models/guest_model.dart": {
+    "mtime": 1788211268.9872518,
+    "ast_hash": "d9c2004c34acc995645045e7c43f1b79",
+    "semantic_hash": ""
+  },
+  "lib/src/data/repositories/guest_repository.dart": {
+    "mtime": 1788211276.4248908,
+    "ast_hash": "d3986c6019a085be7628356d5f080e45",
+    "semantic_hash": ""
+  },
+  "lib/src/data/repositories/guest_repository_impl.dart": {
+    "mtime": 1788211302.7885196,
+    "ast_hash": "ecf470ed5d2e4dac3c289c497be807f7",
+    "semantic_hash": ""
+  },
+  "lib/src/services/guest_service.dart": {
+    "mtime": 1788211285.296007,
+    "ast_hash": "f8f75cc31dc7d1ad302b9357dd912210",
+    "semantic_hash": ""
+  },
+  "lib/src/shared/helpers/adaptive_pickers.dart": {
+    "mtime": 1788211410.912252,
+    "ast_hash": "9c725e76d7a7828eb313b178678c615a",
+    "semantic_hash": ""
+  },
+  "lib/src/ui/weddings/coming_soon_screen.dart": {
+    "mtime": 1788209742.5157242,
+    "ast_hash": "d7afe21bee4fe0fa255fb49687744add",
+    "semantic_hash": ""
+  },
+  "lib/src/ui/weddings/create_wedding_screen.dart": {
+    "mtime": 1788211116.8148544,
+    "ast_hash": "5c6f32a2b46b28eea92b9dd41a70a13b",
+    "semantic_hash": ""
+  },
+  "lib/src/ui/weddings/providers/create_wedding_provider.dart": {
+    "mtime": 1788210043.3845975,
+    "ast_hash": "e3df81ee2de159e77224eb882b5da0be",
+    "semantic_hash": ""
+  },
+  "lib/src/ui/weddings/providers/guests_provider.dart": {
+    "mtime": 1788211357.236644,
+    "ast_hash": "f29414c91b77209f2039e5d98f64111c",
+    "semantic_hash": ""
+  },
+  "test/unit/adaptive_pickers_test.dart": {
+    "mtime": 1788211356.863208,
+    "ast_hash": "20f0cff4bbef9c5f50cd3add1e01bcc4",
+    "semantic_hash": ""
+  },
+  "test/unit/create_wedding_provider_test.dart": {
+    "mtime": 1788209999.4120507,
+    "ast_hash": "dca9f4ce804b915c2b7fde0436531fa6",
+    "semantic_hash": ""
+  },
+  "test/unit/guests_provider_test.dart": {
+    "mtime": 1788211330.1047933,
+    "ast_hash": "a66bc2753e961f72d48e3ccdffded744",
+    "semantic_hash": ""
+  },
+  "dart_test.yaml": {
+    "mtime": 1788210696.9242535,
+    "ast_hash": "dd84519577d7d6b310073b8b5ce4bd95",
     "semantic_hash": ""
   }
 }

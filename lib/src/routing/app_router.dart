@@ -1,4 +1,3 @@
-import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/widgets.dart';
 import 'package:go_router/go_router.dart';
 
@@ -8,8 +7,9 @@ import '../ui/auth/recover_screen.dart';
 import '../ui/auth/providers/session_provider.dart';
 import '../ui/home/home_page.dart';
 import '../ui/onboarding/onboarding_page.dart';
-import '../ui/weddings/coming_soon_screen.dart';
+import '../data/models/wedding_model.dart';
 import '../ui/weddings/create_wedding_screen.dart';
+import '../ui/weddings/guest_list_screen.dart';
 import 'app_routes.dart';
 import 'global_navigator.dart';
 
@@ -56,7 +56,10 @@ final GoRouter appRouter = GoRouter(
     GoRoute(
       path: AppRoutes.wedding,
       name: 'wedding',
-      builder: (context, state) => ComingSoonScreen(title: 'home.title'.tr()),
+      builder: (context, state) => GuestListScreen(
+        weddingId: state.pathParameters['id'] ?? '',
+        wedding: state.extra is Wedding ? state.extra as Wedding : null,
+      ),
     ),
   ],
 );

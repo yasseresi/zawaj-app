@@ -128,6 +128,7 @@ class _WeddingTile extends StatelessWidget {
       onTap: () => context.pushNamed(
         'wedding',
         pathParameters: {'id': wedding.id},
+        extra: wedding,
       ),
       child: Row(
         children: [

@@ -12,7 +12,7 @@ import 'package:zawaj_app/src/shared/helpers/adaptive_pickers.dart';
 /// wrapped in the localization + screenutil context the helper needs.
 Future<void> _pumpPickerHarness(WidgetTester tester) async {
   final now = DateTime(2026, 8, 31);
-  await tester.pumpWidget(
+  await tester.runAsync(() => tester.pumpWidget(
     EasyLocalization(
       supportedLocales: const [Locale('ar'), Locale('en'), Locale('fr')],
       path: 'assets/translations',
@@ -42,7 +42,7 @@ Future<void> _pumpPickerHarness(WidgetTester tester) async {
         ),
       ),
     ),
-  );
+  ));
   await tester.pumpAndSettle();
 }
 
@@ -54,25 +54,29 @@ void main() {
 
   testWidgets('shows a Cupertino wheel picker on iOS', (tester) async {
     debugDefaultTargetPlatformOverride = TargetPlatform.iOS;
-    addTearDown(() => debugDefaultTargetPlatformOverride = null);
+    try {
+      await _pumpPickerHarness(tester);
+      await tester.tap(find.text('open'));
+      await tester.pumpAndSettle();
 
-    await _pumpPickerHarness(tester);
-    await tester.tap(find.text('open'));
-    await tester.pumpAndSettle();
-
-    expect(find.byType(CupertinoDatePicker), findsOneWidget);
-    expect(find.byType(CalendarDatePicker), findsNothing);
+      expect(find.byType(CupertinoDatePicker), findsOneWidget);
+      expect(find.byType(CalendarDatePicker), findsNothing);
+    } finally {
+      debugDefaultTargetPlatformOverride = null;
+    }
   });
 
   testWidgets('shows the Material date picker on Android', (tester) async {
     debugDefaultTargetPlatformOverride = TargetPlatform.android;
-    addTearDown(() => debugDefaultTargetPlatformOverride = null);
+    try {
+      await _pumpPickerHarness(tester);
+      await tester.tap(find.text('open'));
+      await tester.pumpAndSettle();
 
-    await _pumpPickerHarness(tester);
-    await tester.tap(find.text('open'));
-    await tester.pumpAndSettle();
-
-    expect(find.byType(CalendarDatePicker), findsOneWidget);
-    expect(find.byType(CupertinoDatePicker), findsNothing);
+      expect(find.byType(CalendarDatePicker), findsOneWidget);
+      expect(find.byType(CupertinoDatePicker), findsNothing);
+    } finally {
+      debugDefaultTargetPlatformOverride = null;
+    }
   });
 }

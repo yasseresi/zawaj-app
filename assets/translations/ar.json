@@ -78,6 +78,24 @@
     "description_too_long": "الوصف طويل جداً (٢٠٠٠ حرف كحد أقصى)",
     "created_toast": "تم إنشاء الحفل"
   },
+  "guests": {
+    "loading": "جارٍ تحميل الضيوف…",
+    "search_hint": "ابحث عن ضيف…",
+    "tab_all": "الكل",
+    "tab_confirmed": "تم التأكيد",
+    "tab_pending": "في الانتظار",
+    "tab_declined": "تم الرفض",
+    "status_confirmed": "مؤكد",
+    "status_pending": "معلق",
+    "status_declined": "معتذر",
+    "party": "+{} مرافق",
+    "error_title": "تعذّر تحميل الضيوف",
+    "empty_title": "لا ضيوف بعد",
+    "empty_subtitle": "أضف أول ضيف إلى قائمة هذا الحفل.",
+    "filter_empty": "لا يوجد ضيوف في هذه الفئة",
+    "search_empty": "لا توجد نتائج لـ \"{query}\"",
+    "count_date": "{count} · {date}"
+  },
   "actions": {
     "cancel": "إلغاء",
     "done": "تم"

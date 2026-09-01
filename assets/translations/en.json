@@ -75,6 +75,24 @@
     "description_too_long": "Description is too long (2000 characters max)",
     "created_toast": "Wedding created"
   },
+  "guests": {
+    "loading": "Loading guests…",
+    "search_hint": "Search for a guest…",
+    "tab_all": "All",
+    "tab_confirmed": "Confirmed",
+    "tab_pending": "Pending",
+    "tab_declined": "Declined",
+    "status_confirmed": "Confirmed",
+    "status_pending": "Pending",
+    "status_declined": "Declined",
+    "party": "+{} guest(s)",
+    "error_title": "Couldn't load guests",
+    "empty_title": "No guests yet",
+    "empty_subtitle": "Add the first guest to this wedding's list.",
+    "filter_empty": "No guests in this category",
+    "search_empty": "No results for \"{query}\"",
+    "count_date": "{count} · {date}"
+  },
   "actions": {
     "cancel": "Cancel",
     "done": "Done"

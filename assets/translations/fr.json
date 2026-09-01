@@ -75,6 +75,24 @@
     "description_too_long": "Description trop longue (2000 caractères max)",
     "created_toast": "Mariage créé"
   },
+  "guests": {
+    "loading": "Chargement des invités…",
+    "search_hint": "Rechercher un invité…",
+    "tab_all": "Tous",
+    "tab_confirmed": "Confirmés",
+    "tab_pending": "En attente",
+    "tab_declined": "Refusés",
+    "status_confirmed": "Confirmé",
+    "status_pending": "En attente",
+    "status_declined": "Refusé",
+    "party": "+{} invité(s)",
+    "error_title": "Échec du chargement des invités",
+    "empty_title": "Aucun invité pour l'instant",
+    "empty_subtitle": "Ajoutez le premier invité à la liste de ce mariage.",
+    "filter_empty": "Aucun invité dans cette catégorie",
+    "search_empty": "Aucun résultat pour \"{query}\"",
+    "count_date": "{count} · {date}"
+  },
   "actions": {
     "cancel": "Annuler",
     "done": "Terminé"
