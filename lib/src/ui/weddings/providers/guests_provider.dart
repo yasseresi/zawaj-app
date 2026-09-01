@@ -36,6 +36,7 @@ class GuestsProvider extends ChangeNotifier {
   String _searchQuery = '';
   String? _errorMessage;
 
+  String get weddingId => _weddingId;
   AppStatus get status => _status;
   List<Guest> get guests => _guests;
   GuestCounts get counts => _counts;

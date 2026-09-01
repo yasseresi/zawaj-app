@@ -94,7 +94,20 @@
     "empty_subtitle": "أضف أول ضيف إلى قائمة هذا الحفل.",
     "filter_empty": "لا يوجد ضيوف في هذه الفئة",
     "search_empty": "لا توجد نتائج لـ \"{query}\"",
-    "count_date": "{count} · {date}"
+    "count_date": "{count} · {date}",
+    "add_title": "إضافة ضيف جديد",
+    "name_label": "الاسم",
+    "name_hint": "اسم الضيف الكامل",
+    "name_required": "هذا الحقل مطلوب",
+    "name_too_long": "الاسم طويل جداً (١٢٠ حرفاً كحد أقصى)",
+    "contact_label": "الهاتف أو البريد الإلكتروني",
+    "contact_hint": "example@email.com",
+    "status_label": "الحالة",
+    "companions_label": "عدد المرافقين",
+    "note_label": "ملاحظات",
+    "note_hint": "أي ملاحظات إضافية…",
+    "save": "حفظ",
+    "added_toast": "تمت إضافة الضيف بنجاح"
   },
   "actions": {
     "cancel": "إلغاء",

@@ -91,7 +91,20 @@
     "empty_subtitle": "Add the first guest to this wedding's list.",
     "filter_empty": "No guests in this category",
     "search_empty": "No results for \"{query}\"",
-    "count_date": "{count} · {date}"
+    "count_date": "{count} · {date}",
+    "add_title": "Add a guest",
+    "name_label": "Name",
+    "name_hint": "Guest's full name",
+    "name_required": "This field is required",
+    "name_too_long": "Name is too long (120 characters max)",
+    "contact_label": "Phone or email",
+    "contact_hint": "example@email.com",
+    "status_label": "Status",
+    "companions_label": "Companions",
+    "note_label": "Notes",
+    "note_hint": "Any additional notes…",
+    "save": "Save",
+    "added_toast": "Guest added"
   },
   "actions": {
     "cancel": "Cancel",

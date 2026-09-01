@@ -29,4 +29,34 @@ class GuestService {
         },
         parse: GuestListResult.fromJson,
       );
+
+  /// `POST /weddings/:id/guests` → the created guest (201, editor+). Only
+  /// non-empty optional fields are sent so the backend's `omitempty` validators
+  /// apply. [companions] is sent as-is when provided (0 is valid).
+  FutureEither<Guest> create(
+    String weddingId, {
+    required String fullName,
+    String? contact,
+    String? relationship,
+    String? status,
+    int? companions,
+    String? tableLabel,
+    String? meal,
+    String? note,
+  }) =>
+      _api.post<Guest>(
+        '/weddings/$weddingId/guests',
+        body: {
+          'full_name': fullName,
+          if (contact != null && contact.isNotEmpty) 'contact': contact,
+          if (relationship != null && relationship.isNotEmpty)
+            'relationship': relationship,
+          if (status != null && status.isNotEmpty) 'status': status,
+          if (companions != null) 'companions': companions,
+          if (tableLabel != null && tableLabel.isNotEmpty) 'table_label': tableLabel,
+          if (meal != null && meal.isNotEmpty) 'meal': meal,
+          if (note != null && note.isNotEmpty) 'note': note,
+        },
+        parse: (d) => Guest.fromJson((d as Map).cast<String, dynamic>()),
+      );
 }

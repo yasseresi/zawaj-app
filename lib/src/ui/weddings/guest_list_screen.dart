@@ -3,6 +3,7 @@ import 'package:zawaj_app/src/imports/packages_imports.dart';
 
 import 'package:zawaj_app/src/data/models/guest_model.dart';
 import 'package:zawaj_app/src/data/models/wedding_model.dart';
+import 'package:zawaj_app/src/ui/weddings/add_guest_screen.dart';
 import 'package:zawaj_app/src/ui/weddings/providers/guests_provider.dart';
 
 /// Screen 5 (guest list) wired to `GET /weddings/:id/guests`. Header shows the
@@ -54,12 +55,27 @@ class _GuestListViewState extends State<_GuestListView> {
     });
   }
 
+  Future<void> _openAdd() async {
+    final provider = context.read<GuestsProvider>();
+    final added = await showAppSheet<bool>(
+      child: AddGuestScreen(weddingId: provider.weddingId),
+    );
+    if (added ?? false) await provider.load();
+  }
+
   @override
   Widget build(BuildContext context) {
+    final canEdit = widget.wedding?.role.canEdit ?? false;
     return Scaffold(
       appBar: AppTopBar(
         title: widget.wedding?.name ?? 'home.title'.tr(),
       ),
+      floatingActionButton: canEdit
+          ? FloatingActionButton(
+              onPressed: _openAdd,
+              child: const Icon(Icons.add),
+            )
+          : null,
       body: SafeArea(
         top: false,
         child: Column(

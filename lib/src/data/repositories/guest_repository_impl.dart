@@ -17,4 +17,28 @@ class GuestRepositoryImpl implements GuestRepository {
     String? query,
   }) =>
       _service.list(weddingId, status: status, query: query);
+
+  @override
+  FutureEither<Guest> create(
+    String weddingId, {
+    required String fullName,
+    String? contact,
+    String? relationship,
+    String? status,
+    int? companions,
+    String? tableLabel,
+    String? meal,
+    String? note,
+  }) =>
+      _service.create(
+        weddingId,
+        fullName: fullName,
+        contact: contact,
+        relationship: relationship,
+        status: status,
+        companions: companions,
+        tableLabel: tableLabel,
+        meal: meal,
+        note: note,
+      );
 }

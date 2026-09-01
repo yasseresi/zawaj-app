@@ -12,4 +12,18 @@ abstract interface class GuestRepository {
     String? status,
     String? query,
   });
+
+  /// `POST /weddings/:id/guests` — add a guest (editor+). [fullName] required;
+  /// the rest are optional and omitted when blank. Returns the created guest.
+  FutureEither<Guest> create(
+    String weddingId, {
+    required String fullName,
+    String? contact,
+    String? relationship,
+    String? status,
+    int? companions,
+    String? tableLabel,
+    String? meal,
+    String? note,
+  });
 }

@@ -22,6 +22,20 @@ class _FakeGuestRepository implements GuestRepository {
     lastArgs = (weddingId: weddingId, status: status, query: query);
     return result!;
   }
+
+  @override
+  FutureEither<Guest> create(
+    String weddingId, {
+    required String fullName,
+    String? contact,
+    String? relationship,
+    String? status,
+    int? companions,
+    String? tableLabel,
+    String? meal,
+    String? note,
+  }) async =>
+      throw UnimplementedError();
 }
 
 const _result = GuestListResult(
