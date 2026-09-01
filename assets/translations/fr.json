@@ -127,7 +127,13 @@
     "status_pending_desc": "En attente de la réponse",
     "status_declined_desc": "L'invité ne viendra pas",
     "save_status": "Enregistrer le statut",
-    "status_toast": "Statut de l'invité mis à jour"
+    "status_toast": "Statut de l'invité mis à jour",
+    "add_note_title": "Ajouter une note",
+    "note_body_hint": "Écrivez votre note…",
+    "note_required": "La note est requise",
+    "note_too_long": "Note trop longue (2000 caractères max)",
+    "save_note": "Enregistrer la note",
+    "note_added_toast": "Note ajoutée"
   },
   "actions": {
     "cancel": "Annuler",

@@ -4,6 +4,7 @@ import 'package:zawaj_app/src/imports/packages_imports.dart';
 import 'package:zawaj_app/src/data/models/guest_detail_model.dart';
 import 'package:zawaj_app/src/data/models/guest_model.dart';
 import 'package:zawaj_app/src/ui/weddings/providers/guest_detail_provider.dart';
+import 'package:zawaj_app/src/ui/weddings/widgets/add_note_sheet.dart';
 import 'package:zawaj_app/src/ui/weddings/widgets/edit_status_sheet.dart';
 
 /// Colors shared by the status pill and history timeline dots.
@@ -81,6 +82,21 @@ class _GuestDetailView extends StatelessWidget {
     showToast(context, message: 'guests.status_toast'.tr(), status: 'success');
   }
 
+  Future<void> _addNote(BuildContext context) async {
+    final provider = context.read<GuestDetailProvider>();
+    final body = await showAppSheet<String>(child: const AddNoteSheet());
+    if (body == null || body.isEmpty) return;
+    final ok = await provider.addNote(body);
+    if (!context.mounted) return;
+    if (!ok) {
+      showToast(context,
+          message: provider.errorMessage ?? 'errors.server'.tr(),
+          status: 'error');
+      return;
+    }
+    showToast(context, message: 'guests.note_added_toast'.tr(), status: 'success');
+  }
+
   @override
   Widget build(BuildContext context) {
     final provider = context.watch<GuestDetailProvider>();
@@ -93,7 +109,13 @@ class _GuestDetailView extends StatelessWidget {
         actions: (canEdit && guest != null)
             ? [
                 IconButton(
+                  icon: const Icon(Icons.note_add_outlined),
+                  tooltip: 'guests.add_note_title'.tr(),
+                  onPressed: () => _addNote(context),
+                ),
+                IconButton(
                   icon: const Icon(Icons.edit_outlined),
+                  tooltip: 'guests.edit_status_title'.tr(),
                   onPressed: () => _editStatus(context, guest.status),
                 ),
               ]

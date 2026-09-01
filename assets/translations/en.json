@@ -127,7 +127,13 @@
     "status_pending_desc": "Awaiting the guest's reply",
     "status_declined_desc": "Guest won't attend",
     "save_status": "Save status",
-    "status_toast": "Guest status updated"
+    "status_toast": "Guest status updated",
+    "add_note_title": "Add a note",
+    "note_body_hint": "Write your note…",
+    "note_required": "Note is required",
+    "note_too_long": "Note is too long (2000 characters max)",
+    "save_note": "Save note",
+    "note_added_toast": "Note added"
   },
   "actions": {
     "cancel": "Cancel",

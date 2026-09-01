@@ -11,8 +11,10 @@ import 'package:zawaj_app/src/utils/typedefs.dart';
 class _FakeGuestRepository implements GuestRepository {
   Either<Failure, GuestDetail>? getResult;
   Either<Failure, Guest>? setStatusResult;
+  Either<Failure, GuestNote>? addNoteResult;
   ({String weddingId, String guestId})? lastArgs;
   ({String weddingId, String guestId, String status})? lastStatusArgs;
+  ({String weddingId, String guestId, String body})? lastNoteArgs;
   int getCalls = 0;
 
   @override
@@ -27,6 +29,13 @@ class _FakeGuestRepository implements GuestRepository {
       String weddingId, String guestId, String status) async {
     lastStatusArgs = (weddingId: weddingId, guestId: guestId, status: status);
     return setStatusResult!;
+  }
+
+  @override
+  FutureEither<GuestNote> addNote(
+      String weddingId, String guestId, String body) async {
+    lastNoteArgs = (weddingId: weddingId, guestId: guestId, body: body);
+    return addNoteResult!;
   }
 
   @override
@@ -117,6 +126,31 @@ void main() {
       expect(provider.errorMessage, 'forbidden');
       expect(provider.status, AppStatus.success); // detail stays visible
       expect(repo.getCalls, 1); // no reload on failure
+    });
+
+    test('addNote sends the body then reloads the detail', () async {
+      repo.getResult = const Right(_detail);
+      await provider.load();
+
+      repo.addNoteResult = const Right(GuestNote(id: 'n2', body: 'Vegetarian'));
+      final ok = await provider.addNote('Vegetarian');
+
+      expect(ok, isTrue);
+      expect(repo.lastNoteArgs?.body, 'Vegetarian');
+      expect(repo.getCalls, 2); // reloaded after the write
+    });
+
+    test('addNote failure returns false and keeps the detail', () async {
+      repo.getResult = const Right(_detail);
+      await provider.load();
+
+      repo.addNoteResult = const Left(ValidationFailure('body is required'));
+      final ok = await provider.addNote('');
+
+      expect(ok, isFalse);
+      expect(provider.errorMessage, 'body is required');
+      expect(provider.status, AppStatus.success);
+      expect(repo.getCalls, 1);
     });
   });
 }

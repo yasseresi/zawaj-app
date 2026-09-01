@@ -70,4 +70,23 @@ class GuestDetailProvider extends ChangeNotifier {
       },
     );
   }
+
+  /// Add a note to the guest (editor+), then reload so the notes thread and
+  /// history reflect it. Returns true on success; on failure the detail stays
+  /// visible and [errorMessage] carries the reason.
+  Future<bool> addNote(String body) async {
+    _errorMessage = null;
+    final result = await _repository.addNote(_weddingId, _guestId, body.trim());
+    return result.match(
+      (failure) async {
+        _errorMessage = failure.message;
+        notifyListeners();
+        return false;
+      },
+      (_) async {
+        await load();
+        return true;
+      },
+    );
+  }
 }

@@ -130,7 +130,13 @@
     "status_pending_desc": "بانتظار رد الضيف",
     "status_declined_desc": "الضيف لن يحضر",
     "save_status": "حفظ الحالة",
-    "status_toast": "تم تحديث حالة الضيف"
+    "status_toast": "تم تحديث حالة الضيف",
+    "add_note_title": "إضافة ملاحظة",
+    "note_body_hint": "اكتب ملاحظتك…",
+    "note_required": "الملاحظة مطلوبة",
+    "note_too_long": "الملاحظة طويلة جداً (٢٠٠٠ حرف كحد أقصى)",
+    "save_note": "حفظ الملاحظة",
+    "note_added_toast": "تمت إضافة الملاحظة"
   },
   "actions": {
     "cancel": "إلغاء",

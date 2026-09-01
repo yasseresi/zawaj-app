@@ -77,4 +77,12 @@ class GuestService {
         body: {'status': status},
         parse: (d) => Guest.fromJson((d as Map).cast<String, dynamic>()),
       );
+
+  /// `POST /weddings/:id/guests/:gid/notes` → the created note (201, editor+).
+  FutureEither<GuestNote> addNote(String weddingId, String guestId, String body) =>
+      _api.post<GuestNote>(
+        '/weddings/$weddingId/guests/$guestId/notes',
+        body: {'body': body},
+        parse: (d) => GuestNote.fromJson((d as Map).cast<String, dynamic>()),
+      );
 }
