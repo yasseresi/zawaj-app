@@ -1,23 +1,24 @@
 import 'package:flutter/widgets.dart';
 import 'package:go_router/go_router.dart';
 
-import '../ui/auth/login_screen.dart';
-import '../ui/auth/signup_screen.dart';
-import '../ui/auth/recover_screen.dart';
-import '../ui/auth/providers/session_provider.dart';
-import '../ui/home/home_page.dart';
-import '../ui/onboarding/onboarding_page.dart';
 import '../data/models/wedding_model.dart';
+import '../ui/activity/activity_log_screen.dart';
+import '../ui/analytics/analytics_screen.dart';
+import '../ui/auth/login_screen.dart';
+import '../ui/auth/providers/session_provider.dart';
+import '../ui/auth/recover_screen.dart';
+import '../ui/auth/signup_screen.dart';
+import '../ui/home/home_page.dart';
+import '../ui/invites/pending_invites_screen.dart';
+import '../ui/onboarding/onboarding_page.dart';
+import '../ui/settings/settings_screen.dart';
+import '../ui/shell/main_navigation_shell.dart';
 import '../ui/weddings/create_wedding_screen.dart';
 import '../ui/weddings/guest_detail_screen.dart';
 import '../ui/weddings/guest_list_screen.dart';
 import 'app_routes.dart';
 import 'global_navigator.dart';
 
-/// App router. A single session-aware [GoRouter.redirect] guards every route:
-/// unauthenticated users are confined to [AppRoutes.publicPaths]; authenticated
-/// users are bounced off auth screens. `refreshListenable` re-runs the guard
-/// whenever [sessionProvider] changes (login, logout, refresh-expiry).
 final GoRouter appRouter = GoRouter(
   navigatorKey: rootNavigatorKey,
   initialLocation: AppRoutes.home,
@@ -44,10 +45,48 @@ final GoRouter appRouter = GoRouter(
       name: 'recover',
       builder: (context, state) => const RecoverScreen(),
     ),
-    GoRoute(
-      path: AppRoutes.home,
-      name: 'home',
-      builder: (context, state) => const HomePage(),
+    StatefulShellRoute.indexedStack(
+      builder: (context, state, navigationShell) => MainNavigationShell(
+        navigationShell: navigationShell,
+      ),
+      branches: [
+        StatefulShellBranch(
+          routes: [
+            GoRoute(
+              path: AppRoutes.home,
+              name: 'home',
+              builder: (context, state) => const HomePage(),
+            ),
+          ],
+        ),
+        StatefulShellBranch(
+          routes: [
+            GoRoute(
+              path: AppRoutes.dashboard,
+              name: 'dashboard',
+              builder: (context, state) => const DashboardTabPage(),
+            ),
+          ],
+        ),
+        StatefulShellBranch(
+          routes: [
+            GoRoute(
+              path: AppRoutes.activityLog,
+              name: 'activity_log',
+              builder: (context, state) => const ActivityTabPage(),
+            ),
+          ],
+        ),
+        StatefulShellBranch(
+          routes: [
+            GoRoute(
+              path: AppRoutes.settings,
+              name: 'settings',
+              builder: (context, state) => const SettingsScreen(),
+            ),
+          ],
+        ),
+      ],
     ),
     GoRoute(
       path: AppRoutes.createWedding,
@@ -77,6 +116,25 @@ final GoRouter appRouter = GoRouter(
         );
       },
     ),
+    GoRoute(
+      path: AppRoutes.activity,
+      name: 'activity',
+      builder: (context, state) => ActivityLogScreen(
+        weddingId: state.pathParameters['id'] ?? '',
+      ),
+    ),
+    GoRoute(
+      path: AppRoutes.stats,
+      name: 'stats',
+      builder: (context, state) => AnalyticsScreen(
+        weddingId: state.pathParameters['id'] ?? '',
+      ),
+    ),
+    GoRoute(
+      path: AppRoutes.pendingInvites,
+      name: 'pending_invites',
+      builder: (context, state) => const PendingInvitesScreen(),
+    ),
   ],
 );
 
@@ -85,13 +143,11 @@ String? _guard(BuildContext context, GoRouterState state) {
   final location = state.matchedLocation;
   final isPublic = AppRoutes.publicPaths.contains(location);
 
-  // Still bootstrapping — keep the splash/initial route; don't redirect yet.
   if (status == SessionStatus.unknown) return null;
 
   if (status == SessionStatus.unauthenticated) {
     return isPublic ? null : AppRoutes.onboarding;
   }
 
-  // Authenticated: keep users out of the auth flow.
   return isPublic ? AppRoutes.home : null;
 }
