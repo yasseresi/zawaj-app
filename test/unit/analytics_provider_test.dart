@@ -1,27 +1,22 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:fpdart/fpdart.dart';
-import 'package:zawaj_app/src/data/models/guest_detail_model.dart';
-import 'package:zawaj_app/src/data/models/guest_model.dart';
-import 'package:zawaj_app/src/data/repositories/guest_repository.dart';
+import 'package:zawaj_app/src/data/models/wedding_stats_model.dart';
+import 'package:zawaj_app/src/data/repositories/stats_repository.dart';
 import 'package:zawaj_app/src/shared/enums/app_status.dart';
 import 'package:zawaj_app/src/ui/analytics/providers/analytics_provider.dart';
 import 'package:zawaj_app/src/utils/failure.dart';
 import 'package:zawaj_app/src/utils/typedefs.dart';
 
-class _MockGuestRepository implements GuestRepository {
-  Either<Failure, GuestListResult>? listResult;
+class _MockStatsRepository implements StatsRepository {
+  Either<Failure, WeddingStats>? statsResult;
   Either<Failure, int>? sendRemindersResult;
-  int listCalls = 0;
+  int statsCalls = 0;
   int sendRemindersCalls = 0;
 
   @override
-  FutureEither<GuestListResult> list(
-    String weddingId, {
-    String? status,
-    String? query,
-  }) async {
-    listCalls++;
-    return listResult!;
+  FutureEither<WeddingStats> stats(String weddingId) async {
+    statsCalls++;
+    return statsResult!;
   }
 
   @override
@@ -29,53 +24,22 @@ class _MockGuestRepository implements GuestRepository {
     sendRemindersCalls++;
     return sendRemindersResult!;
   }
-
-  @override
-  FutureEither<GuestDetail> get(String weddingId, String guestId) async =>
-      throw UnimplementedError();
-
-  @override
-  FutureEither<Guest> setStatus(
-          String weddingId, String guestId, String status) async =>
-      throw UnimplementedError();
-
-  @override
-  FutureEither<GuestNote> addNote(
-          String weddingId, String guestId, String body) async =>
-      throw UnimplementedError();
-
-  @override
-  FutureEither<Guest> create(
-    String weddingId, {
-    required String fullName,
-    String? contact,
-    String? relationship,
-    String? status,
-    int? companions,
-    String? tableLabel,
-    String? meal,
-    String? note,
-  }) async =>
-      throw UnimplementedError();
 }
 
-const _sampleResult = GuestListResult(
-  items: [],
-  counts: GuestCounts(
-    all: 245,
-    confirmed: 142,
-    declined: 24,
-    pending: 79,
-  ),
+const _sampleResult = WeddingStats(
+  totalGuests: 245,
+  confirmed: 142,
+  declined: 24,
+  pending: 79,
 );
 
 void main() {
   group('AnalyticsProvider', () {
-    late _MockGuestRepository repo;
+    late _MockStatsRepository repo;
     late AnalyticsProvider provider;
 
     setUp(() {
-      repo = _MockGuestRepository();
+      repo = _MockStatsRepository();
       provider = AnalyticsProvider(weddingId: 'w1', repository: repo);
     });
 
@@ -90,7 +54,7 @@ void main() {
     });
 
     test('load success exposes counts and updates status', () async {
-      repo.listResult = const Right(_sampleResult);
+      repo.statsResult = const Right(_sampleResult);
 
       await provider.load();
 
@@ -100,11 +64,11 @@ void main() {
       expect(provider.declinedCount, 24);
       expect(provider.pendingCount, 79);
       expect(provider.isEmpty, isFalse);
-      expect(repo.listCalls, 1);
+      expect(repo.statsCalls, 1);
     });
 
     test('load failure sets status failure and error message', () async {
-      repo.listResult = const Left(ServerFailure('Failed to fetch'));
+      repo.statsResult = const Left(ServerFailure('Failed to fetch'));
 
       await provider.load();
 
@@ -113,7 +77,7 @@ void main() {
     });
 
     test('isEmpty is true after successful load with 0 guests', () async {
-      repo.listResult = const Right(GuestListResult());
+      repo.statsResult = const Right(WeddingStats());
 
       await provider.load();
 

@@ -39,10 +39,6 @@ class _FakeGuestRepository implements GuestRepository {
   }
 
   @override
-  FutureEither<int> sendReminders(String weddingId) async =>
-      throw UnimplementedError();
-
-  @override
   FutureEither<GuestListResult> list(String weddingId,
           {String? status, String? query}) async =>
       throw UnimplementedError();

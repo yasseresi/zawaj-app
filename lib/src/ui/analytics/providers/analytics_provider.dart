@@ -1,8 +1,8 @@
 import 'package:flutter/foundation.dart';
 
-import '../../../data/models/guest_model.dart';
-import '../../../data/repositories/guest_repository.dart';
-import '../../../data/repositories/guest_repository_impl.dart';
+import '../../../data/models/wedding_stats_model.dart';
+import '../../../data/repositories/stats_repository.dart';
+import '../../../data/repositories/stats_repository_impl.dart';
 import '../../../shared/enums/app_status.dart';
 
 enum BroadcastState {
@@ -16,15 +16,15 @@ enum BroadcastState {
 class AnalyticsProvider extends ChangeNotifier {
   AnalyticsProvider({
     required String weddingId,
-    GuestRepository? repository,
+    StatsRepository? repository,
   })  : _weddingId = weddingId,
-        _repository = repository ?? GuestRepositoryImpl();
+        _repository = repository ?? StatsRepositoryImpl();
 
   final String _weddingId;
-  final GuestRepository _repository;
+  final StatsRepository _repository;
 
   AppStatus _status = AppStatus.initial;
-  GuestCounts _counts = const GuestCounts();
+  WeddingStats _stats = const WeddingStats();
   String? _errorMessage;
   BroadcastState _broadcastState = BroadcastState.idle;
   int _lastSentCount = 0;
@@ -32,18 +32,18 @@ class AnalyticsProvider extends ChangeNotifier {
 
   String get weddingId => _weddingId;
   AppStatus get status => _status;
-  GuestCounts get counts => _counts;
+  WeddingStats get stats => _stats;
   String? get errorMessage => _errorMessage;
   BroadcastState get broadcastState => _broadcastState;
   int get lastSentCount => _lastSentCount;
   List<int> get timelineData => _timelineData;
 
-  int get totalGuests => _counts.all;
-  int get confirmedCount => _counts.confirmed;
-  int get declinedCount => _counts.declined;
-  int get pendingCount => _counts.pending;
+  int get totalGuests => _stats.totalGuests;
+  int get confirmedCount => _stats.confirmed;
+  int get declinedCount => _stats.declined;
+  int get pendingCount => _stats.pending;
 
-  bool get isEmpty => _status == AppStatus.success && _counts.all == 0;
+  bool get isEmpty => _status == AppStatus.success && _stats.totalGuests == 0;
   bool get isLoading => _status == AppStatus.loading;
 
   Future<void> load() async {
@@ -51,7 +51,7 @@ class AnalyticsProvider extends ChangeNotifier {
     _errorMessage = null;
     notifyListeners();
 
-    final result = await _repository.list(_weddingId);
+    final result = await _repository.stats(_weddingId);
     result.match(
       (failure) {
         _status = AppStatus.failure;
@@ -59,7 +59,7 @@ class AnalyticsProvider extends ChangeNotifier {
         notifyListeners();
       },
       (data) {
-        _counts = data.counts;
+        _stats = data;
         _status = AppStatus.success;
         notifyListeners();
       },
@@ -88,7 +88,7 @@ class AnalyticsProvider extends ChangeNotifier {
         notifyListeners();
       },
       (count) {
-        _lastSentCount = count > 0 ? count : _counts.pending;
+        _lastSentCount = count > 0 ? count : _stats.pending;
         _broadcastState = BroadcastState.success;
         notifyListeners();
       },

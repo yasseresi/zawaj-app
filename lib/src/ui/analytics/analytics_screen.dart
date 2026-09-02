@@ -4,7 +4,7 @@ import 'package:provider/provider.dart';
 import 'package:skeletonizer/skeletonizer.dart';
 
 import 'package:zawaj_app/src/core/i18n/locale_keys.g.dart';
-import '../../data/repositories/guest_repository.dart';
+import '../../data/repositories/stats_repository.dart';
 import '../../shared/widgets/widgets.dart';
 import 'providers/analytics_provider.dart';
 import 'widgets/broadcast_sheet.dart';
@@ -19,7 +19,7 @@ class AnalyticsScreen extends StatelessWidget {
   });
 
   final String weddingId;
-  final GuestRepository? repository;
+  final StatsRepository? repository;
 
   @override
   Widget build(BuildContext context) {

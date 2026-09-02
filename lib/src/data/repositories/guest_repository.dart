@@ -38,8 +38,4 @@ abstract interface class GuestRepository {
   /// `POST /weddings/:id/guests/:gid/notes` — add a note to a guest (editor+).
   /// Returns the created note.
   FutureEither<GuestNote> addNote(String weddingId, String guestId, String body);
-
-  /// `POST /weddings/:id/reminders` — send reminders to pending guests.
-  /// Returns the number of reminders sent.
-  FutureEither<int> sendReminders(String weddingId);
 }

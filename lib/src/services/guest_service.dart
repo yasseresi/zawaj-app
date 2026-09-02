@@ -85,16 +85,4 @@ class GuestService {
         body: {'body': body},
         parse: (d) => GuestNote.fromJson((d as Map).cast<String, dynamic>()),
       );
-
-  /// `POST /weddings/:id/reminders` → send reminders to pending guests.
-  FutureEither<int> sendReminders(String weddingId) =>
-      _api.post<int>(
-        '/weddings/$weddingId/reminders',
-        parse: (d) {
-          if (d is Map && d.containsKey('count')) {
-            return (d['count'] as num).toInt();
-          }
-          return 0;
-        },
-      );
 }

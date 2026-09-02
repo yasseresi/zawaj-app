@@ -30,10 +30,6 @@ class _MockGuestRepo implements GuestRepository {
       throw UnimplementedError();
 
   @override
-  FutureEither<int> sendReminders(String weddingId) async =>
-      throw UnimplementedError();
-
-  @override
   FutureEither<GuestListResult> list(String weddingId, {String? status, String? query}) async =>
       throw UnimplementedError();
 
