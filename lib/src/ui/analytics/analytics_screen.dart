@@ -5,6 +5,7 @@ import 'package:skeletonizer/skeletonizer.dart';
 
 import 'package:zawaj_app/src/core/i18n/locale_keys.g.dart';
 import '../../data/repositories/stats_repository.dart';
+import '../../extensions/context_extension.dart';
 import '../../shared/widgets/widgets.dart';
 import 'providers/analytics_provider.dart';
 import 'widgets/broadcast_sheet.dart';
@@ -39,9 +40,9 @@ class _AnalyticsView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final provider = context.watch<AnalyticsProvider>();
+    final cs = Theme.of(context).colorScheme;
 
     return Scaffold(
-      backgroundColor: const Color(0xFF0F172A),
       body: SafeArea(
         child: Stack(
           children: [
@@ -72,8 +73,8 @@ class _AnalyticsView extends StatelessWidget {
                   child: ElevatedButton(
                     onPressed: () => provider.openBroadcastConfirm(),
                     style: ElevatedButton.styleFrom(
-                      backgroundColor: const Color(0xFFE8A598),
-                      foregroundColor: const Color(0xFF2A1A1A),
+                      backgroundColor: cs.primary,
+                      foregroundColor: cs.onPrimary,
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(16),
                       ),
@@ -82,18 +83,18 @@ class _AnalyticsView extends StatelessWidget {
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        const Icon(
+                        Icon(
                           Icons.notifications_active_outlined,
                           size: 20,
-                          color: Color(0xFF2A1A1A),
+                          color: cs.onPrimary,
                         ),
                         const SizedBox(width: 8),
                         Text(
                           LocaleKeys.analytics_send_reminders.tr(),
-                          style: const TextStyle(
+                          style: TextStyle(
                             fontSize: 15,
                             fontWeight: FontWeight.bold,
-                            color: Color(0xFF2A1A1A),
+                            color: cs.onPrimary,
                           ),
                         ),
                       ],
@@ -118,6 +119,7 @@ class _AnalyticsView extends StatelessWidget {
   }
 
   Widget _buildHeader(BuildContext context) {
+    final cs = Theme.of(context).colorScheme;
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
       child: Row(
@@ -130,23 +132,23 @@ class _AnalyticsView extends StatelessWidget {
               width: 40,
               height: 40,
               decoration: BoxDecoration(
-                color: const Color(0xFF1E293B),
+                color: cs.surfaceContainerHighest,
                 borderRadius: BorderRadius.circular(12),
-                border: Border.all(color: const Color(0xFF334155)),
+                border: Border.all(color: cs.outlineVariant),
               ),
-              child: const Icon(
+              child: Icon(
                 Icons.arrow_back,
                 size: 20,
-                color: Colors.white,
+                color: cs.onSurface,
               ),
             ),
           ),
           Text(
             LocaleKeys.analytics_title.tr(),
-            style: const TextStyle(
+            style: TextStyle(
               fontSize: 22,
               fontWeight: FontWeight.bold,
-              color: Colors.white,
+              color: cs.onSurface,
               fontFamily: 'serif',
             ),
           ),
@@ -154,14 +156,14 @@ class _AnalyticsView extends StatelessWidget {
             width: 40,
             height: 40,
             decoration: BoxDecoration(
-              color: const Color(0xFF1E293B),
+              color: cs.surfaceContainerHighest,
               borderRadius: BorderRadius.circular(12),
-              border: Border.all(color: const Color(0xFF334155)),
+              border: Border.all(color: cs.outlineVariant),
             ),
-            child: const Icon(
+            child: Icon(
               Icons.filter_list,
               size: 20,
-              color: Colors.white,
+              color: cs.onSurface,
             ),
           ),
         ],
@@ -216,6 +218,8 @@ class _AnalyticsView extends StatelessWidget {
   }
 
   Widget _buildBody(BuildContext context, AnalyticsProvider provider) {
+    final cs = Theme.of(context).colorScheme;
+    final ac = context.appColors;
     return SingleChildScrollView(
       padding: const EdgeInsets.fromLTRB(20, 12, 20, 90),
       child: Column(
@@ -227,7 +231,7 @@ class _AnalyticsView extends StatelessWidget {
                 child: _StatCard(
                   label: LocaleKeys.analytics_total_guests.tr(),
                   value: '${provider.totalGuests}',
-                  color: const Color(0xFFD4AF37),
+                  color: cs.primary,
                 ),
               ),
               const SizedBox(width: 12),
@@ -235,7 +239,7 @@ class _AnalyticsView extends StatelessWidget {
                 child: _StatCard(
                   label: LocaleKeys.analytics_pending_responses.tr(),
                   value: '${provider.pendingCount}',
-                  color: const Color(0xFFE8A598),
+                  color: ac.warning,
                 ),
               ),
             ],
@@ -244,9 +248,9 @@ class _AnalyticsView extends StatelessWidget {
           Container(
             padding: const EdgeInsets.all(20),
             decoration: BoxDecoration(
-              color: const Color(0xFF1E293B),
+              color: cs.surfaceContainerHighest,
               borderRadius: BorderRadius.circular(16),
-              border: Border.all(color: const Color(0xFF334155)),
+              border: Border.all(color: cs.outlineVariant),
             ),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -256,10 +260,10 @@ class _AnalyticsView extends StatelessWidget {
                   children: [
                     Text(
                       LocaleKeys.analytics_rsvp_breakdown.tr(),
-                      style: const TextStyle(
+                      style: TextStyle(
                         fontSize: 17,
                         fontWeight: FontWeight.bold,
-                        color: Colors.white,
+                        color: cs.onSurface,
                         fontFamily: 'serif',
                       ),
                     ),
@@ -267,9 +271,9 @@ class _AnalyticsView extends StatelessWidget {
                       LocaleKeys.analytics_guests_count.tr(
                         namedArgs: {'count': '${provider.totalGuests}'},
                       ),
-                      style: const TextStyle(
+                      style: TextStyle(
                         fontSize: 12,
-                        color: Color(0xFF94A3B8),
+                        color: cs.onSurfaceVariant,
                       ),
                     ),
                   ],
@@ -288,19 +292,19 @@ class _AnalyticsView extends StatelessWidget {
           Container(
             padding: const EdgeInsets.all(20),
             decoration: BoxDecoration(
-              color: const Color(0xFF1E293B),
+              color: cs.surfaceContainerHighest,
               borderRadius: BorderRadius.circular(16),
-              border: Border.all(color: const Color(0xFF334155)),
+              border: Border.all(color: cs.outlineVariant),
             ),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
                   LocaleKeys.analytics_rsvp_timeline.tr(),
-                  style: const TextStyle(
+                  style: TextStyle(
                     fontSize: 17,
                     fontWeight: FontWeight.bold,
-                    color: Colors.white,
+                    color: cs.onSurface,
                     fontFamily: 'serif',
                   ),
                 ),
@@ -330,12 +334,13 @@ class _StatCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final cs = Theme.of(context).colorScheme;
     return Container(
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        color: const Color(0xFF1E293B),
+        color: cs.surfaceContainerHighest,
         borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: const Color(0xFF334155)),
+        border: Border.all(color: cs.outlineVariant),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -353,9 +358,9 @@ class _StatCard extends StatelessWidget {
           const SizedBox(height: 6),
           Text(
             label,
-            style: const TextStyle(
+            style: TextStyle(
               fontSize: 12,
-              color: Color(0xFF94A3B8),
+              color: cs.onSurfaceVariant,
             ),
           ),
         ],

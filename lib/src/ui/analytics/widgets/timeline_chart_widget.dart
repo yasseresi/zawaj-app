@@ -5,22 +5,28 @@ class TimelineChartWidget extends StatelessWidget {
     super.key,
     this.data = const [12, 28, 45, 68, 92, 118, 142],
     this.labels = const ['W1', 'W2', 'W3', 'W4', 'W5', 'W6', 'W7'],
-    this.lineColor = const Color(0xFFE8A598),
-    this.dotColor = const Color(0xFFD4AF37),
-    this.bgColor = const Color(0xFF16213E),
+    this.lineColor,
+    this.dotColor,
+    this.bgColor,
   });
 
   final List<int> data;
   final List<String> labels;
-  final Color lineColor;
-  final Color dotColor;
-  final Color bgColor;
+  // Optional overrides; default to theme colors (theme-aware).
+  final Color? lineColor;
+  final Color? dotColor;
+  final Color? bgColor;
 
   @override
   Widget build(BuildContext context) {
     if (data.isEmpty) {
       return const SizedBox(height: 140);
     }
+
+    final cs = Theme.of(context).colorScheme;
+    final lineC = lineColor ?? cs.primary;
+    final dotC = dotColor ?? cs.primary;
+    final bgC = bgColor ?? cs.surfaceContainerHighest;
 
     return Column(
       mainAxisSize: MainAxisSize.min,
@@ -31,9 +37,9 @@ class TimelineChartWidget extends StatelessWidget {
           child: CustomPaint(
             painter: _TimelinePainter(
               data: data,
-              lineColor: lineColor,
-              dotColor: dotColor,
-              bgColor: bgColor,
+              lineColor: lineC,
+              dotColor: dotC,
+              bgColor: bgC,
             ),
           ),
         ),
@@ -44,9 +50,9 @@ class TimelineChartWidget extends StatelessWidget {
             labels.length.clamp(0, data.length),
             (index) => Text(
               labels[index],
-              style: const TextStyle(
+              style: TextStyle(
                 fontSize: 10,
-                color: Color(0xFF94A3B8),
+                color: cs.onSurfaceVariant,
               ),
             ),
           ),

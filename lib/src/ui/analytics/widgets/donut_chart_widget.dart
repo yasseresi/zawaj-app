@@ -3,6 +3,7 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 
 import 'package:zawaj_app/src/core/i18n/locale_keys.g.dart';
+import '../../../extensions/context_extension.dart';
 
 class DonutChartWidget extends StatelessWidget {
   const DonutChartWidget({
@@ -11,23 +12,31 @@ class DonutChartWidget extends StatelessWidget {
     required this.declined,
     required this.pending,
     required this.total,
-    this.primaryColor = const Color(0xFFE8A598),
-    this.declinedColor = const Color(0xFFC84B3A),
-    this.pendingColor = const Color(0xFF5E6680),
-    this.trackColor = const Color(0xFF2D2D4E),
+    this.primaryColor,
+    this.declinedColor,
+    this.pendingColor,
+    this.trackColor,
   });
 
   final int confirmed;
   final int declined;
   final int pending;
   final int total;
-  final Color primaryColor;
-  final Color declinedColor;
-  final Color pendingColor;
-  final Color trackColor;
+  // Optional overrides; default to the app's semantic RSVP colors (theme-aware).
+  final Color? primaryColor;
+  final Color? declinedColor;
+  final Color? pendingColor;
+  final Color? trackColor;
 
   @override
   Widget build(BuildContext context) {
+    final cs = Theme.of(context).colorScheme;
+    final ac = context.appColors;
+    final confirmedC = primaryColor ?? ac.success;
+    final declinedC = declinedColor ?? cs.error;
+    final pendingC = pendingColor ?? ac.warning;
+    final trackC = trackColor ?? cs.surfaceContainerHighest;
+
     final double pctVal = total > 0 ? (confirmed / total) * 100 : 0;
     final String pctStr = '${pctVal.toStringAsFixed(0)}%';
 
@@ -47,10 +56,10 @@ class DonutChartWidget extends StatelessWidget {
                   declined: declined,
                   pending: pending,
                   total: total,
-                  primaryColor: primaryColor,
-                  declinedColor: declinedColor,
-                  pendingColor: pendingColor,
-                  trackColor: trackColor,
+                  primaryColor: confirmedC,
+                  declinedColor: declinedC,
+                  pendingColor: pendingC,
+                  trackColor: trackC,
                   strokeWidth: 22,
                 ),
               ),
@@ -59,19 +68,19 @@ class DonutChartWidget extends StatelessWidget {
                 children: [
                   Text(
                     pctStr,
-                    style: const TextStyle(
+                    style: TextStyle(
                       fontSize: 28,
                       fontWeight: FontWeight.bold,
-                      color: Colors.white,
+                      color: cs.onSurface,
                       fontFamily: 'serif',
                     ),
                   ),
                   const SizedBox(height: 2),
                   Text(
                     LocaleKeys.analytics_confirmation_rate.tr(),
-                    style: const TextStyle(
+                    style: TextStyle(
                       fontSize: 11,
-                      color: Color(0xFF94A3B8),
+                      color: cs.onSurfaceVariant,
                     ),
                   ),
                 ],
@@ -84,17 +93,17 @@ class DonutChartWidget extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.spaceAround,
           children: [
             _LegendItem(
-              color: primaryColor,
+              color: confirmedC,
               label: LocaleKeys.analytics_confirmed.tr(),
               value: '$confirmed',
             ),
             _LegendItem(
-              color: declinedColor,
+              color: declinedC,
               label: LocaleKeys.analytics_declined.tr(),
               value: '$declined',
             ),
             _LegendItem(
-              color: pendingColor,
+              color: pendingC,
               label: LocaleKeys.analytics_pending.tr(),
               value: '$pending',
             ),
@@ -221,6 +230,7 @@ class _LegendItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final cs = Theme.of(context).colorScheme;
     return Column(
       mainAxisSize: MainAxisSize.min,
       children: [
@@ -238,9 +248,9 @@ class _LegendItem extends StatelessWidget {
             const SizedBox(width: 6),
             Text(
               label,
-              style: const TextStyle(
+              style: TextStyle(
                 fontSize: 12,
-                color: Color(0xFF94A3B8),
+                color: cs.onSurfaceVariant,
               ),
             ),
           ],
@@ -248,10 +258,10 @@ class _LegendItem extends StatelessWidget {
         const SizedBox(height: 4),
         Text(
           value,
-          style: const TextStyle(
+          style: TextStyle(
             fontSize: 18,
             fontWeight: FontWeight.bold,
-            color: Colors.white,
+            color: cs.onSurface,
           ),
         ),
       ],

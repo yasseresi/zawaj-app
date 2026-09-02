@@ -14,13 +14,14 @@ class ActivityItemTile extends StatelessWidget {
 
   (IconData, Color, Color) _visuals(BuildContext context) {
     final cs = context.colors;
+    final ac = context.appColors;
 
     switch (item.type) {
       case ActivityItemType.confirmed:
         return (
           Icons.check_rounded,
-          const Color(0xFF4A7A4D),
-          const Color(0xFFE6F2E6),
+          ac.success,
+          ac.success.withValues(alpha: 0.12),
         );
       case ActivityItemType.added:
         return (
@@ -31,14 +32,14 @@ class ActivityItemTile extends StatelessWidget {
       case ActivityItemType.reminder:
         return (
           Icons.mail_outline_rounded,
-          const Color(0xFFA07823),
-          const Color(0xFFFFF4DC),
+          ac.warning,
+          ac.warning.withValues(alpha: 0.12),
         );
       case ActivityItemType.declined:
         return (
           Icons.close_rounded,
           cs.error,
-          const Color(0xFFFCEBE7),
+          cs.error.withValues(alpha: 0.12),
         );
       case ActivityItemType.collaboratorJoined:
         return (

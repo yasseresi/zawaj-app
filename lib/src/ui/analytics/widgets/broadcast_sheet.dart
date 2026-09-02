@@ -2,6 +2,7 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 
 import 'package:zawaj_app/src/core/i18n/locale_keys.g.dart';
+import '../../../extensions/context_extension.dart';
 import '../providers/analytics_provider.dart';
 
 class BroadcastSheet extends StatelessWidget {
@@ -25,6 +26,7 @@ class BroadcastSheet extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     if (state == BroadcastState.idle) return const SizedBox.shrink();
+    final cs = Theme.of(context).colorScheme;
 
     return Container(
       color: Colors.black.withValues(alpha: 0.7),
@@ -34,9 +36,9 @@ class BroadcastSheet extends StatelessWidget {
         color: Colors.transparent,
         child: Container(
           decoration: BoxDecoration(
-            color: const Color(0xFF1E293B),
+            color: cs.surface,
             borderRadius: BorderRadius.circular(20),
-            border: Border.all(color: const Color(0xFF334155)),
+            border: Border.all(color: cs.outlineVariant),
           ),
           padding: const EdgeInsets.all(24),
           child: _buildContent(context),
@@ -46,6 +48,28 @@ class BroadcastSheet extends StatelessWidget {
   }
 
   Widget _buildContent(BuildContext context) {
+    final cs = Theme.of(context).colorScheme;
+    final ac = context.appColors;
+
+    TextStyle titleStyle() => TextStyle(
+          fontSize: 20,
+          fontWeight: FontWeight.bold,
+          color: cs.onSurface,
+          fontFamily: 'serif',
+        );
+    TextStyle descStyle() => TextStyle(fontSize: 14, color: cs.onSurfaceVariant);
+
+    ButtonStyle primaryBtn() => ElevatedButton.styleFrom(
+          backgroundColor: cs.primary,
+          foregroundColor: cs.onPrimary,
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+        );
+    ButtonStyle cancelBtn() => OutlinedButton.styleFrom(
+          foregroundColor: cs.onSurface,
+          side: BorderSide(color: cs.outlineVariant),
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+        );
+
     switch (state) {
       case BroadcastState.confirm:
       case BroadcastState.sending:
@@ -53,24 +77,13 @@ class BroadcastSheet extends StatelessWidget {
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            Text(
-              LocaleKeys.analytics_broadcast_confirm_title.tr(),
-              style: const TextStyle(
-                fontSize: 20,
-                fontWeight: FontWeight.bold,
-                color: Colors.white,
-                fontFamily: 'serif',
-              ),
-            ),
+            Text(LocaleKeys.analytics_broadcast_confirm_title.tr(), style: titleStyle()),
             const SizedBox(height: 12),
             Text(
               LocaleKeys.analytics_broadcast_confirm_desc.tr(
                 namedArgs: {'count': '$pendingCount'},
               ),
-              style: const TextStyle(
-                fontSize: 14,
-                color: Color(0xFF94A3B8),
-              ),
+              style: descStyle(),
             ),
             const SizedBox(height: 24),
             Row(
@@ -78,32 +91,20 @@ class BroadcastSheet extends StatelessWidget {
               children: [
                 OutlinedButton(
                   onPressed: state == BroadcastState.sending ? null : onCancel,
-                  style: OutlinedButton.styleFrom(
-                    foregroundColor: Colors.white,
-                    side: const BorderSide(color: Color(0xFF334155)),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(12),
-                    ),
-                  ),
+                  style: cancelBtn(),
                   child: Text(LocaleKeys.analytics_cancel.tr()),
                 ),
                 const SizedBox(width: 12),
                 ElevatedButton(
                   onPressed: state == BroadcastState.sending ? null : onConfirm,
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: const Color(0xFFE8A598),
-                    foregroundColor: const Color(0xFF2A1A1A),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(12),
-                    ),
-                  ),
+                  style: primaryBtn(),
                   child: state == BroadcastState.sending
-                      ? const SizedBox(
+                      ? SizedBox(
                           width: 20,
                           height: 20,
                           child: CircularProgressIndicator(
                             strokeWidth: 2,
-                            valueColor: AlwaysStoppedAnimation<Color>(Color(0xFF2A1A1A)),
+                            valueColor: AlwaysStoppedAnimation<Color>(cs.onPrimary),
                           ),
                         )
                       : Text(
@@ -125,49 +126,28 @@ class BroadcastSheet extends StatelessWidget {
             Container(
               width: 64,
               height: 64,
-              decoration: const BoxDecoration(
-                color: Color(0x335E8C61),
+              decoration: BoxDecoration(
+                color: ac.success.withValues(alpha: 0.2),
                 shape: BoxShape.circle,
               ),
-              child: const Icon(
-                Icons.check,
-                color: Color(0xFF7ABF7E),
-                size: 32,
-              ),
+              child: Icon(Icons.check, color: ac.success, size: 32),
             ),
             const SizedBox(height: 16),
-            Text(
-              LocaleKeys.analytics_broadcast_success_title.tr(),
-              style: const TextStyle(
-                fontSize: 20,
-                fontWeight: FontWeight.bold,
-                color: Colors.white,
-                fontFamily: 'serif',
-              ),
-            ),
+            Text(LocaleKeys.analytics_broadcast_success_title.tr(), style: titleStyle()),
             const SizedBox(height: 8),
             Text(
               LocaleKeys.analytics_broadcast_success_desc.tr(
                 namedArgs: {'count': '$count'},
               ),
               textAlign: TextAlign.center,
-              style: const TextStyle(
-                fontSize: 14,
-                color: Color(0xFF94A3B8),
-              ),
+              style: descStyle(),
             ),
             const SizedBox(height: 24),
             SizedBox(
               width: double.infinity,
               child: ElevatedButton(
                 onPressed: onDismiss,
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: const Color(0xFFE8A598),
-                  foregroundColor: const Color(0xFF2A1A1A),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(12),
-                  ),
-                ),
+                style: primaryBtn(),
                 child: Text(
                   LocaleKeys.analytics_ok.tr(),
                   style: const TextStyle(fontWeight: FontWeight.bold),
@@ -182,48 +162,22 @@ class BroadcastSheet extends StatelessWidget {
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            Text(
-              LocaleKeys.analytics_broadcast_error_title.tr(),
-              style: const TextStyle(
-                fontSize: 20,
-                fontWeight: FontWeight.bold,
-                color: Colors.white,
-                fontFamily: 'serif',
-              ),
-            ),
+            Text(LocaleKeys.analytics_broadcast_error_title.tr(), style: titleStyle()),
             const SizedBox(height: 12),
-            Text(
-              LocaleKeys.analytics_broadcast_error_desc.tr(),
-              style: const TextStyle(
-                fontSize: 14,
-                color: Color(0xFF94A3B8),
-              ),
-            ),
+            Text(LocaleKeys.analytics_broadcast_error_desc.tr(), style: descStyle()),
             const SizedBox(height: 24),
             Row(
               mainAxisAlignment: MainAxisAlignment.end,
               children: [
                 OutlinedButton(
                   onPressed: onCancel,
-                  style: OutlinedButton.styleFrom(
-                    foregroundColor: Colors.white,
-                    side: const BorderSide(color: Color(0xFF334155)),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(12),
-                    ),
-                  ),
+                  style: cancelBtn(),
                   child: Text(LocaleKeys.analytics_cancel.tr()),
                 ),
                 const SizedBox(width: 12),
                 ElevatedButton(
                   onPressed: onConfirm,
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: const Color(0xFFE8A598),
-                    foregroundColor: const Color(0xFF2A1A1A),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(12),
-                    ),
-                  ),
+                  style: primaryBtn(),
                   child: Text(
                     LocaleKeys.analytics_retry.tr(),
                     style: const TextStyle(fontWeight: FontWeight.bold),
