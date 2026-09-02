@@ -1,20 +1,24 @@
 import '../../imports/core_imports.dart';
 import '../../imports/packages_imports.dart';
+import '../../data/repositories/invite_repository.dart';
 import 'providers/pending_invites_provider.dart';
 import 'widgets/invite_card.dart';
 
 class PendingInvitesScreen extends StatelessWidget {
   const PendingInvitesScreen({
     super.key,
+    this.repository,
     this.initialInvites,
   });
 
+  final InviteRepository? repository;
   final List<PendingInvite>? initialInvites;
 
   @override
   Widget build(BuildContext context) {
     return ChangeNotifierProvider<PendingInvitesProvider>(
       create: (_) => PendingInvitesProvider(
+        repository: repository,
         initialInvites: initialInvites,
       )..load(),
       child: const _PendingInvitesView(),

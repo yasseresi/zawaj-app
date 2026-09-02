@@ -1,37 +1,21 @@
-import 'package:equatable/equatable.dart';
 import 'package:flutter/foundation.dart';
 
+import '../../../data/models/pending_invite_model.dart';
+import '../../../data/repositories/invite_repository.dart';
+import '../../../data/repositories/invite_repository_impl.dart';
 import '../../../shared/enums/app_status.dart';
+import '../../../utils/typedefs.dart';
 
-class PendingInvite extends Equatable {
-  const PendingInvite({
-    required this.id,
-    required this.event,
-    required this.sender,
-    required this.date,
-    this.initial,
-  });
-
-  final String id;
-  final String event;
-  final String sender;
-  final String date;
-  final String? initial;
-
-  String get avatarInitial {
-    if (initial != null && initial!.isNotEmpty) return initial!;
-    final trimmed = sender.trim();
-    return trimmed.isEmpty ? '' : trimmed.substring(0, 1);
-  }
-
-  @override
-  List<Object?> get props => [id, event, sender, date, initial];
-}
+export '../../../data/models/pending_invite_model.dart' show PendingInvite;
 
 class PendingInvitesProvider extends ChangeNotifier {
   PendingInvitesProvider({
+    InviteRepository? repository,
     List<PendingInvite>? initialInvites,
-  }) : _invites = initialInvites ?? const [];
+  })  : _repository = repository ?? InviteRepositoryImpl(),
+        _invites = initialInvites ?? const [];
+
+  final InviteRepository _repository;
 
   AppStatus _status = AppStatus.initial;
   List<PendingInvite> _invites;
@@ -51,78 +35,52 @@ class PendingInvitesProvider extends ChangeNotifier {
     _errorMessage = null;
     notifyListeners();
 
-    try {
-      if (_invites.isEmpty) {
-        _invites = _defaultInvites();
-      }
-      _status = AppStatus.success;
-    } catch (e) {
-      _status = AppStatus.failure;
-      _errorMessage = e.toString();
-    }
-    notifyListeners();
+    final result = await _repository.list();
+    result.match(
+      (failure) {
+        _status = AppStatus.failure;
+        _errorMessage = failure.message;
+        notifyListeners();
+      },
+      (invites) {
+        _invites = invites;
+        _status = AppStatus.success;
+        notifyListeners();
+      },
+    );
   }
 
-  Future<bool> acceptInvite(String id) async {
+  Future<bool> acceptInvite(String id) => _resolve(id, _repository.accept(id));
+
+  Future<bool> declineInvite(String id) => _resolve(id, _repository.decline(id));
+
+  /// Runs an accept/decline call, removing the invite from the list on success
+  /// and surfacing the failure message otherwise. Returns whether it succeeded.
+  Future<bool> _resolve(String id, FutureEither<void> action) async {
     _actionLoadingId = id;
-    notifyListeners();
-
-    await Future<void>.delayed(const Duration(milliseconds: 300));
-
-    _invites = _invites.where((invite) => invite.id != id).toList();
-    _actionLoadingId = null;
-    notifyListeners();
-    return true;
-  }
-
-  Future<bool> declineInvite(String id) async {
-    _actionLoadingId = id;
-    notifyListeners();
-
-    await Future<void>.delayed(const Duration(milliseconds: 300));
-
-    _invites = _invites.where((invite) => invite.id != id).toList();
-    _actionLoadingId = null;
-    notifyListeners();
-    return true;
-  }
-
-  void setInvites(List<PendingInvite> invites) {
-    _invites = invites;
-    _status = AppStatus.success;
     _errorMessage = null;
     notifyListeners();
+
+    final result = await action;
+    return result.match(
+      (failure) {
+        _errorMessage = failure.message;
+        _actionLoadingId = null;
+        notifyListeners();
+        return false;
+      },
+      (_) {
+        _invites = _invites.where((invite) => invite.id != id).toList();
+        _actionLoadingId = null;
+        notifyListeners();
+        return true;
+      },
+    );
   }
 
   void setError(String message) {
     _status = AppStatus.failure;
     _errorMessage = message;
     notifyListeners();
-  }
-
-  static List<PendingInvite> _defaultInvites() {
-    return const [
-      PendingInvite(
-        id: '1',
-        event: 'حفل زفاف ليلى وعمر',
-        sender: 'سارة المنصور',
-        date: 'منذ يومين',
-        initial: 'س',
-      ),
-      PendingInvite(
-        id: '2',
-        event: 'خطوبة ريم',
-        sender: 'هند الزهراني',
-        date: 'منذ 4 أيام',
-        initial: 'هـ',
-      ),
-      PendingInvite(
-        id: '3',
-        event: 'حنّاء العروس',
-        sender: 'فاطمة الخالدي',
-        date: 'منذ أسبوع',
-        initial: 'ف',
-      ),
-    ];
   }
 }
