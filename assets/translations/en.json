@@ -51,6 +51,14 @@
     "welcome": "Welcome, {name}",
     "subtitle": "Your event lists will appear here soon."
   },
+  "nav": {
+    "lists": "Lists",
+    "analytics": "Dashboard",
+    "activity": "Activity",
+    "settings": "Settings",
+    "no_wedding_title": "No wedding selected",
+    "no_wedding_subtitle": "Create a wedding list first to see your dashboard and activity."
+  },
   "weddings": {
     "create": "New wedding",
     "loading": "Loading your lists…",
@@ -137,12 +145,25 @@
   },
   "actions": {
     "cancel": "Cancel",
-    "done": "Done"
+    "done": "Done",
+    "retry": "Try again"
   },
   "settings": {
+    "title": "Settings",
+    "account_section": "Account Settings",
+    "edit_profile": "Edit Profile",
+    "change_password": "Change Password",
+    "appearance_section": "App Appearance",
+    "dark_mode": "Dark Mode",
     "language": "Language",
-    "theme": "Theme",
-    "logout": "Log out"
+    "arabic": "Arabic",
+    "english": "English",
+    "french": "French",
+    "premium_member": "Premium Member",
+    "logout": "Log out",
+    "logout_confirm_title": "Log out",
+    "logout_confirm_message": "Are you sure you want to log out? You will need to log in again to access your lists.",
+    "coming_soon": "This feature will be available soon."
   },
   "errors": {
     "no_connection": "No internet connection. Check your connection and try again.",
@@ -157,5 +178,64 @@
     "conflict": "There is a data conflict.",
     "locked": "Account temporarily locked after too many attempts. Try again later.",
     "rate_limited": "Too many attempts. Please wait a moment and try again."
+  },
+  "analytics": {
+    "title": "Guest Analytics",
+    "filter": "Filter",
+    "empty_title": "Not enough data yet",
+    "empty_subtitle": "Analytics will appear after sending invitations and receiving responses",
+    "total_guests": "Total Guests",
+    "pending_responses": "Pending Responses",
+    "rsvp_breakdown": "RSVP Breakdown",
+    "guests_count": "{count} guests",
+    "confirmation_rate": "Confirmation Rate",
+    "confirmed": "Confirmed",
+    "declined": "Declined",
+    "pending": "Pending",
+    "rsvp_timeline": "RSVP Timeline",
+    "send_reminders": "Send Reminders",
+    "broadcast_confirm_title": "Send Reminders",
+    "broadcast_confirm_desc": "Send a reminder to all pending guests? ({count} guests)",
+    "send": "Send",
+    "cancel": "Cancel",
+    "broadcast_success_title": "Sent Successfully",
+    "broadcast_success_desc": "Reminders successfully sent to {count} guests",
+    "ok": "OK",
+    "broadcast_error_title": "Failed to Send",
+    "broadcast_error_desc": "Failed to send. Please try again later.",
+    "retry": "Try Again"
+  },
+  "activity": {
+    "title": "Activity Log",
+    "today": "Today",
+    "yesterday": "Yesterday",
+    "this_week": "This Week",
+    "empty_title": "No activity yet",
+    "empty_subtitle": "Updates and collaborator actions will appear here",
+    "error_title": "Couldn't load activity log",
+    "loading": "Loading activity log…",
+    "item_confirmed": "{name} confirmed attendance",
+    "item_added": "{name} added {count} new guests",
+    "item_reminders_sent": "{count} reminder invitations sent",
+    "item_declined": "{name} declined the invitation",
+    "item_collaborator_joined": "{name} joined as a collaborator",
+    "item_updated": "{name} updated details for {count} guests",
+    "item_exported": "Exported guest list as PDF",
+    "time_hours_ago": "{count} hours ago",
+    "time_at": "At {time}"
+  },
+  "invites": {
+    "title": "Pending Invites",
+    "empty_title": "No pending invites",
+    "empty_subtitle": "New invitations to collaborate on guest lists will appear here",
+    "error_title": "Couldn't load pending invites",
+    "from_sender": "From: {sender}",
+    "sent_date": "Sent {date}",
+    "accept": "Accept",
+    "decline": "Decline",
+    "decline_confirm_title": "Decline Invite",
+    "decline_confirm_message": "Do you want to decline the invitation for \"{event}\"?",
+    "accept_success": "Added to the list successfully",
+    "decline_success": "Invitation declined"
   }
 }

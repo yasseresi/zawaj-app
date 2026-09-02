@@ -21,3 +21,5 @@ export '../ui/auth/signup_screen.dart';
 export '../ui/auth/recover_screen.dart';
 export '../ui/home/home_page.dart';
 export '../ui/onboarding/onboarding_page.dart';
+export '../ui/invites/pending_invites_screen.dart';
+export '../ui/settings/settings_screen.dart';

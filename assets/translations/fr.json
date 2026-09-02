@@ -51,6 +51,14 @@
     "welcome": "Bienvenue, {name}",
     "subtitle": "Vos listes d'événements apparaîtront bientôt ici."
   },
+  "nav": {
+    "lists": "Listes",
+    "analytics": "Tableau de bord",
+    "activity": "Activité",
+    "settings": "Paramètres",
+    "no_wedding_title": "Aucun mariage sélectionné",
+    "no_wedding_subtitle": "Créez d'abord une liste de mariage pour voir le tableau de bord et l'activité."
+  },
   "weddings": {
     "create": "Nouveau mariage",
     "loading": "Chargement de vos listes…",
@@ -137,12 +145,25 @@
   },
   "actions": {
     "cancel": "Annuler",
-    "done": "Terminé"
+    "done": "Terminé",
+    "retry": "Réessayer"
   },
   "settings": {
+    "title": "Paramètres",
+    "account_section": "Paramètres du compte",
+    "edit_profile": "Modifier le profil",
+    "change_password": "Changer le mot de passe",
+    "appearance_section": "Apparence de l'application",
+    "dark_mode": "Mode sombre",
     "language": "Langue",
-    "theme": "Thème",
-    "logout": "Déconnexion"
+    "arabic": "Arabe",
+    "english": "Anglais",
+    "french": "Français",
+    "premium_member": "Membre Premium",
+    "logout": "Déconnexion",
+    "logout_confirm_title": "Se déconnecter",
+    "logout_confirm_message": "Voulez-vous vraiment vous déconnecter ? Vous devrez vous reconnecter pour accéder à vos listes.",
+    "coming_soon": "Cette fonctionnalité sera bientôt disponible."
   },
   "errors": {
     "no_connection": "Pas de connexion Internet. Vérifiez votre connexion et réessayez.",
@@ -157,5 +178,64 @@
     "conflict": "Il y a un conflit de données.",
     "locked": "Compte temporairement verrouillé après trop de tentatives. Réessayez plus tard.",
     "rate_limited": "Trop de tentatives. Patientez un instant et réessayez."
+  },
+  "analytics": {
+    "title": "Analytique des invités",
+    "filter": "Filtrer",
+    "empty_title": "Pas encore assez de données",
+    "empty_subtitle": "Les analyses apparaîtront après l'envoi des invitations et la réception des réponses",
+    "total_guests": "Total des invités",
+    "pending_responses": "Réponses en attente",
+    "rsvp_breakdown": "Répartition des réponses",
+    "guests_count": "{count} invités",
+    "confirmation_rate": "Taux de confirmation",
+    "confirmed": "Confirmé",
+    "declined": "Décliné",
+    "pending": "En attente",
+    "rsvp_timeline": "Chronologie des réponses",
+    "send_reminders": "Envoyer des rappels",
+    "broadcast_confirm_title": "Envoyer les rappels",
+    "broadcast_confirm_desc": "Voulez-vous envoyer un rappel à tous les invités en attente ? ({count} invités)",
+    "send": "Envoyer",
+    "cancel": "Annuler",
+    "broadcast_success_title": "Envoyé avec succès",
+    "broadcast_success_desc": "Rappels envoyés avec succès à {count} invités",
+    "ok": "OK",
+    "broadcast_error_title": "Échec de l'envoi",
+    "broadcast_error_desc": "Impossible d'envoyer les rappels. Veuillez réessayer plus tard.",
+    "retry": "Réessayer"
+  },
+  "activity": {
+    "title": "Journal d'activité",
+    "today": "Aujourd'hui",
+    "yesterday": "Hier",
+    "this_week": "Cette semaine",
+    "empty_title": "Aucune activité pour l'instant",
+    "empty_subtitle": "Les mises à jour et actions des collaborateurs apparaîtront ici",
+    "error_title": "Impossible de charger le journal d'activité",
+    "loading": "Chargement du journal d'activité…",
+    "item_confirmed": "{name} a confirmé sa présence",
+    "item_added": "{name} a ajouté {count} nouveaux invités",
+    "item_reminders_sent": "{count} rappels envoyés",
+    "item_declined": "{name} a décliné l'invitation",
+    "item_collaborator_joined": "{name} a rejoint la liste comme collaborateur",
+    "item_updated": "{name} a mis à jour les informations de {count} invités",
+    "item_exported": "Liste des invités exportée au format PDF",
+    "time_hours_ago": "Il y a {count} heures",
+    "time_at": "À {time}"
+  },
+  "invites": {
+    "title": "Invitations en attente",
+    "empty_title": "Aucune invitation en attente",
+    "empty_subtitle": "Les nouvelles invitations à collaborer sur les listes d'invités apparaîtront ici",
+    "error_title": "Impossible de charger les invitations en attente",
+    "from_sender": "De : {sender}",
+    "sent_date": "Envoyée {date}",
+    "accept": "Accepter",
+    "decline": "Décliner",
+    "decline_confirm_title": "Décliner l'invitation",
+    "decline_confirm_message": "Voulez-vous décliner l'invitation pour « {event} » ?",
+    "accept_success": "Ajouté à la liste avec succès",
+    "decline_success": "Invitation déclinée"
   }
 }

@@ -51,6 +51,14 @@
     "welcome": "مرحباً، {name}",
     "subtitle": "ستظهر هنا قوائم حفلاتك قريباً."
   },
+  "nav": {
+    "lists": "القوائم",
+    "analytics": "لوحة التحكم",
+    "activity": "التحديثات",
+    "settings": "الإعدادات",
+    "no_wedding_title": "لم يتم اختيار حفل",
+    "no_wedding_subtitle": "أنشئ قائمة حفل أولاً لعرض لوحة التحكم والتحديثات."
+  },
   "weddings": {
     "create": "حفل جديد",
     "loading": "جارٍ تحميل قوائمك…",
@@ -140,12 +148,25 @@
   },
   "actions": {
     "cancel": "إلغاء",
-    "done": "تم"
+    "done": "تم",
+    "retry": "إعادة المحاولة"
   },
   "settings": {
+    "title": "الإعدادات",
+    "account_section": "إعدادات الحساب",
+    "edit_profile": "تعديل الملف الشخصي",
+    "change_password": "تغيير كلمة المرور",
+    "appearance_section": "مظهر التطبيق",
+    "dark_mode": "الوضع المظلم",
     "language": "اللغة",
-    "theme": "المظهر",
-    "logout": "تسجيل الخروج"
+    "arabic": "العربية",
+    "english": "English",
+    "french": "Français",
+    "premium_member": "عضوية مميزة",
+    "logout": "تسجيل الخروج",
+    "logout_confirm_title": "تسجيل الخروج",
+    "logout_confirm_message": "هل تريد تسجيل الخروج؟ ستحتاج إلى تسجيل الدخول مجدداً للوصول إلى قوائمك.",
+    "coming_soon": "ستتوفر هذه الميزة قريباً."
   },
   "errors": {
     "no_connection": "لا يوجد اتصال بالإنترنت. تحقّق من اتصالك وحاول مجدداً.",
@@ -160,5 +181,64 @@
     "conflict": "يوجد تعارض في البيانات.",
     "locked": "تم قفل الحساب مؤقتاً بسبب محاولات كثيرة. حاول لاحقاً.",
     "rate_limited": "محاولات كثيرة جداً. انتظر قليلاً ثم حاول مجدداً."
+  },
+  "analytics": {
+    "title": "تحليلات الضيوف",
+    "filter": "تصفية",
+    "empty_title": "لا توجد بيانات كافية بعد",
+    "empty_subtitle": "ستظهر التحليلات بعد إرسال الدعوات وتلقي الردود",
+    "total_guests": "إجمالي الضيوف",
+    "pending_responses": "الردود المعلقة",
+    "rsvp_breakdown": "توزيع الردود",
+    "guests_count": "{count} ضيف",
+    "confirmation_rate": "تأكيد الحضور",
+    "confirmed": "مؤكد",
+    "declined": "معتذر",
+    "pending": "معلق",
+    "rsvp_timeline": "مسار الردود",
+    "send_reminders": "إرسال تذكيرات",
+    "broadcast_confirm_title": "إرسال التذكيرات",
+    "broadcast_confirm_desc": "هل تريد إرسال تذكير لجميع الضيوف المعلقين؟ ({count} ضيفاً)",
+    "send": "إرسال",
+    "cancel": "إلغاء",
+    "broadcast_success_title": "تم الإرسال بنجاح",
+    "broadcast_success_desc": "تم إرسال التذكيرات بنجاح لـ {count} ضيفاً",
+    "ok": "حسناً",
+    "broadcast_error_title": "تعذّر الإرسال",
+    "broadcast_error_desc": "تعذّر الإرسال. يرجى المحاولة لاحقاً.",
+    "retry": "حاول مجدداً"
+  },
+  "activity": {
+    "title": "سجل النشاط",
+    "today": "اليوم",
+    "yesterday": "أمس",
+    "this_week": "هذا الأسبوع",
+    "empty_title": "لا يوجد نشاط بعد",
+    "empty_subtitle": "ستظهر هنا التحديثات وإجراءات المتعاونين",
+    "error_title": "تعذّر تحميل سجل النشاط",
+    "loading": "جارٍ تحميل سجل النشاط…",
+    "item_confirmed": "أكّدت مريم الرشيد حضورها",
+    "item_added": "أضافت سارة 12 ضيفاً جديداً",
+    "item_reminders_sent": "أُرسلت 30 دعوة تذكير",
+    "item_declined": "اعتذر خالد البلوشي عن الحضور",
+    "item_collaborator_joined": "انضم عمر إلى القائمة كمتعاون",
+    "item_updated": "حدّثت سارة معلومات 4 ضيوف",
+    "item_exported": "صدّرت قائمة الضيوف كـ PDF",
+    "time_hours_ago": "قبل {count} ساعات",
+    "time_at": "الساعة {time}"
+  },
+  "invites": {
+    "title": "الدعوات المعلقة",
+    "empty_title": "لا توجد دعوات معلقة",
+    "empty_subtitle": "ستظهر هنا الدعوات الجديدة للتعاون في قوائم الضيوف",
+    "error_title": "تعذّر تحميل الدعوات المعلقة",
+    "from_sender": "من: {sender}",
+    "sent_date": "أُرسلت {date}",
+    "accept": "قبول",
+    "decline": "رفض",
+    "decline_confirm_title": "رفض الدعوة",
+    "decline_confirm_message": "هل تريد رفض دعوة \"{event}\"؟",
+    "accept_success": "تمت إضافتك إلى القائمة بنجاح",
+    "decline_success": "تم رفض الدعوة"
   }
 }
