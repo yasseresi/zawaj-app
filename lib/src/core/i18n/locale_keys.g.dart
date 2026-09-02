@@ -199,6 +199,7 @@ abstract class  LocaleKeys {
   static const activity_today = 'activity.today';
   static const activity_yesterday = 'activity.yesterday';
   static const activity_this_week = 'activity.this_week';
+  static const activity_earlier = 'activity.earlier';
   static const activity_empty_title = 'activity.empty_title';
   static const activity_empty_subtitle = 'activity.empty_subtitle';
   static const activity_error_title = 'activity.error_title';

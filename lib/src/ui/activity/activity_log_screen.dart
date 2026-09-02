@@ -1,6 +1,6 @@
 import '../../imports/core_imports.dart';
 import '../../imports/packages_imports.dart';
-import '../../data/repositories/guest_repository.dart';
+import '../../data/repositories/activity_repository.dart';
 import 'providers/activity_log_provider.dart';
 import 'widgets/activity_item_tile.dart';
 
@@ -13,7 +13,7 @@ class ActivityLogScreen extends StatelessWidget {
   });
 
   final String weddingId;
-  final GuestRepository? repository;
+  final ActivityRepository? repository;
   final List<ActivityGroup>? initialGroups;
 
   @override

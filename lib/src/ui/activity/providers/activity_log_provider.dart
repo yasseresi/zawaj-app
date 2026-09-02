@@ -2,8 +2,10 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter/foundation.dart';
 
-import '../../../data/repositories/guest_repository.dart';
-import '../../../data/repositories/guest_repository_impl.dart';
+import '../../../data/models/activity_feed_model.dart';
+import '../../../data/models/guest_detail_model.dart' show ActivityAction;
+import '../../../data/repositories/activity_repository.dart';
+import '../../../data/repositories/activity_repository_impl.dart';
 import '../../../shared/enums/app_status.dart';
 
 enum ActivityItemType {
@@ -86,21 +88,24 @@ class ActivityGroup extends Equatable {
 class ActivityLogProvider extends ChangeNotifier {
   ActivityLogProvider({
     required String weddingId,
-    GuestRepository? repository,
+    ActivityRepository? repository,
     List<ActivityGroup>? initialGroups,
+    DateTime Function()? now,
   })  : _weddingId = weddingId,
-        _repository = repository ?? GuestRepositoryImpl(),
+        _repository = repository ?? ActivityRepositoryImpl(),
+        _now = now ?? DateTime.now,
         _groups = initialGroups ?? const [];
 
   final String _weddingId;
-  final GuestRepository _repository;
+  final ActivityRepository _repository;
+  final DateTime Function() _now;
 
   AppStatus _status = AppStatus.initial;
   List<ActivityGroup> _groups;
   String? _errorMessage;
 
   String get weddingId => _weddingId;
-  GuestRepository get repository => _repository;
+  ActivityRepository get repository => _repository;
   AppStatus get status => _status;
   List<ActivityGroup> get groups => _groups;
   String? get errorMessage => _errorMessage;
@@ -113,23 +118,19 @@ class ActivityLogProvider extends ChangeNotifier {
     _errorMessage = null;
     notifyListeners();
 
-    try {
-      if (_groups.isEmpty) {
-        _groups = _defaultGroups();
-      }
-      _status = AppStatus.success;
-    } catch (e) {
-      _status = AppStatus.failure;
-      _errorMessage = e.toString();
-    }
-    notifyListeners();
-  }
-
-  void setGroups(List<ActivityGroup> groups) {
-    _groups = groups;
-    _status = AppStatus.success;
-    _errorMessage = null;
-    notifyListeners();
+    final result = await _repository.feed(_weddingId);
+    result.match(
+      (failure) {
+        _status = AppStatus.failure;
+        _errorMessage = failure.message;
+        notifyListeners();
+      },
+      (page) {
+        _groups = _groupByDay(page.items);
+        _status = AppStatus.success;
+        notifyListeners();
+      },
+    );
   }
 
   void setError(String message) {
@@ -138,78 +139,113 @@ class ActivityLogProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  static List<ActivityGroup> _defaultGroups() {
-    return const [
-      ActivityGroup(
-        titleKey: 'activity.today',
-        items: [
-          ActivityItem(
-            id: '1',
-            type: ActivityItemType.confirmed,
-            textKey: 'activity.item_confirmed',
-            textArgs: {'name': 'مريم الرشيد'},
-            whenKey: 'activity.time_hours_ago',
-            whenArgs: {'count': '2'},
-          ),
-          ActivityItem(
-            id: '2',
-            type: ActivityItemType.added,
-            textKey: 'activity.item_added',
-            textArgs: {'name': 'سارة', 'count': '12'},
-            whenKey: 'activity.time_hours_ago',
-            whenArgs: {'count': '3'},
-          ),
-          ActivityItem(
-            id: '3',
-            type: ActivityItemType.reminder,
-            textKey: 'activity.item_reminders_sent',
-            textArgs: {'count': '30'},
-            whenKey: 'activity.time_hours_ago',
-            whenArgs: {'count': '5'},
-          ),
-        ],
-      ),
-      ActivityGroup(
-        titleKey: 'activity.yesterday',
-        items: [
-          ActivityItem(
-            id: '4',
-            type: ActivityItemType.declined,
-            textKey: 'activity.item_declined',
-            textArgs: {'name': 'خالد البلوشي'},
-            whenKey: 'activity.time_at',
-            whenArgs: {'time': '18:42'},
-          ),
-          ActivityItem(
-            id: '5',
-            type: ActivityItemType.collaboratorJoined,
-            textKey: 'activity.item_collaborator_joined',
-            textArgs: {'name': 'عمر'},
-            whenKey: 'activity.time_at',
-            whenArgs: {'time': '14:10'},
-          ),
-        ],
-      ),
-      ActivityGroup(
-        titleKey: 'activity.this_week',
-        items: [
-          ActivityItem(
-            id: '6',
-            type: ActivityItemType.updated,
-            textKey: 'activity.item_updated',
-            textArgs: {'name': 'سارة', 'count': '4'},
-            whenKey: '8 يونيو',
-            rawWhen: '8 يونيو',
-          ),
-          ActivityItem(
-            id: '7',
-            type: ActivityItemType.exported,
-            textKey: 'activity.item_exported',
-            whenKey: '6 يونيو',
-            rawWhen: '6 يونيو',
-          ),
-        ],
-      ),
+  /// Buckets entries into today / yesterday / this-week / earlier groups
+  /// (newest-first) and maps each to a display [ActivityItem].
+  List<ActivityGroup> _groupByDay(List<ActivityFeedEntry> entries) {
+    final now = _now();
+    final today = DateTime(now.year, now.month, now.day);
+    final yesterday = today.subtract(const Duration(days: 1));
+    final weekStart = today.subtract(const Duration(days: 7));
+
+    final buckets = <String, List<ActivityItem>>{
+      'activity.today': [],
+      'activity.yesterday': [],
+      'activity.this_week': [],
+      'activity.earlier': [],
+    };
+
+    for (final e in entries) {
+      final when = e.createdAt ?? now;
+      final day = DateTime(when.year, when.month, when.day);
+      final String key;
+      if (!day.isBefore(today)) {
+        key = 'activity.today';
+      } else if (!day.isBefore(yesterday)) {
+        key = 'activity.yesterday';
+      } else if (!day.isBefore(weekStart)) {
+        key = 'activity.this_week';
+      } else {
+        key = 'activity.earlier';
+      }
+      buckets[key]!.add(_mapEntry(e, now));
+    }
+
+    return [
+      for (final entry in buckets.entries)
+        if (entry.value.isNotEmpty)
+          ActivityGroup(titleKey: entry.key, items: entry.value),
     ];
+  }
+
+  ActivityItem _mapEntry(ActivityFeedEntry e, DateTime now) {
+    final when = e.createdAt ?? now;
+    final whenParts = _relativeWhen(when, now);
+
+    switch (e.action) {
+      case ActivityAction.guestStatusChanged:
+        final status = e.metaString('status');
+        final name = e.guestName ?? e.actorName;
+        if (status == 'confirmed') {
+          return _item(e, ActivityItemType.confirmed, 'activity.item_confirmed',
+              {'name': name}, whenParts);
+        }
+        if (status == 'declined') {
+          return _item(e, ActivityItemType.declined, 'activity.item_declined',
+              {'name': name}, whenParts);
+        }
+        return _item(e, ActivityItemType.updated, 'activity.item_updated',
+            {'name': name, 'count': '1'}, whenParts);
+      case ActivityAction.guestAdded:
+        final count = e.metaInt('count');
+        return _item(e, ActivityItemType.added, 'activity.item_added',
+            {'name': e.actorName, 'count': '${count > 0 ? count : 1}'}, whenParts);
+      case ActivityAction.guestUpdated:
+        return _item(e, ActivityItemType.updated, 'activity.item_updated',
+            {'name': e.guestName ?? e.actorName, 'count': '1'}, whenParts);
+      case ActivityAction.remindersSent:
+        return _item(e, ActivityItemType.reminder, 'activity.item_reminders_sent',
+            {'count': '${e.metaInt('count')}'}, whenParts);
+      case ActivityAction.collaboratorJoined:
+        return _item(e, ActivityItemType.collaboratorJoined,
+            'activity.item_collaborator_joined', {'name': e.actorName}, whenParts);
+      case ActivityAction.listExported:
+        return _item(e, ActivityItemType.exported, 'activity.item_exported',
+            const {}, whenParts);
+      case ActivityAction.noteAdded:
+      case ActivityAction.unknown:
+        return _item(e, ActivityItemType.updated, 'activity.item_updated',
+            {'name': e.guestName ?? e.actorName, 'count': '1'}, whenParts);
+    }
+  }
+
+  ActivityItem _item(
+    ActivityFeedEntry e,
+    ActivityItemType type,
+    String textKey,
+    Map<String, String> textArgs,
+    ({String key, Map<String, String> args}) when,
+  ) {
+    return ActivityItem(
+      id: e.id,
+      type: type,
+      textKey: textKey,
+      textArgs: textArgs,
+      whenKey: when.key,
+      whenArgs: when.args,
+    );
+  }
+
+  /// Within-day recency: hours-ago for entries under a day old, else the local
+  /// HH:mm the entry landed. Both are localized via translation keys.
+  ({String key, Map<String, String> args}) _relativeWhen(
+      DateTime when, DateTime now) {
+    final diff = now.difference(when);
+    if (diff.inHours < 24 && !diff.isNegative) {
+      final hours = diff.inHours < 1 ? 1 : diff.inHours;
+      return (key: 'activity.time_hours_ago', args: {'count': '$hours'});
+    }
+    final hh = when.hour.toString().padLeft(2, '0');
+    final mm = when.minute.toString().padLeft(2, '0');
+    return (key: 'activity.time_at', args: {'time': '$hh:$mm'});
   }
 }
