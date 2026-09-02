@@ -24,26 +24,14 @@ class _EditStatusSheetState extends State<EditStatusSheet> {
     RsvpStatus.declined,
   ];
 
-  static (Color, IconData, String, String) _spec(RsvpStatus s) => switch (s) {
-        RsvpStatus.confirmed => (
-            const Color(0xFF2E7D5B),
-            Icons.check_circle_outline,
-            'guests.status_confirmed'.tr(),
-            'guests.status_confirmed_desc'.tr(),
-          ),
-        RsvpStatus.pending => (
-            const Color(0xFFB8860B),
-            Icons.schedule,
-            'guests.status_pending'.tr(),
-            'guests.status_pending_desc'.tr(),
-          ),
-        RsvpStatus.declined => (
-            const Color(0xFFC84B3A),
-            Icons.cancel_outlined,
-            'guests.status_declined'.tr(),
-            'guests.status_declined_desc'.tr(),
-          ),
-      };
+  static (Color, IconData, String, String) _spec(RsvpStatus s) {
+    return (
+      guestStatusColor(s),
+      guestStatusIcon(s),
+      guestStatusLabel(s),
+      guestStatusDesc(s),
+    );
+  }
 
   @override
   Widget build(BuildContext context) {

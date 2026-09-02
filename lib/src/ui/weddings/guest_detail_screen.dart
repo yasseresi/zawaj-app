@@ -3,22 +3,10 @@ import 'package:zawaj_app/src/imports/packages_imports.dart';
 
 import 'package:zawaj_app/src/data/models/guest_detail_model.dart';
 import 'package:zawaj_app/src/data/models/guest_model.dart';
+import 'package:zawaj_app/src/data/repositories/guest_repository.dart';
 import 'package:zawaj_app/src/ui/weddings/providers/guest_detail_provider.dart';
 import 'package:zawaj_app/src/ui/weddings/widgets/add_note_sheet.dart';
 import 'package:zawaj_app/src/ui/weddings/widgets/edit_status_sheet.dart';
-
-/// Colors shared by the status pill and history timeline dots.
-Color _statusColor(RsvpStatus s) => switch (s) {
-      RsvpStatus.confirmed => const Color(0xFF2E7D5B),
-      RsvpStatus.pending => const Color(0xFFB8860B),
-      RsvpStatus.declined => const Color(0xFFC84B3A),
-    };
-
-String _statusLabel(RsvpStatus s) => switch (s) {
-      RsvpStatus.confirmed => 'guests.status_confirmed'.tr(),
-      RsvpStatus.pending => 'guests.status_pending'.tr(),
-      RsvpStatus.declined => 'guests.status_declined'.tr(),
-    };
 
 /// Navigation payload for the guest-detail route: the tapped guest (for an
 /// instant header) plus whether the caller may edit it.
@@ -39,21 +27,23 @@ class GuestDetailScreen extends StatelessWidget {
     required this.guestId,
     this.initial,
     this.canEdit = false,
+    this.repository,
   });
 
   final String weddingId;
   final String guestId;
   final Guest? initial;
-
-  /// Whether the caller may edit this guest (owner/editor). Gates the
-  /// edit-status action. Defaults to false (e.g. deep-linked, role unknown).
   final bool canEdit;
+  final GuestRepository? repository;
 
   @override
   Widget build(BuildContext context) {
     return ChangeNotifierProvider<GuestDetailProvider>(
-      create: (_) => GuestDetailProvider(weddingId: weddingId, guestId: guestId)
-        ..load(),
+      create: (_) => GuestDetailProvider(
+        weddingId: weddingId,
+        guestId: guestId,
+        repository: repository,
+      )..load(),
       child: _GuestDetailView(initial: initial, canEdit: canEdit),
     );
   }
@@ -134,8 +124,8 @@ class _GuestDetailView extends StatelessWidget {
     GuestDetail? detail,
     Guest? guest,
   ) {
-    // Failure with nothing to show falls back to the error state; if we have an
-    // `initial` guest we still show the header and surface the error inline.
+    // Failure: full-screen error when we have no guest to show; otherwise
+    // inline error banner above the (stale) content so details never vanish.
     if (provider.status.isFailure && guest == null) {
       return AppErrorWidget(
         title: 'guests.detail_error_title'.tr(),
@@ -153,6 +143,15 @@ class _GuestDetailView extends StatelessWidget {
         padding: EdgeInsets.fromLTRB(
             AppSpacing.lg.w, AppSpacing.md.h, AppSpacing.lg.w, AppSpacing.xl.h),
         children: [
+          if (provider.status.isFailure) ...[
+            AppErrorWidget(
+              title: 'guests.detail_error_title'.tr(),
+              message: provider.errorMessage,
+              compact: true,
+              onRetry: () => context.read<GuestDetailProvider>().load(),
+            ),
+            SizedBox(height: AppSpacing.md.h),
+          ],
           _Identity(guest: guest),
           SizedBox(height: AppSpacing.lg.h),
           _InfoCard(guest: guest),
@@ -202,33 +201,11 @@ class _Identity extends StatelessWidget {
                     style: tt.bodySmall?.copyWith(color: cs.onSurfaceVariant)),
               ],
               SizedBox(height: AppSpacing.sm.h),
-              _StatusPill(status: guest.status),
+              GuestStatusPill(status: guest.status),
             ],
           ),
         ),
       ],
-    );
-  }
-}
-
-class _StatusPill extends StatelessWidget {
-  const _StatusPill({required this.status});
-  final RsvpStatus status;
-
-  @override
-  Widget build(BuildContext context) {
-    final color = _statusColor(status);
-    return Container(
-      padding: EdgeInsets.symmetric(horizontal: 10.w, vertical: 4.h),
-      decoration: BoxDecoration(
-        color: color.withValues(alpha: 0.12),
-        borderRadius: BorderRadius.circular(999),
-      ),
-      child: Text(
-        _statusLabel(status),
-        style: context.textTheme.labelMedium
-            ?.copyWith(color: color, fontWeight: FontWeight.w600),
-      ),
     );
   }
 }

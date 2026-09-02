@@ -314,45 +314,8 @@ class _GuestTile extends StatelessWidget {
             ),
           ),
           SizedBox(width: AppSpacing.sm.w),
-          _StatusPill(status: guest.status),
+          GuestStatusPill(status: guest.status, compact: true),
         ],
-      ),
-    );
-  }
-}
-
-class _StatusPill extends StatelessWidget {
-  const _StatusPill({required this.status});
-
-  final RsvpStatus status;
-
-  @override
-  Widget build(BuildContext context) {
-    final tt = context.textTheme;
-    final (color, label) = switch (status) {
-      RsvpStatus.confirmed => (
-          const Color(0xFF2E7D5B),
-          'guests.status_confirmed'.tr()
-        ),
-      RsvpStatus.pending => (
-          const Color(0xFFB8860B),
-          'guests.status_pending'.tr()
-        ),
-      RsvpStatus.declined => (
-          const Color(0xFFC84B3A),
-          'guests.status_declined'.tr()
-        ),
-    };
-
-    return Container(
-      padding: EdgeInsets.symmetric(horizontal: 10.w, vertical: 4.h),
-      decoration: BoxDecoration(
-        color: color.withValues(alpha: 0.12),
-        borderRadius: BorderRadius.circular(999),
-      ),
-      child: Text(
-        label,
-        style: tt.labelMedium?.copyWith(color: color, fontWeight: FontWeight.w600),
       ),
     );
   }
