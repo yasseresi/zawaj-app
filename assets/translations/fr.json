@@ -62,8 +62,8 @@
   "weddings": {
     "create": "Nouveau mariage",
     "loading": "Chargement de vos listes…",
-    "empty_title": "Aucun mariage pour l'instant",
-    "empty_subtitle": "Créez votre première liste pour inviter des convives.",
+    "empty_title": "Aucune liste pour l'instant",
+    "empty_subtitle": "Créez votre première liste maintenant",
     "error_title": "Impossible de charger vos listes",
     "guests_count": {
       "zero": "Aucun invité",
@@ -81,7 +81,18 @@
     "description_label": "Description (facultatif)",
     "description_hint": "Détails supplémentaires sur l'événement",
     "description_too_long": "Description trop longue (2000 caractères max)",
-    "created_toast": "Mariage créé"
+    "created_toast": "Mariage créé",
+    "create_error_title": "Une erreur est survenue",
+    "create_error_message": "Impossible de créer le mariage. Veuillez réessayer.",
+    "view": "Voir",
+    "shared_badge": "Partagé",
+    "delete": "Supprimer la liste",
+    "delete_confirm_title": "Supprimer cette liste ?",
+    "delete_confirm_message": "Cette action est irréversible.",
+    "delete_confirm_action": "Supprimer",
+    "cancel": "Annuler",
+    "deleted_toast": "Liste supprimée avec succès",
+    "delete_error": "Impossible de supprimer la liste"
   },
   "guests": {
     "loading": "Chargement des invités…",
@@ -129,7 +140,6 @@
     "act_note_added": "Note ajoutée",
     "act_collaborator_joined": "Collaborateur ajouté",
     "act_list_exported": "Liste exportée",
-    "act_reminders_sent": "Rappels envoyés",
     "act_unknown": "Mis à jour",
     "edit_status_title": "Modifier le statut",
     "status_confirmed_desc": "L'invité sera présent",
@@ -142,7 +152,12 @@
     "note_required": "La note est requise",
     "note_too_long": "Note trop longue (2000 caractères max)",
     "save_note": "Enregistrer la note",
-    "note_added_toast": "Note ajoutée"
+    "note_added_toast": "Note ajoutée",
+    "delete_action": "Supprimer",
+    "delete_title": "Supprimer cet invité ?",
+    "delete_message": "« {name} » sera définitivement retiré de la liste des invités.",
+    "deleted_toast": "Invité supprimé",
+    "delete_error": "Impossible de supprimer l'invité"
   },
   "actions": {
     "cancel": "Annuler",
@@ -193,18 +208,7 @@
     "confirmed": "Confirmé",
     "declined": "Décliné",
     "pending": "En attente",
-    "rsvp_timeline": "Chronologie des réponses",
-    "send_reminders": "Envoyer des rappels",
-    "broadcast_confirm_title": "Envoyer les rappels",
-    "broadcast_confirm_desc": "Voulez-vous envoyer un rappel à tous les invités en attente ? ({count} invités)",
-    "send": "Envoyer",
-    "cancel": "Annuler",
-    "broadcast_success_title": "Envoyé avec succès",
-    "broadcast_success_desc": "Rappels envoyés avec succès à {count} invités",
-    "ok": "OK",
-    "broadcast_error_title": "Échec de l'envoi",
-    "broadcast_error_desc": "Impossible d'envoyer les rappels. Veuillez réessayer plus tard.",
-    "retry": "Réessayer"
+    "rsvp_timeline": "Chronologie des réponses"
   },
   "activity": {
     "title": "Journal d'activité",
@@ -218,7 +222,6 @@
     "loading": "Chargement du journal d'activité…",
     "item_confirmed": "{name} a confirmé sa présence",
     "item_added": "{name} a ajouté {count} nouveaux invités",
-    "item_reminders_sent": "{count} rappels envoyés",
     "item_declined": "{name} a décliné l'invitation",
     "item_collaborator_joined": "{name} a rejoint la liste comme collaborateur",
     "item_updated": "{name} a mis à jour les informations de {count} invités",

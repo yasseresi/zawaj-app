@@ -21,4 +21,7 @@ class WeddingRepositoryImpl implements WeddingRepository {
     String? description,
   }) =>
       _service.create(name: name, eventDate: eventDate, description: description);
+
+  @override
+  FutureEither<void> delete(String id) => _service.delete(id);
 }

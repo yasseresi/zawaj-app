@@ -46,4 +46,24 @@ class WeddingsProvider extends ChangeNotifier {
       },
     );
   }
+
+  /// Delete a wedding (owner-only, server-enforced). On success the row is
+  /// dropped locally so the list — or the empty state, once none remain —
+  /// updates without a full reload. Returns whether it succeeded; on failure
+  /// [errorMessage] carries the reason and the list is left untouched.
+  Future<bool> delete(String id) async {
+    final result = await _repository.delete(id);
+    return result.match(
+      (failure) {
+        _errorMessage = failure.message;
+        notifyListeners();
+        return false;
+      },
+      (_) {
+        _weddings = _weddings.where((w) => w.id != id).toList();
+        notifyListeners();
+        return true;
+      },
+    );
+  }
 }

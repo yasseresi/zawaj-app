@@ -23,6 +23,9 @@ class _FakeWeddingRepository implements WeddingRepository {
     lastArgs = (name: name, eventDate: eventDate, description: description);
     return createResult!;
   }
+
+  @override
+  FutureEither<void> delete(String id) async => throw UnimplementedError();
 }
 
 const _created = Wedding(

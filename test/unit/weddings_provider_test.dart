@@ -9,6 +9,8 @@ import 'package:zawaj_app/src/utils/typedefs.dart';
 
 class _FakeWeddingRepository implements WeddingRepository {
   Either<Failure, List<Wedding>>? result;
+  Either<Failure, void>? deleteResult;
+  final List<String> deletedIds = [];
 
   @override
   FutureEither<List<Wedding>> myWeddings() async => result!;
@@ -20,6 +22,12 @@ class _FakeWeddingRepository implements WeddingRepository {
     String? description,
   }) async =>
       throw UnimplementedError();
+
+  @override
+  FutureEither<void> delete(String id) async {
+    deletedIds.add(id);
+    return deleteResult ?? const Right(null);
+  }
 }
 
 const _wedding = Wedding(
@@ -68,6 +76,40 @@ void main() {
       expect(provider.status, AppStatus.failure);
       expect(provider.errorMessage, 'boom');
       expect(provider.weddings, isEmpty);
+    });
+  });
+
+  group('WeddingsProvider.delete', () {
+    late _FakeWeddingRepository repo;
+    late WeddingsProvider provider;
+
+    setUp(() {
+      repo = _FakeWeddingRepository();
+      provider = WeddingsProvider(repository: repo);
+    });
+
+    test('success drops the row and flips to empty when none remain', () async {
+      repo.result = const Right([_wedding]);
+      await provider.load();
+
+      final ok = await provider.delete('w1');
+
+      expect(ok, isTrue);
+      expect(repo.deletedIds, ['w1']);
+      expect(provider.weddings, isEmpty);
+      expect(provider.isEmpty, isTrue);
+    });
+
+    test('failure keeps the list and surfaces the error', () async {
+      repo.result = const Right([_wedding]);
+      await provider.load();
+      repo.deleteResult = const Left(ServerFailure('nope'));
+
+      final ok = await provider.delete('w1');
+
+      expect(ok, isFalse);
+      expect(provider.weddings, [_wedding]);
+      expect(provider.errorMessage, 'nope');
     });
   });
 }

@@ -62,8 +62,8 @@
   "weddings": {
     "create": "New wedding",
     "loading": "Loading your lists…",
-    "empty_title": "No weddings yet",
-    "empty_subtitle": "Create your first list to start inviting guests.",
+    "empty_title": "No lists yet",
+    "empty_subtitle": "Create your first list now",
     "error_title": "Couldn't load your lists",
     "guests_count": {
       "zero": "No guests",
@@ -81,7 +81,18 @@
     "description_label": "Description (optional)",
     "description_hint": "Extra details about the event",
     "description_too_long": "Description is too long (2000 characters max)",
-    "created_toast": "Wedding created"
+    "created_toast": "Wedding created",
+    "create_error_title": "Something went wrong",
+    "create_error_message": "Couldn't create the wedding. Please try again.",
+    "view": "View",
+    "shared_badge": "Shared",
+    "delete": "Delete list",
+    "delete_confirm_title": "Delete this list?",
+    "delete_confirm_message": "This action cannot be undone.",
+    "delete_confirm_action": "Delete",
+    "cancel": "Cancel",
+    "deleted_toast": "List deleted successfully",
+    "delete_error": "Couldn't delete the list"
   },
   "guests": {
     "loading": "Loading guests…",
@@ -129,7 +140,6 @@
     "act_note_added": "Note added",
     "act_collaborator_joined": "Collaborator joined",
     "act_list_exported": "List exported",
-    "act_reminders_sent": "Reminders sent",
     "act_unknown": "Updated",
     "edit_status_title": "Change status",
     "status_confirmed_desc": "Guest will attend",
@@ -142,7 +152,12 @@
     "note_required": "Note is required",
     "note_too_long": "Note is too long (2000 characters max)",
     "save_note": "Save note",
-    "note_added_toast": "Note added"
+    "note_added_toast": "Note added",
+    "delete_action": "Delete",
+    "delete_title": "Delete this guest?",
+    "delete_message": "“{name}” will be permanently removed from the guest list.",
+    "deleted_toast": "Guest deleted",
+    "delete_error": "Couldn't delete the guest"
   },
   "actions": {
     "cancel": "Cancel",
@@ -193,18 +208,7 @@
     "confirmed": "Confirmed",
     "declined": "Declined",
     "pending": "Pending",
-    "rsvp_timeline": "RSVP Timeline",
-    "send_reminders": "Send Reminders",
-    "broadcast_confirm_title": "Send Reminders",
-    "broadcast_confirm_desc": "Send a reminder to all pending guests? ({count} guests)",
-    "send": "Send",
-    "cancel": "Cancel",
-    "broadcast_success_title": "Sent Successfully",
-    "broadcast_success_desc": "Reminders successfully sent to {count} guests",
-    "ok": "OK",
-    "broadcast_error_title": "Failed to Send",
-    "broadcast_error_desc": "Failed to send. Please try again later.",
-    "retry": "Try Again"
+    "rsvp_timeline": "RSVP Timeline"
   },
   "activity": {
     "title": "Activity Log",
@@ -218,7 +222,6 @@
     "loading": "Loading activity log…",
     "item_confirmed": "{name} confirmed attendance",
     "item_added": "{name} added {count} new guests",
-    "item_reminders_sent": "{count} reminder invitations sent",
     "item_declined": "{name} declined the invitation",
     "item_collaborator_joined": "{name} joined as a collaborator",
     "item_updated": "{name} updated details for {count} guests",

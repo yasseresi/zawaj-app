@@ -15,4 +15,7 @@ abstract interface class WeddingRepository {
     String? eventDate,
     String? description,
   });
+
+  /// `DELETE /weddings/:id` — permanently delete a wedding. Owner-only.
+  FutureEither<void> delete(String id);
 }

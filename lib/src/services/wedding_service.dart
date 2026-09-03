@@ -35,6 +35,13 @@ class WeddingService {
         parse: (d) => Wedding.fromJson((d as Map).cast<String, dynamic>()),
       );
 
+  /// `DELETE /weddings/:id` → 200 `{deleted:true}`. Owner-only (enforced
+  /// server-side via RequireRole). Body is discarded.
+  FutureEither<void> delete(String id) => _api.delete<void>(
+        '/weddings/$id',
+        parse: parseVoid,
+      );
+
   static List<Wedding> _parseItems(dynamic data) {
     final items = (data is Map ? data['items'] : data) as List? ?? const [];
     return [

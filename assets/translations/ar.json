@@ -62,8 +62,8 @@
   "weddings": {
     "create": "حفل جديد",
     "loading": "جارٍ تحميل قوائمك…",
-    "empty_title": "لا توجد حفلات بعد",
-    "empty_subtitle": "أنشئ أول قائمة حفلاتك لتبدأ بدعوة الضيوف.",
+    "empty_title": "لا توجد قوائم بعد",
+    "empty_subtitle": "أنشئ قائمتك الأولى الآن",
     "error_title": "تعذّر تحميل القوائم",
     "guests_count": {
       "zero": "لا ضيوف",
@@ -84,7 +84,18 @@
     "description_label": "وصف (اختياري)",
     "description_hint": "تفاصيل إضافية عن الحفل",
     "description_too_long": "الوصف طويل جداً (٢٠٠٠ حرف كحد أقصى)",
-    "created_toast": "تم إنشاء الحفل"
+    "created_toast": "تم إنشاء الحفل",
+    "create_error_title": "حدث خطأ",
+    "create_error_message": "تعذّر إنشاء الحفل. يرجى المحاولة مجدداً.",
+    "view": "عرض",
+    "shared_badge": "مشترك",
+    "delete": "حذف القائمة",
+    "delete_confirm_title": "هل أنت متأكد من حذف هذه القائمة؟",
+    "delete_confirm_message": "لا يمكن التراجع عن هذا الإجراء.",
+    "delete_confirm_action": "حذف",
+    "cancel": "إلغاء",
+    "deleted_toast": "تم حذف القائمة بنجاح",
+    "delete_error": "تعذّر حذف القائمة"
   },
   "guests": {
     "loading": "جارٍ تحميل الضيوف…",
@@ -132,7 +143,6 @@
     "act_note_added": "إضافة ملاحظة",
     "act_collaborator_joined": "انضمام متعاون",
     "act_list_exported": "تصدير القائمة",
-    "act_reminders_sent": "تم إرسال التذكيرات",
     "act_unknown": "تحديث",
     "edit_status_title": "تعديل الحالة",
     "status_confirmed_desc": "الضيف سيحضر الحفل",
@@ -145,7 +155,12 @@
     "note_required": "الملاحظة مطلوبة",
     "note_too_long": "الملاحظة طويلة جداً (٢٠٠٠ حرف كحد أقصى)",
     "save_note": "حفظ الملاحظة",
-    "note_added_toast": "تمت إضافة الملاحظة"
+    "note_added_toast": "تمت إضافة الملاحظة",
+    "delete_action": "حذف",
+    "delete_title": "هل تريد حذف هذا الضيف؟",
+    "delete_message": "سيتم حذف «{name}» من قائمة الضيوف نهائياً.",
+    "deleted_toast": "تم حذف الضيف",
+    "delete_error": "تعذّر حذف الضيف"
   },
   "actions": {
     "cancel": "إلغاء",
@@ -196,18 +211,7 @@
     "confirmed": "مؤكد",
     "declined": "معتذر",
     "pending": "معلق",
-    "rsvp_timeline": "مسار الردود",
-    "send_reminders": "إرسال تذكيرات",
-    "broadcast_confirm_title": "إرسال التذكيرات",
-    "broadcast_confirm_desc": "هل تريد إرسال تذكير لجميع الضيوف المعلقين؟ ({count} ضيفاً)",
-    "send": "إرسال",
-    "cancel": "إلغاء",
-    "broadcast_success_title": "تم الإرسال بنجاح",
-    "broadcast_success_desc": "تم إرسال التذكيرات بنجاح لـ {count} ضيفاً",
-    "ok": "حسناً",
-    "broadcast_error_title": "تعذّر الإرسال",
-    "broadcast_error_desc": "تعذّر الإرسال. يرجى المحاولة لاحقاً.",
-    "retry": "حاول مجدداً"
+    "rsvp_timeline": "مسار الردود"
   },
   "activity": {
     "title": "سجل النشاط",
@@ -221,7 +225,6 @@
     "loading": "جارٍ تحميل سجل النشاط…",
     "item_confirmed": "أكّدت مريم الرشيد حضورها",
     "item_added": "أضافت سارة 12 ضيفاً جديداً",
-    "item_reminders_sent": "أُرسلت 30 دعوة تذكير",
     "item_declined": "اعتذر خالد البلوشي عن الحضور",
     "item_collaborator_joined": "انضم عمر إلى القائمة كمتعاون",
     "item_updated": "حدّثت سارة معلومات 4 ضيوف",
