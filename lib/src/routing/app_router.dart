@@ -10,6 +10,7 @@ import '../ui/auth/recover_screen.dart';
 import '../ui/auth/signup_screen.dart';
 import '../ui/home/home_page.dart';
 import '../ui/invites/pending_invites_screen.dart';
+import '../ui/notifications/notifications_screen.dart';
 import '../ui/onboarding/onboarding_page.dart';
 import '../ui/settings/settings_screen.dart';
 import '../ui/shell/main_navigation_shell.dart';
@@ -134,6 +135,11 @@ final GoRouter appRouter = GoRouter(
       path: AppRoutes.pendingInvites,
       name: 'pending_invites',
       builder: (context, state) => const PendingInvitesScreen(),
+    ),
+    GoRoute(
+      path: AppRoutes.notifications,
+      name: 'notifications',
+      builder: (context, state) => const NotificationsScreen(),
     ),
   ],
 );

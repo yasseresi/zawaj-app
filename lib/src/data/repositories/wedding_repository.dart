@@ -1,3 +1,4 @@
+import '../models/wedding_member_model.dart';
 import '../models/wedding_model.dart';
 import '../../utils/typedefs.dart';
 
@@ -18,4 +19,13 @@ abstract interface class WeddingRepository {
 
   /// `DELETE /weddings/:id` — permanently delete a wedding. Owner-only.
   FutureEither<void> delete(String id);
+
+  /// `GET /weddings/:id/members` — the wedding's collaborators.
+  FutureEither<List<WeddingMember>> members(String id);
+
+  /// `PATCH /weddings/:id/members/:userId` — change a member's role.
+  FutureEither<void> setMemberRole(String id, String userId, String role);
+
+  /// `DELETE /weddings/:id/members/:userId` — remove a collaborator.
+  FutureEither<void> removeMember(String id, String userId);
 }

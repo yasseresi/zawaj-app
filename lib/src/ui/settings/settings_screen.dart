@@ -101,6 +101,22 @@ class _SettingsView extends StatelessWidget {
                   ),
                 ],
               ),
+              SizedBox(height: AppSpacing.lg.h),
+              SettingsSection(
+                title: 'settings.collaboration_section'.tr(),
+                children: [
+                  SettingsRow(
+                    label: 'settings.pending_invites'.tr(),
+                    icon: Icons.mark_email_unread_outlined,
+                    onTap: () => context.push(AppRoutes.pendingInvites),
+                  ),
+                  SettingsRow(
+                    label: 'settings.notifications'.tr(),
+                    icon: Icons.notifications_none_rounded,
+                    onTap: () => context.push(AppRoutes.notifications),
+                  ),
+                ],
+              ),
               SizedBox(height: AppSpacing.xl.h),
               AppButton(
                 label: 'settings.logout'.tr(),

@@ -29,6 +29,10 @@ class _FakeInviteRepository implements InviteRepository {
   }
 
   @override
+  FutureEither<void> invite(String weddingId, String username, String role) async =>
+      throw UnimplementedError();
+
+  @override
   FutureEither<void> decline(String inviteId) async {
     declined.add(inviteId);
     return declineResult;

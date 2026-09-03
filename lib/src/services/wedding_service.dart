@@ -1,3 +1,4 @@
+import '../data/models/wedding_member_model.dart';
 import '../data/models/wedding_model.dart';
 import '../data/services/api_client.dart';
 import '../utils/typedefs.dart';
@@ -41,6 +42,43 @@ class WeddingService {
         '/weddings/$id',
         parse: parseVoid,
       );
+
+  /// `GET /weddings/:id/members` → the wedding's collaborators. Any member
+  /// (viewer+) may read.
+  FutureEither<List<WeddingMember>> members(String weddingId) =>
+      _api.get<List<WeddingMember>>(
+        '/weddings/$weddingId/members',
+        parse: _parseMembers,
+      );
+
+  /// `PATCH /weddings/:id/members/:userId` → change a member's role
+  /// (`editor` | `viewer`). Owner-only server-side.
+  FutureEither<void> setMemberRole(
+    String weddingId,
+    String userId,
+    String role,
+  ) =>
+      _api.patch<void>(
+        '/weddings/$weddingId/members/$userId',
+        body: {'role': role},
+        parse: parseVoid,
+      );
+
+  /// `DELETE /weddings/:id/members/:userId` → remove a collaborator (or leave,
+  /// when it's the caller). Owner-only for removing others.
+  FutureEither<void> removeMember(String weddingId, String userId) =>
+      _api.delete<void>(
+        '/weddings/$weddingId/members/$userId',
+        parse: parseVoid,
+      );
+
+  static List<WeddingMember> _parseMembers(dynamic data) {
+    final items = (data is Map ? data['items'] : data) as List? ?? const [];
+    return [
+      for (final e in items)
+        if (e is Map) WeddingMember.fromJson(e.cast<String, dynamic>()),
+    ];
+  }
 
   static List<Wedding> _parseItems(dynamic data) {
     final items = (data is Map ? data['items'] : data) as List? ?? const [];

@@ -18,4 +18,8 @@ class InviteRepositoryImpl implements InviteRepository {
 
   @override
   FutureEither<void> decline(String inviteId) => _service.decline(inviteId);
+
+  @override
+  FutureEither<void> invite(String weddingId, String username, String role) =>
+      _service.invite(weddingId, username, role);
 }

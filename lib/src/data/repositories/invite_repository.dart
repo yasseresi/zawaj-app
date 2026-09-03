@@ -13,4 +13,8 @@ abstract interface class InviteRepository {
 
   /// `POST /invites/:id/decline` — dismiss the invite.
   FutureEither<void> decline(String inviteId);
+
+  /// `POST /weddings/:id/invites` — invite a user (exact [username]) to
+  /// [weddingId] with [role] (`editor` | `viewer`). Owner-only server-side.
+  FutureEither<void> invite(String weddingId, String username, String role);
 }

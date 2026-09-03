@@ -1,5 +1,6 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:fpdart/fpdart.dart';
+import 'package:zawaj_app/src/data/models/wedding_member_model.dart';
 import 'package:zawaj_app/src/data/models/wedding_model.dart';
 import 'package:zawaj_app/src/data/repositories/wedding_repository.dart';
 import 'package:zawaj_app/src/shared/enums/app_status.dart';
@@ -28,6 +29,18 @@ class _FakeWeddingRepository implements WeddingRepository {
     deletedIds.add(id);
     return deleteResult ?? const Right(null);
   }
+
+  @override
+  FutureEither<List<WeddingMember>> members(String id) async =>
+      throw UnimplementedError();
+
+  @override
+  FutureEither<void> setMemberRole(String id, String userId, String role) async =>
+      throw UnimplementedError();
+
+  @override
+  FutureEither<void> removeMember(String id, String userId) async =>
+      throw UnimplementedError();
 }
 
 const _wedding = Wedding(

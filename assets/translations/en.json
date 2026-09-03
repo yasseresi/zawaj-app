@@ -179,7 +179,10 @@
     "logout": "Log out",
     "logout_confirm_title": "Log out",
     "logout_confirm_message": "Are you sure you want to log out? You will need to log in again to access your lists.",
-    "coming_soon": "This feature will be available soon."
+    "coming_soon": "This feature will be available soon.",
+    "collaboration_section": "Collaboration",
+    "pending_invites": "Pending invitations",
+    "notifications": "Notifications"
   },
   "errors": {
     "no_connection": "No internet connection. Check your connection and try again.",
@@ -243,5 +246,12 @@
     "decline_confirm_message": "Do you want to decline the invitation for \"{event}\"?",
     "accept_success": "Added to the list successfully",
     "decline_success": "Invitation declined"
+  },
+  "notifications": {
+    "title": "Notifications",
+    "mark_all_read": "Mark all read",
+    "error_title": "Couldn't load notifications",
+    "empty_title": "No notifications",
+    "empty_subtitle": "Updates to your lists will appear here"
   }
 }

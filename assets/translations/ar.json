@@ -182,7 +182,10 @@
     "logout": "تسجيل الخروج",
     "logout_confirm_title": "تسجيل الخروج",
     "logout_confirm_message": "هل تريد تسجيل الخروج؟ ستحتاج إلى تسجيل الدخول مجدداً للوصول إلى قوائمك.",
-    "coming_soon": "ستتوفر هذه الميزة قريباً."
+    "coming_soon": "ستتوفر هذه الميزة قريباً.",
+    "collaboration_section": "التعاون",
+    "pending_invites": "الدعوات المعلقة",
+    "notifications": "الإشعارات"
   },
   "errors": {
     "no_connection": "لا يوجد اتصال بالإنترنت. تحقّق من اتصالك وحاول مجدداً.",
@@ -246,5 +249,12 @@
     "decline_confirm_message": "هل تريد رفض دعوة \"{event}\"؟",
     "accept_success": "تمت إضافتك إلى القائمة بنجاح",
     "decline_success": "تم رفض الدعوة"
+  },
+  "notifications": {
+    "title": "الإشعارات",
+    "mark_all_read": "تعليم الكل كمقروء",
+    "error_title": "تعذّر تحميل الإشعارات",
+    "empty_title": "لا توجد إشعارات",
+    "empty_subtitle": "ستظهر هنا التحديثات على قوائمك"
   }
 }

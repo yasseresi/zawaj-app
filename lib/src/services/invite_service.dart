@@ -39,4 +39,19 @@ class InviteService {
         '/invites/$inviteId/decline',
         parse: (_) {},
       );
+
+  /// `POST /weddings/:id/invites` → invite a registered user (by exact
+  /// [username]) to [weddingId] with [role] (`editor` | `viewer`). Owner-only
+  /// server-side. Returns unit on 201; surfaces 404 (unknown user) / 409
+  /// (already a member or pending) as typed failures.
+  FutureEither<void> invite(
+    String weddingId,
+    String username,
+    String role,
+  ) =>
+      _api.post<void>(
+        '/weddings/$weddingId/invites',
+        body: {'username': username, 'role': role},
+        parse: (_) {},
+      );
 }

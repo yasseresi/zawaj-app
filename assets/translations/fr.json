@@ -179,7 +179,10 @@
     "logout": "Déconnexion",
     "logout_confirm_title": "Se déconnecter",
     "logout_confirm_message": "Voulez-vous vraiment vous déconnecter ? Vous devrez vous reconnecter pour accéder à vos listes.",
-    "coming_soon": "Cette fonctionnalité sera bientôt disponible."
+    "coming_soon": "Cette fonctionnalité sera bientôt disponible.",
+    "collaboration_section": "Collaboration",
+    "pending_invites": "Invitations en attente",
+    "notifications": "Notifications"
   },
   "errors": {
     "no_connection": "Pas de connexion Internet. Vérifiez votre connexion et réessayez.",
@@ -243,5 +246,12 @@
     "decline_confirm_message": "Voulez-vous décliner l'invitation pour « {event} » ?",
     "accept_success": "Ajouté à la liste avec succès",
     "decline_success": "Invitation déclinée"
+  },
+  "notifications": {
+    "title": "Notifications",
+    "mark_all_read": "Tout marquer comme lu",
+    "error_title": "Impossible de charger les notifications",
+    "empty_title": "Aucune notification",
+    "empty_subtitle": "Les mises à jour de vos listes apparaîtront ici"
   }
 }
