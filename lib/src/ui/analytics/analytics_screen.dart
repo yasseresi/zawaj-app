@@ -7,6 +7,7 @@ import 'package:zawaj_app/src/core/i18n/locale_keys.g.dart';
 import '../../data/repositories/stats_repository.dart';
 import '../../extensions/context_extension.dart';
 import '../../shared/widgets/widgets.dart';
+import '../../theme/theme.dart';
 import 'providers/analytics_provider.dart';
 import 'widgets/broadcast_sheet.dart';
 import 'widgets/donut_chart_widget.dart';
@@ -29,7 +30,13 @@ class AnalyticsScreen extends StatelessWidget {
         weddingId: weddingId,
         repository: repository,
       )..load(),
-      child: const _AnalyticsView(),
+      // Analytics is always dark to match the prototype (screens-2.jsx `zw dark`),
+      // regardless of the app's light/dark mode. Colors resolve from this dark
+      // ColorScheme, so no hardcoded values. Hex mirrors kBrandPrimaryHex.
+      child: Theme(
+        data: buildDarkTheme(primaryColorHex: '#C9796A'),
+        child: const _AnalyticsView(),
+      ),
     );
   }
 }

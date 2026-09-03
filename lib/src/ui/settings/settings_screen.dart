@@ -12,10 +12,14 @@ class SettingsScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final themeProvider = context.watch<ThemeProvider>();
+    // Capture locale here (build is a valid listen life-cycle); reading it inside
+    // `create` would listen to an InheritedWidget in a callback that never
+    // re-runs, which throws.
+    final initialLocale = context.locale;
     return ChangeNotifierProvider<SettingsProvider>(
-      create: (ctx) => SettingsProvider(
+      create: (_) => SettingsProvider(
         themeProvider: themeProvider,
-        initialLocale: ctx.locale,
+        initialLocale: initialLocale,
       ),
       child: const _SettingsView(),
     );
