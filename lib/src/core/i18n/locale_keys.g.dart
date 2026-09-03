@@ -1,762 +1,245 @@
 // DO NOT EDIT. This is code generated via package:easy_localization/generate.dart
 
-// ignore_for_file: prefer_single_quotes, avoid_renaming_method_parameters, constant_identifier_names
+// ignore_for_file: constant_identifier_names
 
-import 'dart:ui';
+abstract class  LocaleKeys {
+  static const app_name = 'app_name';
+  static const onboarding_skip = 'onboarding.skip';
+  static const onboarding_next = 'onboarding.next';
+  static const onboarding_get_started = 'onboarding.get_started';
+  static const onboarding_title_1 = 'onboarding.title_1';
+  static const onboarding_subtitle_1 = 'onboarding.subtitle_1';
+  static const onboarding_title_2 = 'onboarding.title_2';
+  static const onboarding_subtitle_2 = 'onboarding.subtitle_2';
+  static const onboarding_title_3 = 'onboarding.title_3';
+  static const onboarding_subtitle_3 = 'onboarding.subtitle_3';
+  static const onboarding = 'onboarding';
+  static const auth_login_title = 'auth.login_title';
+  static const auth_login_subtitle = 'auth.login_subtitle';
+  static const auth_username = 'auth.username';
+  static const auth_username_required = 'auth.username_required';
+  static const auth_username_too_short = 'auth.username_too_short';
+  static const auth_username_no_spaces = 'auth.username_no_spaces';
+  static const auth_display_name = 'auth.display_name';
+  static const auth_display_name_required = 'auth.display_name_required';
+  static const auth_password = 'auth.password';
+  static const auth_password_required = 'auth.password_required';
+  static const auth_password_too_short = 'auth.password_too_short';
+  static const auth_confirm_password = 'auth.confirm_password';
+  static const auth_confirm_password_required = 'auth.confirm_password_required';
+  static const auth_passwords_do_not_match = 'auth.passwords_do_not_match';
+  static const auth_new_password = 'auth.new_password';
+  static const auth_forgot_password = 'auth.forgot_password';
+  static const auth_login_button = 'auth.login_button';
+  static const auth_no_account = 'auth.no_account';
+  static const auth_sign_up = 'auth.sign_up';
+  static const auth_signup_title = 'auth.signup_title';
+  static const auth_signup_subtitle = 'auth.signup_subtitle';
+  static const auth_signup_button = 'auth.signup_button';
+  static const auth_have_account = 'auth.have_account';
+  static const auth_sign_in = 'auth.sign_in';
+  static const auth_recover_title = 'auth.recover_title';
+  static const auth_recover_subtitle = 'auth.recover_subtitle';
+  static const auth_recovery_code = 'auth.recovery_code';
+  static const auth_recovery_code_required = 'auth.recovery_code_required';
+  static const auth_recover_button = 'auth.recover_button';
+  static const auth_recovery_title = 'auth.recovery_title';
+  static const auth_recovery_desc = 'auth.recovery_desc';
+  static const auth_recovery_copied = 'auth.recovery_copied';
+  static const auth_recovery_saved = 'auth.recovery_saved';
+  static const auth = 'auth';
+  static const home_title = 'home.title';
+  static const home_welcome = 'home.welcome';
+  static const home_subtitle = 'home.subtitle';
+  static const home = 'home';
+  static const nav_lists = 'nav.lists';
+  static const nav_analytics = 'nav.analytics';
+  static const nav_activity = 'nav.activity';
+  static const nav_settings = 'nav.settings';
+  static const nav_no_wedding_title = 'nav.no_wedding_title';
+  static const nav_no_wedding_subtitle = 'nav.no_wedding_subtitle';
+  static const nav = 'nav';
+  static const weddings_create = 'weddings.create';
+  static const weddings_loading = 'weddings.loading';
+  static const weddings_empty_title = 'weddings.empty_title';
+  static const weddings_empty_subtitle = 'weddings.empty_subtitle';
+  static const weddings_error_title = 'weddings.error_title';
+  static const weddings_guests_count = 'weddings.guests_count';
+  static const weddings_coming_soon = 'weddings.coming_soon';
+  static const weddings_create_title = 'weddings.create_title';
+  static const weddings_name_label = 'weddings.name_label';
+  static const weddings_name_hint = 'weddings.name_hint';
+  static const weddings_name_required = 'weddings.name_required';
+  static const weddings_name_too_long = 'weddings.name_too_long';
+  static const weddings_date_label = 'weddings.date_label';
+  static const weddings_date_hint = 'weddings.date_hint';
+  static const weddings_description_label = 'weddings.description_label';
+  static const weddings_description_hint = 'weddings.description_hint';
+  static const weddings_description_too_long = 'weddings.description_too_long';
+  static const weddings_created_toast = 'weddings.created_toast';
+  static const weddings_create_error_title = 'weddings.create_error_title';
+  static const weddings_create_error_message = 'weddings.create_error_message';
+  static const weddings_view = 'weddings.view';
+  static const weddings_shared_badge = 'weddings.shared_badge';
+  static const weddings_delete = 'weddings.delete';
+  static const weddings_delete_confirm_title = 'weddings.delete_confirm_title';
+  static const weddings_delete_confirm_message = 'weddings.delete_confirm_message';
+  static const weddings_delete_confirm_action = 'weddings.delete_confirm_action';
+  static const weddings_cancel = 'weddings.cancel';
+  static const weddings_deleted_toast = 'weddings.deleted_toast';
+  static const weddings_delete_error = 'weddings.delete_error';
+  static const weddings = 'weddings';
+  static const guests_loading = 'guests.loading';
+  static const guests_search_hint = 'guests.search_hint';
+  static const guests_tab_all = 'guests.tab_all';
+  static const guests_tab_confirmed = 'guests.tab_confirmed';
+  static const guests_tab_pending = 'guests.tab_pending';
+  static const guests_tab_declined = 'guests.tab_declined';
+  static const guests_status_confirmed = 'guests.status_confirmed';
+  static const guests_status_pending = 'guests.status_pending';
+  static const guests_status_declined = 'guests.status_declined';
+  static const guests_party = 'guests.party';
+  static const guests_error_title = 'guests.error_title';
+  static const guests_empty_title = 'guests.empty_title';
+  static const guests_empty_subtitle = 'guests.empty_subtitle';
+  static const guests_filter_empty = 'guests.filter_empty';
+  static const guests_search_empty = 'guests.search_empty';
+  static const guests_count_date = 'guests.count_date';
+  static const guests_add_title = 'guests.add_title';
+  static const guests_name_label = 'guests.name_label';
+  static const guests_name_hint = 'guests.name_hint';
+  static const guests_name_required = 'guests.name_required';
+  static const guests_name_too_long = 'guests.name_too_long';
+  static const guests_contact_label = 'guests.contact_label';
+  static const guests_contact_hint = 'guests.contact_hint';
+  static const guests_status_label = 'guests.status_label';
+  static const guests_companions_label = 'guests.companions_label';
+  static const guests_note_label = 'guests.note_label';
+  static const guests_note_hint = 'guests.note_hint';
+  static const guests_save = 'guests.save';
+  static const guests_added_toast = 'guests.added_toast';
+  static const guests_detail_title = 'guests.detail_title';
+  static const guests_detail_error_title = 'guests.detail_error_title';
+  static const guests_info_contact = 'guests.info_contact';
+  static const guests_info_companions = 'guests.info_companions';
+  static const guests_info_table = 'guests.info_table';
+  static const guests_info_meal = 'guests.info_meal';
+  static const guests_notes_title = 'guests.notes_title';
+  static const guests_notes_empty = 'guests.notes_empty';
+  static const guests_history_title = 'guests.history_title';
+  static const guests_history_empty = 'guests.history_empty';
+  static const guests_act_guest_added = 'guests.act_guest_added';
+  static const guests_act_guest_updated = 'guests.act_guest_updated';
+  static const guests_act_guest_status_changed = 'guests.act_guest_status_changed';
+  static const guests_act_note_added = 'guests.act_note_added';
+  static const guests_act_collaborator_joined = 'guests.act_collaborator_joined';
+  static const guests_act_list_exported = 'guests.act_list_exported';
+  static const guests_act_unknown = 'guests.act_unknown';
+  static const guests_edit_status_title = 'guests.edit_status_title';
+  static const guests_status_confirmed_desc = 'guests.status_confirmed_desc';
+  static const guests_status_pending_desc = 'guests.status_pending_desc';
+  static const guests_status_declined_desc = 'guests.status_declined_desc';
+  static const guests_save_status = 'guests.save_status';
+  static const guests_status_toast = 'guests.status_toast';
+  static const guests_add_note_title = 'guests.add_note_title';
+  static const guests_note_body_hint = 'guests.note_body_hint';
+  static const guests_note_required = 'guests.note_required';
+  static const guests_note_too_long = 'guests.note_too_long';
+  static const guests_save_note = 'guests.save_note';
+  static const guests_note_added_toast = 'guests.note_added_toast';
+  static const guests_delete_action = 'guests.delete_action';
+  static const guests_delete_title = 'guests.delete_title';
+  static const guests_delete_message = 'guests.delete_message';
+  static const guests_deleted_toast = 'guests.deleted_toast';
+  static const guests_delete_error = 'guests.delete_error';
+  static const guests = 'guests';
+  static const actions_cancel = 'actions.cancel';
+  static const actions_done = 'actions.done';
+  static const actions_retry = 'actions.retry';
+  static const actions = 'actions';
+  static const settings_title = 'settings.title';
+  static const settings_account_section = 'settings.account_section';
+  static const settings_edit_profile = 'settings.edit_profile';
+  static const settings_change_password = 'settings.change_password';
+  static const settings_appearance_section = 'settings.appearance_section';
+  static const settings_dark_mode = 'settings.dark_mode';
+  static const settings_language = 'settings.language';
+  static const settings_arabic = 'settings.arabic';
+  static const settings_english = 'settings.english';
+  static const settings_french = 'settings.french';
+  static const settings_premium_member = 'settings.premium_member';
+  static const settings_logout = 'settings.logout';
+  static const settings_logout_confirm_title = 'settings.logout_confirm_title';
+  static const settings_logout_confirm_message = 'settings.logout_confirm_message';
+  static const settings_coming_soon = 'settings.coming_soon';
+  static const settings_collaboration_section = 'settings.collaboration_section';
+  static const settings_pending_invites = 'settings.pending_invites';
+  static const settings_notifications = 'settings.notifications';
+  static const settings = 'settings';
+  static const errors_no_connection = 'errors.no_connection';
+  static const errors_timeout = 'errors.timeout';
+  static const errors_cancelled = 'errors.cancelled';
+  static const errors_unknown = 'errors.unknown';
+  static const errors_server = 'errors.server';
+  static const errors_validation = 'errors.validation';
+  static const errors_unauthenticated = 'errors.unauthenticated';
+  static const errors_forbidden = 'errors.forbidden';
+  static const errors_not_found = 'errors.not_found';
+  static const errors_conflict = 'errors.conflict';
+  static const errors_locked = 'errors.locked';
+  static const errors_rate_limited = 'errors.rate_limited';
+  static const errors = 'errors';
+  static const analytics_title = 'analytics.title';
+  static const analytics_filter = 'analytics.filter';
+  static const analytics_empty_title = 'analytics.empty_title';
+  static const analytics_empty_subtitle = 'analytics.empty_subtitle';
+  static const analytics_total_guests = 'analytics.total_guests';
+  static const analytics_pending_responses = 'analytics.pending_responses';
+  static const analytics_rsvp_breakdown = 'analytics.rsvp_breakdown';
+  static const analytics_guests_count = 'analytics.guests_count';
+  static const analytics_confirmation_rate = 'analytics.confirmation_rate';
+  static const analytics_confirmed = 'analytics.confirmed';
+  static const analytics_declined = 'analytics.declined';
+  static const analytics_pending = 'analytics.pending';
+  static const analytics_rsvp_timeline = 'analytics.rsvp_timeline';
+  static const analytics = 'analytics';
+  static const activity_title = 'activity.title';
+  static const activity_today = 'activity.today';
+  static const activity_yesterday = 'activity.yesterday';
+  static const activity_this_week = 'activity.this_week';
+  static const activity_earlier = 'activity.earlier';
+  static const activity_empty_title = 'activity.empty_title';
+  static const activity_empty_subtitle = 'activity.empty_subtitle';
+  static const activity_error_title = 'activity.error_title';
+  static const activity_loading = 'activity.loading';
+  static const activity_item_confirmed = 'activity.item_confirmed';
+  static const activity_item_added = 'activity.item_added';
+  static const activity_item_declined = 'activity.item_declined';
+  static const activity_item_collaborator_joined = 'activity.item_collaborator_joined';
+  static const activity_item_updated = 'activity.item_updated';
+  static const activity_item_exported = 'activity.item_exported';
+  static const activity_time_hours_ago = 'activity.time_hours_ago';
+  static const activity_time_at = 'activity.time_at';
+  static const activity_filter_coming_soon = 'activity.filter_coming_soon';
+  static const activity = 'activity';
+  static const invites_title = 'invites.title';
+  static const invites_empty_title = 'invites.empty_title';
+  static const invites_empty_subtitle = 'invites.empty_subtitle';
+  static const invites_error_title = 'invites.error_title';
+  static const invites_from_sender = 'invites.from_sender';
+  static const invites_sent_date = 'invites.sent_date';
+  static const invites_accept = 'invites.accept';
+  static const invites_decline = 'invites.decline';
+  static const invites_decline_confirm_title = 'invites.decline_confirm_title';
+  static const invites_decline_confirm_message = 'invites.decline_confirm_message';
+  static const invites_accept_success = 'invites.accept_success';
+  static const invites_decline_success = 'invites.decline_success';
+  static const invites = 'invites';
+  static const notifications_title = 'notifications.title';
+  static const notifications_mark_all_read = 'notifications.mark_all_read';
+  static const notifications_error_title = 'notifications.error_title';
+  static const notifications_empty_title = 'notifications.empty_title';
+  static const notifications_empty_subtitle = 'notifications.empty_subtitle';
+  static const notifications = 'notifications';
 
-import 'package:easy_localization/easy_localization.dart' show AssetLoader;
-
-class CodegenLoader extends AssetLoader{
-  const CodegenLoader();
-
-  @override
-  Future<Map<String, dynamic>?> load(String path, Locale locale) {
-    return Future.value(mapLocales[locale.toString()]);
-  }
-
-  static const Map<String,dynamic> _en = {
-  "app_name": "Zawaj",
-  "onboarding": {
-    "skip": "Skip",
-    "next": "Next",
-    "get_started": "Get Started",
-    "title_1": "Organize your guest list with ease",
-    "subtitle_1": "Create your event lists and manage all your guests in one place.",
-    "title_2": "Collaborate together",
-    "subtitle_2": "Invite partners to manage the list with you using roles and editors.",
-    "title_3": "Track RSVPs in real time",
-    "subtitle_3": "See who confirmed, who declined, and who's still pending."
-  },
-  "auth": {
-    "login_title": "Log in",
-    "login_subtitle": "Enter your username and password",
-    "username": "Username",
-    "username_required": "Username is required",
-    "username_too_short": "Username is too short (min 3 characters)",
-    "username_no_spaces": "Username cannot contain spaces",
-    "display_name": "Display name",
-    "display_name_required": "Display name is required",
-    "password": "Password",
-    "password_required": "Password is required",
-    "password_too_short": "Password is too short (min 8 characters)",
-    "confirm_password": "Confirm password",
-    "confirm_password_required": "Please confirm your password",
-    "passwords_do_not_match": "Passwords do not match",
-    "new_password": "New password",
-    "forgot_password": "Forgot password?",
-    "login_button": "Log in",
-    "no_account": "Don't have an account?",
-    "sign_up": "Sign up",
-    "signup_title": "Create account",
-    "signup_subtitle": "Create a new account to get started",
-    "signup_button": "Create account",
-    "have_account": "Already have an account?",
-    "sign_in": "Sign in",
-    "recover_title": "Recover account",
-    "recover_subtitle": "Enter your username, recovery code, and a new password",
-    "recovery_code": "Recovery code",
-    "recovery_code_required": "Recovery code is required",
-    "recover_button": "Recover account",
-    "recovery_title": "Save your recovery code",
-    "recovery_desc": "This is the only way to recover your account. Store it somewhere safe — it won't be shown again.",
-    "recovery_copied": "Recovery code copied",
-    "recovery_saved": "I've saved it safely"
-  },
-  "home": {
-    "title": "My Lists",
-    "welcome": "Welcome, {name}",
-    "subtitle": "Your event lists will appear here soon."
-  },
-  "nav": {
-    "lists": "Lists",
-    "analytics": "Dashboard",
-    "activity": "Activity",
-    "settings": "Settings",
-    "no_wedding_title": "No wedding selected",
-    "no_wedding_subtitle": "Create a wedding list first to see your dashboard and activity."
-  },
-  "weddings": {
-    "create": "New wedding",
-    "loading": "Loading your lists…",
-    "empty_title": "No lists yet",
-    "empty_subtitle": "Create your first list now",
-    "error_title": "Couldn't load your lists",
-    "guests_count": {
-      "zero": "No guests",
-      "one": "1 guest",
-      "other": "{} guests"
-    },
-    "coming_soon": "This feature is under construction.",
-    "create_title": "New wedding",
-    "name_label": "Wedding name",
-    "name_hint": "e.g. Leila & Karim's wedding",
-    "name_required": "Wedding name is required",
-    "name_too_long": "Name is too long (120 characters max)",
-    "date_label": "Event date (optional)",
-    "date_hint": "Pick a date",
-    "description_label": "Description (optional)",
-    "description_hint": "Extra details about the event",
-    "description_too_long": "Description is too long (2000 characters max)",
-    "created_toast": "Wedding created",
-    "create_error_title": "Something went wrong",
-    "create_error_message": "Couldn't create the wedding. Please try again.",
-    "view": "View",
-    "shared_badge": "Shared",
-    "delete": "Delete list",
-    "delete_confirm_title": "Delete this list?",
-    "delete_confirm_message": "This action cannot be undone.",
-    "delete_confirm_action": "Delete",
-    "cancel": "Cancel",
-    "deleted_toast": "List deleted successfully",
-    "delete_error": "Couldn't delete the list"
-  },
-  "guests": {
-    "loading": "Loading guests…",
-    "search_hint": "Search for a guest…",
-    "tab_all": "All",
-    "tab_confirmed": "Confirmed",
-    "tab_pending": "Pending",
-    "tab_declined": "Declined",
-    "status_confirmed": "Confirmed",
-    "status_pending": "Pending",
-    "status_declined": "Declined",
-    "party": "+{} guest(s)",
-    "error_title": "Couldn't load guests",
-    "empty_title": "No guests yet",
-    "empty_subtitle": "Add the first guest to this wedding's list.",
-    "filter_empty": "No guests in this category",
-    "search_empty": "No results for \"{query}\"",
-    "count_date": "{count} · {date}",
-    "add_title": "Add a guest",
-    "name_label": "Name",
-    "name_hint": "Guest's full name",
-    "name_required": "This field is required",
-    "name_too_long": "Name is too long (120 characters max)",
-    "contact_label": "Phone or email",
-    "contact_hint": "example@email.com",
-    "status_label": "Status",
-    "companions_label": "Companions",
-    "note_label": "Notes",
-    "note_hint": "Any additional notes…",
-    "save": "Save",
-    "added_toast": "Guest added",
-    "detail_title": "Guest details",
-    "detail_error_title": "Couldn't load guest",
-    "info_contact": "Contact",
-    "info_companions": "Companions",
-    "info_table": "Assigned table",
-    "info_meal": "Meal",
-    "notes_title": "Notes",
-    "notes_empty": "No notes yet",
-    "history_title": "History",
-    "history_empty": "No history yet",
-    "act_guest_added": "Guest added",
-    "act_guest_updated": "Details updated",
-    "act_guest_status_changed": "Status changed",
-    "act_note_added": "Note added",
-    "act_collaborator_joined": "Collaborator joined",
-    "act_list_exported": "List exported",
-    "act_unknown": "Updated",
-    "edit_status_title": "Change status",
-    "status_confirmed_desc": "Guest will attend",
-    "status_pending_desc": "Awaiting the guest's reply",
-    "status_declined_desc": "Guest won't attend",
-    "save_status": "Save status",
-    "status_toast": "Guest status updated",
-    "add_note_title": "Add a note",
-    "note_body_hint": "Write your note…",
-    "note_required": "Note is required",
-    "note_too_long": "Note is too long (2000 characters max)",
-    "save_note": "Save note",
-    "note_added_toast": "Note added",
-    "delete_action": "Delete",
-    "delete_title": "Delete this guest?",
-    "delete_message": "“{name}” will be permanently removed from the guest list.",
-    "deleted_toast": "Guest deleted",
-    "delete_error": "Couldn't delete the guest"
-  },
-  "actions": {
-    "cancel": "Cancel",
-    "done": "Done",
-    "retry": "Try again"
-  },
-  "settings": {
-    "title": "Settings",
-    "account_section": "Account Settings",
-    "edit_profile": "Edit Profile",
-    "change_password": "Change Password",
-    "appearance_section": "App Appearance",
-    "dark_mode": "Dark Mode",
-    "language": "Language",
-    "arabic": "Arabic",
-    "english": "English",
-    "french": "French",
-    "premium_member": "Premium Member",
-    "logout": "Log out",
-    "logout_confirm_title": "Log out",
-    "logout_confirm_message": "Are you sure you want to log out? You will need to log in again to access your lists.",
-    "coming_soon": "This feature will be available soon."
-  },
-  "errors": {
-    "no_connection": "No internet connection. Check your connection and try again.",
-    "timeout": "The connection timed out. Please try again.",
-    "cancelled": "The request was cancelled.",
-    "unknown": "An unexpected error occurred.",
-    "server": "Something went wrong. Please try again later.",
-    "validation": "Please check your input and try again.",
-    "unauthenticated": "Invalid username or password.",
-    "forbidden": "You don't have permission for this action.",
-    "not_found": "The item was not found.",
-    "conflict": "There is a data conflict.",
-    "locked": "Account temporarily locked after too many attempts. Try again later.",
-    "rate_limited": "Too many attempts. Please wait a moment and try again."
-  },
-  "analytics": {
-    "title": "Guest Analytics",
-    "filter": "Filter",
-    "empty_title": "Not enough data yet",
-    "empty_subtitle": "Analytics will appear after sending invitations and receiving responses",
-    "total_guests": "Total Guests",
-    "pending_responses": "Pending Responses",
-    "rsvp_breakdown": "RSVP Breakdown",
-    "guests_count": "{count} guests",
-    "confirmation_rate": "Confirmation Rate",
-    "confirmed": "Confirmed",
-    "declined": "Declined",
-    "pending": "Pending",
-    "rsvp_timeline": "RSVP Timeline"
-  },
-  "activity": {
-    "title": "Activity Log",
-    "today": "Today",
-    "yesterday": "Yesterday",
-    "this_week": "This Week",
-    "earlier": "Earlier",
-    "empty_title": "No activity yet",
-    "empty_subtitle": "Updates and collaborator actions will appear here",
-    "error_title": "Couldn't load activity log",
-    "loading": "Loading activity log…",
-    "item_confirmed": "{name} confirmed attendance",
-    "item_added": "{name} added {count} new guests",
-    "item_declined": "{name} declined the invitation",
-    "item_collaborator_joined": "{name} joined as a collaborator",
-    "item_updated": "{name} updated details for {count} guests",
-    "item_exported": "Exported guest list as PDF",
-    "time_hours_ago": "{count} hours ago",
-    "time_at": "At {time}",
-    "filter_coming_soon": "Filtering will be added later"
-  },
-  "invites": {
-    "title": "Pending Invites",
-    "empty_title": "No pending invites",
-    "empty_subtitle": "New invitations to collaborate on guest lists will appear here",
-    "error_title": "Couldn't load pending invites",
-    "from_sender": "From: {sender}",
-    "sent_date": "Sent {date}",
-    "accept": "Accept",
-    "decline": "Decline",
-    "decline_confirm_title": "Decline Invite",
-    "decline_confirm_message": "Do you want to decline the invitation for \"{event}\"?",
-    "accept_success": "Added to the list successfully",
-    "decline_success": "Invitation declined"
-  }
-};
-static const Map<String,dynamic> _fr = {
-  "app_name": "Zawaj",
-  "onboarding": {
-    "skip": "Passer",
-    "next": "Suivant",
-    "get_started": "Commencer",
-    "title_1": "Organisez votre liste d'invités facilement",
-    "subtitle_1": "Créez vos listes d'événements et gérez tous vos invités au même endroit.",
-    "title_2": "Collaborez ensemble",
-    "subtitle_2": "Invitez des partenaires à gérer la liste avec vous grâce aux rôles et éditeurs.",
-    "title_3": "Suivez les réponses en temps réel",
-    "subtitle_3": "Voyez qui a confirmé, qui a décliné et qui est encore en attente."
-  },
-  "auth": {
-    "login_title": "Connexion",
-    "login_subtitle": "Saisissez votre nom d'utilisateur et votre mot de passe",
-    "username": "Nom d'utilisateur",
-    "username_required": "Le nom d'utilisateur est requis",
-    "username_too_short": "Nom d'utilisateur trop court (3 caractères min)",
-    "username_no_spaces": "Le nom d'utilisateur ne peut pas contenir d'espaces",
-    "display_name": "Nom affiché",
-    "display_name_required": "Le nom affiché est requis",
-    "password": "Mot de passe",
-    "password_required": "Le mot de passe est requis",
-    "password_too_short": "Mot de passe trop court (8 caractères min)",
-    "confirm_password": "Confirmer le mot de passe",
-    "confirm_password_required": "Veuillez confirmer votre mot de passe",
-    "passwords_do_not_match": "Les mots de passe ne correspondent pas",
-    "new_password": "Nouveau mot de passe",
-    "forgot_password": "Mot de passe oublié ?",
-    "login_button": "Se connecter",
-    "no_account": "Vous n'avez pas de compte ?",
-    "sign_up": "S'inscrire",
-    "signup_title": "Créer un compte",
-    "signup_subtitle": "Créez un nouveau compte pour commencer",
-    "signup_button": "Créer le compte",
-    "have_account": "Vous avez déjà un compte ?",
-    "sign_in": "Se connecter",
-    "recover_title": "Récupérer le compte",
-    "recover_subtitle": "Saisissez votre nom d'utilisateur, le code de récupération et un nouveau mot de passe",
-    "recovery_code": "Code de récupération",
-    "recovery_code_required": "Le code de récupération est requis",
-    "recover_button": "Récupérer le compte",
-    "recovery_title": "Enregistrez votre code de récupération",
-    "recovery_desc": "C'est le seul moyen de récupérer votre compte. Conservez-le en lieu sûr — il ne sera plus affiché.",
-    "recovery_copied": "Code de récupération copié",
-    "recovery_saved": "Je l'ai enregistré en lieu sûr"
-  },
-  "home": {
-    "title": "Mes listes",
-    "welcome": "Bienvenue, {name}",
-    "subtitle": "Vos listes d'événements apparaîtront bientôt ici."
-  },
-  "nav": {
-    "lists": "Listes",
-    "analytics": "Tableau de bord",
-    "activity": "Activité",
-    "settings": "Paramètres",
-    "no_wedding_title": "Aucun mariage sélectionné",
-    "no_wedding_subtitle": "Créez d'abord une liste de mariage pour voir le tableau de bord et l'activité."
-  },
-  "weddings": {
-    "create": "Nouveau mariage",
-    "loading": "Chargement de vos listes…",
-    "empty_title": "Aucune liste pour l'instant",
-    "empty_subtitle": "Créez votre première liste maintenant",
-    "error_title": "Impossible de charger vos listes",
-    "guests_count": {
-      "zero": "Aucun invité",
-      "one": "1 invité",
-      "other": "{} invités"
-    },
-    "coming_soon": "Cette fonctionnalité est en cours de construction.",
-    "create_title": "Nouveau mariage",
-    "name_label": "Nom du mariage",
-    "name_hint": "ex. Mariage de Leila et Karim",
-    "name_required": "Le nom du mariage est requis",
-    "name_too_long": "Nom trop long (120 caractères max)",
-    "date_label": "Date de l'événement (facultatif)",
-    "date_hint": "Choisir une date",
-    "description_label": "Description (facultatif)",
-    "description_hint": "Détails supplémentaires sur l'événement",
-    "description_too_long": "Description trop longue (2000 caractères max)",
-    "created_toast": "Mariage créé",
-    "create_error_title": "Une erreur est survenue",
-    "create_error_message": "Impossible de créer le mariage. Veuillez réessayer.",
-    "view": "Voir",
-    "shared_badge": "Partagé",
-    "delete": "Supprimer la liste",
-    "delete_confirm_title": "Supprimer cette liste ?",
-    "delete_confirm_message": "Cette action est irréversible.",
-    "delete_confirm_action": "Supprimer",
-    "cancel": "Annuler",
-    "deleted_toast": "Liste supprimée avec succès",
-    "delete_error": "Impossible de supprimer la liste"
-  },
-  "guests": {
-    "loading": "Chargement des invités…",
-    "search_hint": "Rechercher un invité…",
-    "tab_all": "Tous",
-    "tab_confirmed": "Confirmés",
-    "tab_pending": "En attente",
-    "tab_declined": "Refusés",
-    "status_confirmed": "Confirmé",
-    "status_pending": "En attente",
-    "status_declined": "Refusé",
-    "party": "+{} invité(s)",
-    "error_title": "Échec du chargement des invités",
-    "empty_title": "Aucun invité pour l'instant",
-    "empty_subtitle": "Ajoutez le premier invité à la liste de ce mariage.",
-    "filter_empty": "Aucun invité dans cette catégorie",
-    "search_empty": "Aucun résultat pour \"{query}\"",
-    "count_date": "{count} · {date}",
-    "add_title": "Ajouter un invité",
-    "name_label": "Nom",
-    "name_hint": "Nom complet de l'invité",
-    "name_required": "Ce champ est requis",
-    "name_too_long": "Nom trop long (120 caractères max)",
-    "contact_label": "Téléphone ou e-mail",
-    "contact_hint": "example@email.com",
-    "status_label": "Statut",
-    "companions_label": "Accompagnants",
-    "note_label": "Notes",
-    "note_hint": "Notes supplémentaires…",
-    "save": "Enregistrer",
-    "added_toast": "Invité ajouté",
-    "detail_title": "Détails de l'invité",
-    "detail_error_title": "Échec du chargement de l'invité",
-    "info_contact": "Contact",
-    "info_companions": "Accompagnants",
-    "info_table": "Table attribuée",
-    "info_meal": "Repas",
-    "notes_title": "Notes",
-    "notes_empty": "Aucune note pour l'instant",
-    "history_title": "Historique",
-    "history_empty": "Aucun historique pour l'instant",
-    "act_guest_added": "Invité ajouté",
-    "act_guest_updated": "Détails modifiés",
-    "act_guest_status_changed": "Statut modifié",
-    "act_note_added": "Note ajoutée",
-    "act_collaborator_joined": "Collaborateur ajouté",
-    "act_list_exported": "Liste exportée",
-    "act_unknown": "Mis à jour",
-    "edit_status_title": "Modifier le statut",
-    "status_confirmed_desc": "L'invité sera présent",
-    "status_pending_desc": "En attente de la réponse",
-    "status_declined_desc": "L'invité ne viendra pas",
-    "save_status": "Enregistrer le statut",
-    "status_toast": "Statut de l'invité mis à jour",
-    "add_note_title": "Ajouter une note",
-    "note_body_hint": "Écrivez votre note…",
-    "note_required": "La note est requise",
-    "note_too_long": "Note trop longue (2000 caractères max)",
-    "save_note": "Enregistrer la note",
-    "note_added_toast": "Note ajoutée",
-    "delete_action": "Supprimer",
-    "delete_title": "Supprimer cet invité ?",
-    "delete_message": "« {name} » sera définitivement retiré de la liste des invités.",
-    "deleted_toast": "Invité supprimé",
-    "delete_error": "Impossible de supprimer l'invité"
-  },
-  "actions": {
-    "cancel": "Annuler",
-    "done": "Terminé",
-    "retry": "Réessayer"
-  },
-  "settings": {
-    "title": "Paramètres",
-    "account_section": "Paramètres du compte",
-    "edit_profile": "Modifier le profil",
-    "change_password": "Changer le mot de passe",
-    "appearance_section": "Apparence de l'application",
-    "dark_mode": "Mode sombre",
-    "language": "Langue",
-    "arabic": "Arabe",
-    "english": "Anglais",
-    "french": "Français",
-    "premium_member": "Membre Premium",
-    "logout": "Déconnexion",
-    "logout_confirm_title": "Se déconnecter",
-    "logout_confirm_message": "Voulez-vous vraiment vous déconnecter ? Vous devrez vous reconnecter pour accéder à vos listes.",
-    "coming_soon": "Cette fonctionnalité sera bientôt disponible."
-  },
-  "errors": {
-    "no_connection": "Pas de connexion Internet. Vérifiez votre connexion et réessayez.",
-    "timeout": "La connexion a expiré. Veuillez réessayer.",
-    "cancelled": "La requête a été annulée.",
-    "unknown": "Une erreur inattendue s'est produite.",
-    "server": "Une erreur s'est produite. Réessayez plus tard.",
-    "validation": "Veuillez vérifier votre saisie et réessayer.",
-    "unauthenticated": "Nom d'utilisateur ou mot de passe invalide.",
-    "forbidden": "Vous n'avez pas la permission pour cette action.",
-    "not_found": "Élément introuvable.",
-    "conflict": "Il y a un conflit de données.",
-    "locked": "Compte temporairement verrouillé après trop de tentatives. Réessayez plus tard.",
-    "rate_limited": "Trop de tentatives. Patientez un instant et réessayez."
-  },
-  "analytics": {
-    "title": "Analytique des invités",
-    "filter": "Filtrer",
-    "empty_title": "Pas encore assez de données",
-    "empty_subtitle": "Les analyses apparaîtront après l'envoi des invitations et la réception des réponses",
-    "total_guests": "Total des invités",
-    "pending_responses": "Réponses en attente",
-    "rsvp_breakdown": "Répartition des réponses",
-    "guests_count": "{count} invités",
-    "confirmation_rate": "Taux de confirmation",
-    "confirmed": "Confirmé",
-    "declined": "Décliné",
-    "pending": "En attente",
-    "rsvp_timeline": "Chronologie des réponses"
-  },
-  "activity": {
-    "title": "Journal d'activité",
-    "today": "Aujourd'hui",
-    "yesterday": "Hier",
-    "this_week": "Cette semaine",
-    "earlier": "Plus tôt",
-    "empty_title": "Aucune activité pour l'instant",
-    "empty_subtitle": "Les mises à jour et actions des collaborateurs apparaîtront ici",
-    "error_title": "Impossible de charger le journal d'activité",
-    "loading": "Chargement du journal d'activité…",
-    "item_confirmed": "{name} a confirmé sa présence",
-    "item_added": "{name} a ajouté {count} nouveaux invités",
-    "item_declined": "{name} a décliné l'invitation",
-    "item_collaborator_joined": "{name} a rejoint la liste comme collaborateur",
-    "item_updated": "{name} a mis à jour les informations de {count} invités",
-    "item_exported": "Liste des invités exportée au format PDF",
-    "time_hours_ago": "Il y a {count} heures",
-    "time_at": "À {time}",
-    "filter_coming_soon": "Le filtrage sera ajouté plus tard"
-  },
-  "invites": {
-    "title": "Invitations en attente",
-    "empty_title": "Aucune invitation en attente",
-    "empty_subtitle": "Les nouvelles invitations à collaborer sur les listes d'invités apparaîtront ici",
-    "error_title": "Impossible de charger les invitations en attente",
-    "from_sender": "De : {sender}",
-    "sent_date": "Envoyée {date}",
-    "accept": "Accepter",
-    "decline": "Décliner",
-    "decline_confirm_title": "Décliner l'invitation",
-    "decline_confirm_message": "Voulez-vous décliner l'invitation pour « {event} » ?",
-    "accept_success": "Ajouté à la liste avec succès",
-    "decline_success": "Invitation déclinée"
-  }
-};
-static const Map<String,dynamic> _ar = {
-  "app_name": "زواج",
-  "onboarding": {
-    "skip": "تخطّي",
-    "next": "التالي",
-    "get_started": "ابدأ الآن",
-    "title_1": "نظّم قائمة ضيوفك بسهولة",
-    "subtitle_1": "أنشئ قوائم حفلاتك ونظّم مدعوّيك في مكان واحد.",
-    "title_2": "تعاونوا معاً",
-    "subtitle_2": "ادعُ شركاءك لإدارة القائمة معك بأدوار ومحرّرين.",
-    "title_3": "تابع الردود أولاً بأول",
-    "subtitle_3": "اعرف من أكّد ومن اعتذر ومن ما زال في الانتظار."
-  },
-  "auth": {
-    "login_title": "تسجيل الدخول",
-    "login_subtitle": "أدخل اسم المستخدم وكلمة المرور",
-    "username": "اسم المستخدم",
-    "username_required": "اسم المستخدم مطلوب",
-    "username_too_short": "اسم المستخدم قصير جداً (٣ أحرف على الأقل)",
-    "username_no_spaces": "لا يُسمح بالمسافات في اسم المستخدم",
-    "display_name": "الاسم المعروض",
-    "display_name_required": "الاسم المعروض مطلوب",
-    "password": "كلمة المرور",
-    "password_required": "كلمة المرور مطلوبة",
-    "password_too_short": "كلمة المرور قصيرة جداً (٨ أحرف على الأقل)",
-    "confirm_password": "تأكيد كلمة المرور",
-    "confirm_password_required": "تأكيد كلمة المرور مطلوب",
-    "passwords_do_not_match": "كلمتا المرور غير متطابقتين",
-    "new_password": "كلمة المرور الجديدة",
-    "forgot_password": "نسيت كلمة المرور؟",
-    "login_button": "دخول",
-    "no_account": "ليس لديك حساب؟",
-    "sign_up": "إنشاء حساب",
-    "signup_title": "إنشاء حساب",
-    "signup_subtitle": "أنشئ حساباً جديداً للبدء",
-    "signup_button": "إنشاء الحساب",
-    "have_account": "لديك حساب بالفعل؟",
-    "sign_in": "تسجيل الدخول",
-    "recover_title": "استعادة الحساب",
-    "recover_subtitle": "أدخل اسم المستخدم ورمز الاستعادة وكلمة مرور جديدة",
-    "recovery_code": "رمز الاستعادة",
-    "recovery_code_required": "رمز الاستعادة مطلوب",
-    "recover_button": "استعادة الحساب",
-    "recovery_title": "احفظ رمز الاستعادة",
-    "recovery_desc": "هذا هو السبيل الوحيد لاستعادة حسابك. احفظه في مكان آمن — لن يظهر مرة أخرى.",
-    "recovery_copied": "تم نسخ رمز الاستعادة",
-    "recovery_saved": "حفظته في مكان آمن"
-  },
-  "home": {
-    "title": "قوائمي",
-    "welcome": "مرحباً، {name}",
-    "subtitle": "ستظهر هنا قوائم حفلاتك قريباً."
-  },
-  "nav": {
-    "lists": "القوائم",
-    "analytics": "لوحة التحكم",
-    "activity": "التحديثات",
-    "settings": "الإعدادات",
-    "no_wedding_title": "لم يتم اختيار حفل",
-    "no_wedding_subtitle": "أنشئ قائمة حفل أولاً لعرض لوحة التحكم والتحديثات."
-  },
-  "weddings": {
-    "create": "حفل جديد",
-    "loading": "جارٍ تحميل قوائمك…",
-    "empty_title": "لا توجد قوائم بعد",
-    "empty_subtitle": "أنشئ قائمتك الأولى الآن",
-    "error_title": "تعذّر تحميل القوائم",
-    "guests_count": {
-      "zero": "لا ضيوف",
-      "one": "ضيف واحد",
-      "two": "ضيفان",
-      "few": "{} ضيوف",
-      "many": "{} ضيفاً",
-      "other": "{} ضيف"
-    },
-    "coming_soon": "هذه الميزة قيد الإنشاء.",
-    "create_title": "حفل جديد",
-    "name_label": "اسم الحفل",
-    "name_hint": "مثال: زفاف ليلى وكريم",
-    "name_required": "اسم الحفل مطلوب",
-    "name_too_long": "الاسم طويل جداً (١٢٠ حرفاً كحد أقصى)",
-    "date_label": "تاريخ الحفل (اختياري)",
-    "date_hint": "اختر تاريخاً",
-    "description_label": "وصف (اختياري)",
-    "description_hint": "تفاصيل إضافية عن الحفل",
-    "description_too_long": "الوصف طويل جداً (٢٠٠٠ حرف كحد أقصى)",
-    "created_toast": "تم إنشاء الحفل",
-    "create_error_title": "حدث خطأ",
-    "create_error_message": "تعذّر إنشاء الحفل. يرجى المحاولة مجدداً.",
-    "view": "عرض",
-    "shared_badge": "مشترك",
-    "delete": "حذف القائمة",
-    "delete_confirm_title": "هل أنت متأكد من حذف هذه القائمة؟",
-    "delete_confirm_message": "لا يمكن التراجع عن هذا الإجراء.",
-    "delete_confirm_action": "حذف",
-    "cancel": "إلغاء",
-    "deleted_toast": "تم حذف القائمة بنجاح",
-    "delete_error": "تعذّر حذف القائمة"
-  },
-  "guests": {
-    "loading": "جارٍ تحميل الضيوف…",
-    "search_hint": "ابحث عن ضيف…",
-    "tab_all": "الكل",
-    "tab_confirmed": "تم التأكيد",
-    "tab_pending": "في الانتظار",
-    "tab_declined": "تم الرفض",
-    "status_confirmed": "مؤكد",
-    "status_pending": "معلق",
-    "status_declined": "معتذر",
-    "party": "+{} مرافق",
-    "error_title": "تعذّر تحميل الضيوف",
-    "empty_title": "لا ضيوف بعد",
-    "empty_subtitle": "أضف أول ضيف إلى قائمة هذا الحفل.",
-    "filter_empty": "لا يوجد ضيوف في هذه الفئة",
-    "search_empty": "لا توجد نتائج لـ \"{query}\"",
-    "count_date": "{count} · {date}",
-    "add_title": "إضافة ضيف جديد",
-    "name_label": "الاسم",
-    "name_hint": "اسم الضيف الكامل",
-    "name_required": "هذا الحقل مطلوب",
-    "name_too_long": "الاسم طويل جداً (١٢٠ حرفاً كحد أقصى)",
-    "contact_label": "الهاتف أو البريد الإلكتروني",
-    "contact_hint": "example@email.com",
-    "status_label": "الحالة",
-    "companions_label": "عدد المرافقين",
-    "note_label": "ملاحظات",
-    "note_hint": "أي ملاحظات إضافية…",
-    "save": "حفظ",
-    "added_toast": "تمت إضافة الضيف بنجاح",
-    "detail_title": "تفاصيل الضيف",
-    "detail_error_title": "تعذّر تحميل بيانات الضيف",
-    "info_contact": "جهة الاتصال",
-    "info_companions": "عدد المرافقين",
-    "info_table": "الطاولة المخصصة",
-    "info_meal": "الوجبة",
-    "notes_title": "الملاحظات",
-    "notes_empty": "لا توجد ملاحظات بعد",
-    "history_title": "سجل التغييرات",
-    "history_empty": "لا يوجد سجل بعد",
-    "act_guest_added": "إضافة الضيف",
-    "act_guest_updated": "تعديل البيانات",
-    "act_guest_status_changed": "تغيير الحالة",
-    "act_note_added": "إضافة ملاحظة",
-    "act_collaborator_joined": "انضمام متعاون",
-    "act_list_exported": "تصدير القائمة",
-    "act_unknown": "تحديث",
-    "edit_status_title": "تعديل الحالة",
-    "status_confirmed_desc": "الضيف سيحضر الحفل",
-    "status_pending_desc": "بانتظار رد الضيف",
-    "status_declined_desc": "الضيف لن يحضر",
-    "save_status": "حفظ الحالة",
-    "status_toast": "تم تحديث حالة الضيف",
-    "add_note_title": "إضافة ملاحظة",
-    "note_body_hint": "اكتب ملاحظتك…",
-    "note_required": "الملاحظة مطلوبة",
-    "note_too_long": "الملاحظة طويلة جداً (٢٠٠٠ حرف كحد أقصى)",
-    "save_note": "حفظ الملاحظة",
-    "note_added_toast": "تمت إضافة الملاحظة",
-    "delete_action": "حذف",
-    "delete_title": "هل تريد حذف هذا الضيف؟",
-    "delete_message": "سيتم حذف «{name}» من قائمة الضيوف نهائياً.",
-    "deleted_toast": "تم حذف الضيف",
-    "delete_error": "تعذّر حذف الضيف"
-  },
-  "actions": {
-    "cancel": "إلغاء",
-    "done": "تم",
-    "retry": "إعادة المحاولة"
-  },
-  "settings": {
-    "title": "الإعدادات",
-    "account_section": "إعدادات الحساب",
-    "edit_profile": "تعديل الملف الشخصي",
-    "change_password": "تغيير كلمة المرور",
-    "appearance_section": "مظهر التطبيق",
-    "dark_mode": "الوضع المظلم",
-    "language": "اللغة",
-    "arabic": "العربية",
-    "english": "English",
-    "french": "Français",
-    "premium_member": "عضوية مميزة",
-    "logout": "تسجيل الخروج",
-    "logout_confirm_title": "تسجيل الخروج",
-    "logout_confirm_message": "هل تريد تسجيل الخروج؟ ستحتاج إلى تسجيل الدخول مجدداً للوصول إلى قوائمك.",
-    "coming_soon": "ستتوفر هذه الميزة قريباً."
-  },
-  "errors": {
-    "no_connection": "لا يوجد اتصال بالإنترنت. تحقّق من اتصالك وحاول مجدداً.",
-    "timeout": "انتهت مهلة الاتصال. حاول مرة أخرى.",
-    "cancelled": "تم إلغاء الطلب.",
-    "unknown": "حدث خطأ غير متوقع.",
-    "server": "تعذّر إتمام العملية. حاول لاحقاً.",
-    "validation": "تحقّق من المدخلات وحاول مجدداً.",
-    "unauthenticated": "اسم المستخدم أو كلمة المرور غير صحيحة.",
-    "forbidden": "ليس لديك صلاحية لهذا الإجراء.",
-    "not_found": "العنصر غير موجود.",
-    "conflict": "يوجد تعارض في البيانات.",
-    "locked": "تم قفل الحساب مؤقتاً بسبب محاولات كثيرة. حاول لاحقاً.",
-    "rate_limited": "محاولات كثيرة جداً. انتظر قليلاً ثم حاول مجدداً."
-  },
-  "analytics": {
-    "title": "تحليلات الضيوف",
-    "filter": "تصفية",
-    "empty_title": "لا توجد بيانات كافية بعد",
-    "empty_subtitle": "ستظهر التحليلات بعد إرسال الدعوات وتلقي الردود",
-    "total_guests": "إجمالي الضيوف",
-    "pending_responses": "الردود المعلقة",
-    "rsvp_breakdown": "توزيع الردود",
-    "guests_count": "{count} ضيف",
-    "confirmation_rate": "تأكيد الحضور",
-    "confirmed": "مؤكد",
-    "declined": "معتذر",
-    "pending": "معلق",
-    "rsvp_timeline": "مسار الردود"
-  },
-  "activity": {
-    "title": "سجل النشاط",
-    "today": "اليوم",
-    "yesterday": "أمس",
-    "this_week": "هذا الأسبوع",
-    "earlier": "سابقًا",
-    "empty_title": "لا يوجد نشاط بعد",
-    "empty_subtitle": "ستظهر هنا التحديثات وإجراءات المتعاونين",
-    "error_title": "تعذّر تحميل سجل النشاط",
-    "loading": "جارٍ تحميل سجل النشاط…",
-    "item_confirmed": "أكّد {name} الحضور",
-    "item_added": "أضاف {name} {count} ضيفاً جديداً",
-    "item_declined": "اعتذر {name} عن الحضور",
-    "item_collaborator_joined": "انضم {name} إلى القائمة كمتعاون",
-    "item_updated": "حدّث {name} معلومات {count} ضيوف",
-    "item_exported": "تم تصدير قائمة الضيوف كـ PDF",
-    "time_hours_ago": "قبل {count} ساعات",
-    "time_at": "الساعة {time}",
-    "filter_coming_soon": "خاصية التصفية ستُضاف لاحقاً"
-  },
-  "invites": {
-    "title": "الدعوات المعلقة",
-    "empty_title": "لا توجد دعوات معلقة",
-    "empty_subtitle": "ستظهر هنا الدعوات الجديدة للتعاون في قوائم الضيوف",
-    "error_title": "تعذّر تحميل الدعوات المعلقة",
-    "from_sender": "من: {sender}",
-    "sent_date": "أُرسلت {date}",
-    "accept": "قبول",
-    "decline": "رفض",
-    "decline_confirm_title": "رفض الدعوة",
-    "decline_confirm_message": "هل تريد رفض دعوة \"{event}\"؟",
-    "accept_success": "تمت إضافتك إلى القائمة بنجاح",
-    "decline_success": "تم رفض الدعوة"
-  }
-};
-static const Map<String, Map<String,dynamic>> mapLocales = {"en": _en, "fr": _fr, "ar": _ar};
 }
