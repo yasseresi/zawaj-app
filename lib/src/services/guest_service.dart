@@ -78,6 +78,14 @@ class GuestService {
         parse: (d) => Guest.fromJson((d as Map).cast<String, dynamic>()),
       );
 
+  /// `DELETE /weddings/:id/guests/:gid` → `{ deleted: true }` (200, editor+).
+  /// The response body is discarded — success is the [Right] of the result.
+  FutureEitherVoid delete(String weddingId, String guestId) =>
+      _api.delete<void>(
+        '/weddings/$weddingId/guests/$guestId',
+        parse: parseVoid,
+      );
+
   /// `POST /weddings/:id/guests/:gid/notes` → the created note (201, editor+).
   FutureEither<GuestNote> addNote(String weddingId, String guestId, String body) =>
       _api.post<GuestNote>(

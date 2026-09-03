@@ -10,7 +10,10 @@ import 'package:zawaj_app/src/utils/typedefs.dart';
 
 class _FakeGuestRepository implements GuestRepository {
   Either<Failure, GuestListResult>? result;
+  Either<Failure, void>? deleteResult;
   int calls = 0;
+  int deleteCalls = 0;
+  String? lastDeletedId;
   ({String weddingId, String? status, String? query})? lastArgs;
 
   @override
@@ -51,6 +54,13 @@ class _FakeGuestRepository implements GuestRepository {
     String? note,
   }) async =>
       throw UnimplementedError();
+
+  @override
+  FutureEitherVoid delete(String weddingId, String guestId) async {
+    deleteCalls++;
+    lastDeletedId = guestId;
+    return deleteResult ?? const Right(null);
+  }
 }
 
 const _result = GuestListResult(
@@ -120,6 +130,32 @@ void main() {
 
       expect(provider.status, AppStatus.failure);
       expect(provider.errorMessage, 'offline');
+    });
+
+    test('delete success removes the guest and decrements counts', () async {
+      repo.result = const Right(_result);
+      await provider.load();
+
+      final error = await provider.delete('g1'); // confirmed guest
+
+      expect(error, isNull);
+      expect(repo.lastDeletedId, 'g1');
+      expect(provider.guests.map((g) => g.id), ['g2']);
+      expect(provider.counts.all, 1);
+      expect(provider.counts.confirmed, 0);
+      expect(provider.counts.pending, 1); // untouched
+    });
+
+    test('delete failure keeps the guest and returns the message', () async {
+      repo.result = const Right(_result);
+      await provider.load();
+      repo.deleteResult = const Left(NetworkFailure('offline'));
+
+      final error = await provider.delete('g1');
+
+      expect(error, 'offline');
+      expect(provider.guests, hasLength(2));
+      expect(provider.counts.all, 2);
     });
 
     test('isEmpty is true only after a successful empty load', () async {

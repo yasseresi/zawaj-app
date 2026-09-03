@@ -82,6 +82,37 @@ class GuestsProvider extends ChangeNotifier {
     await load();
   }
 
+  /// Delete [guestId] (editor+). On success removes it from the current page and
+  /// decrements the wedding-wide counts locally so the UI updates instantly —
+  /// no refetch. Returns the failure message, or null on success (so the caller
+  /// can toast the outcome).
+  Future<String?> delete(String guestId) async {
+    final matches = _guests.where((g) => g.id == guestId);
+    final RsvpStatus? status = matches.isEmpty ? null : matches.first.status;
+    final result = await _repository.delete(_weddingId, guestId);
+    return result.match(
+      (failure) => failure.message,
+      (_) {
+        _guests = _guests.where((g) => g.id != guestId).toList(growable: false);
+        if (status != null) _counts = _countsWithout(status);
+        notifyListeners();
+        return null;
+      },
+    );
+  }
+
+  /// The counts with one guest of [status] removed (and the `all` total).
+  GuestCounts _countsWithout(RsvpStatus status) {
+    switch (status) {
+      case RsvpStatus.confirmed:
+        return _counts.copyWith(all: _counts.all - 1, confirmed: _counts.confirmed - 1);
+      case RsvpStatus.pending:
+        return _counts.copyWith(all: _counts.all - 1, pending: _counts.pending - 1);
+      case RsvpStatus.declined:
+        return _counts.copyWith(all: _counts.all - 1, declined: _counts.declined - 1);
+    }
+  }
+
   /// Set the search term and refetch. Callers should debounce keystrokes.
   Future<void> search(String query) async {
     final trimmed = query.trim();

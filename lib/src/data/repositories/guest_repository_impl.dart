@@ -54,4 +54,8 @@ class GuestRepositoryImpl implements GuestRepository {
   @override
   FutureEither<GuestNote> addNote(String weddingId, String guestId, String body) =>
       _service.addNote(weddingId, guestId, body);
+
+  @override
+  FutureEitherVoid delete(String weddingId, String guestId) =>
+      _service.delete(weddingId, guestId);
 }

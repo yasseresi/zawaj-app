@@ -268,12 +268,34 @@ class _GuestTile extends StatelessWidget {
   final String weddingId;
   final bool canEdit;
 
+  /// Confirms then deletes via the provider. Always returns false so the
+  /// [Dismissible] snaps back and the provider's list rebuild (on success) is
+  /// what removes the tile — avoids a dismissed widget lingering in the tree.
+  Future<bool> _confirmDelete(BuildContext context) async {
+    final provider = context.read<GuestsProvider>();
+    final confirmed = await showAdaptiveConfirmDialog(
+      context,
+      title: 'guests.delete_title'.tr(),
+      message: 'guests.delete_message'.tr(namedArgs: {'name': guest.fullName}),
+      confirmLabel: 'guests.delete_action'.tr(),
+      isDestructive: true,
+    );
+    if (confirmed != true) return false;
+
+    final error = await provider.delete(guest.id);
+    showGlobalToast(
+      message: error ?? 'guests.deleted_toast'.tr(),
+      status: error == null ? 'success' : 'error',
+    );
+    return false;
+  }
+
   @override
   Widget build(BuildContext context) {
     final cs = context.colors;
     final tt = context.textTheme;
 
-    return AppCard(
+    final card = AppCard(
       onTap: () => context.pushNamed(
         'guest_detail',
         pathParameters: {'id': weddingId, 'gid': guest.id},
@@ -315,6 +337,41 @@ class _GuestTile extends StatelessWidget {
           ),
           SizedBox(width: AppSpacing.sm.w),
           GuestStatusPill(status: guest.status, compact: true),
+        ],
+      ),
+    );
+
+    if (!canEdit) return card;
+
+    return Dismissible(
+      key: ValueKey('guest_${guest.id}'),
+      direction: DismissDirection.endToStart,
+      confirmDismiss: (_) => _confirmDelete(context),
+      background: _deleteBackground(context),
+      child: card,
+    );
+  }
+
+  /// The red delete affordance revealed while swiping the tile.
+  Widget _deleteBackground(BuildContext context) {
+    final cs = context.colors;
+    return Container(
+      alignment: AlignmentDirectional.centerEnd,
+      padding: EdgeInsets.symmetric(horizontal: AppSpacing.lg.w),
+      decoration: BoxDecoration(
+        color: cs.error,
+        borderRadius: AppBorders.card,
+      ),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Icon(Icons.delete_outline_rounded, color: cs.onError),
+          SizedBox(width: AppSpacing.xs.w),
+          Text(
+            'guests.delete_action'.tr(),
+            style: context.textTheme.labelLarge?.copyWith(
+                color: cs.onError, fontWeight: FontWeight.bold),
+          ),
         ],
       ),
     );

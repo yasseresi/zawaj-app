@@ -34,6 +34,10 @@ class _MockGuestRepo implements GuestRepository {
       throw UnimplementedError();
 
   @override
+  FutureEitherVoid delete(String weddingId, String guestId) async =>
+      const Right(null);
+
+  @override
   FutureEither<Guest> create(
     String weddingId, {
     required String fullName,

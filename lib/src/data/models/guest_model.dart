@@ -123,6 +123,14 @@ class GuestCounts extends Equatable {
     );
   }
 
+  GuestCounts copyWith({int? all, int? confirmed, int? pending, int? declined}) =>
+      GuestCounts(
+        all: all ?? this.all,
+        confirmed: confirmed ?? this.confirmed,
+        pending: pending ?? this.pending,
+        declined: declined ?? this.declined,
+      );
+
   @override
   List<Object?> get props => [all, confirmed, pending, declined];
 }

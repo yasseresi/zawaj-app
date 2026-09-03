@@ -59,8 +59,13 @@ class _CreateWeddingViewState extends State<_CreateWeddingView> {
     );
     if (!mounted) return;
     if (!ok) {
-      showToast(context,
-          message: provider.errorMessage ?? 'errors.server'.tr(), status: 'error');
+      final retry = await showAdaptiveConfirmDialog(
+        context,
+        title: 'weddings.create_error_title'.tr(),
+        message: provider.errorMessage ?? 'weddings.create_error_message'.tr(),
+        confirmLabel: 'actions.retry'.tr(),
+      );
+      if ((retry ?? false) && mounted) await _submit();
       return;
     }
     showToast(context, message: 'weddings.created_toast'.tr(), status: 'success');
