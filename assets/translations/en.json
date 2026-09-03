@@ -227,7 +227,8 @@
     "item_updated": "{name} updated details for {count} guests",
     "item_exported": "Exported guest list as PDF",
     "time_hours_ago": "{count} hours ago",
-    "time_at": "At {time}"
+    "time_at": "At {time}",
+    "filter_coming_soon": "Filtering will be added later"
   },
   "invites": {
     "title": "Pending Invites",

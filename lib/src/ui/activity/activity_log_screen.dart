@@ -45,7 +45,10 @@ class _ActivityLogView extends StatelessWidget {
               Icons.filter_list_rounded,
               size: 20.sp,
             ),
-            onPressed: () {},
+            onPressed: () => showGlobalToast(
+              message: 'activity.filter_coming_soon'.tr(),
+              status: 'info',
+            ),
           ),
         ],
       ),

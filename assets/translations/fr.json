@@ -227,7 +227,8 @@
     "item_updated": "{name} a mis à jour les informations de {count} invités",
     "item_exported": "Liste des invités exportée au format PDF",
     "time_hours_ago": "Il y a {count} heures",
-    "time_at": "À {time}"
+    "time_at": "À {time}",
+    "filter_coming_soon": "Le filtrage sera ajouté plus tard"
   },
   "invites": {
     "title": "Invitations en attente",

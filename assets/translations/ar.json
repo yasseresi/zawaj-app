@@ -230,7 +230,8 @@
     "item_updated": "حدّث {name} معلومات {count} ضيوف",
     "item_exported": "تم تصدير قائمة الضيوف كـ PDF",
     "time_hours_ago": "قبل {count} ساعات",
-    "time_at": "الساعة {time}"
+    "time_at": "الساعة {time}",
+    "filter_coming_soon": "خاصية التصفية ستُضاف لاحقاً"
   },
   "invites": {
     "title": "الدعوات المعلقة",
