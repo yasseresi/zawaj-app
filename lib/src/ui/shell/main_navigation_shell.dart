@@ -153,9 +153,8 @@ class _ZawajBottomNav extends StatelessWidget {
         filter: ImageFilter.blur(sigmaX: 12, sigmaY: 12),
         child: DecoratedBox(
           decoration: BoxDecoration(
-            color: isDark
-                ? const Color(0xF216213E)
-                : cs.surface.withValues(alpha: 0.95),
+            // Match the top bar (AppBar background is colorScheme.surface).
+            color: cs.surface,
             border: Border(
               top: BorderSide(color: cs.outlineVariant.withValues(alpha: 0.6)),
             ),

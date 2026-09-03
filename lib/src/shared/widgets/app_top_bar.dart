@@ -21,23 +21,25 @@ class AppTopBar extends StatelessWidget implements PreferredSizeWidget {
   @override
   Widget build(BuildContext context) {
     final theme = context.theme;
-    
-    // Check if we can pop
+
+    // Show a back control only when there is somewhere to go back to: a pushed
+    // route (canPop) or an explicit handler. The bottom-nav tab roots can't pop,
+    // so they render no back arrow — navigation happens via the nav bar.
     final bool canPop = context.canPop();
+    final bool showBack = onPressed != null || canPop;
 
     void handleBack() {
       if (onPressed != null) {
         onPressed!();
       } else if (canPop) {
         context.pop();
-      } else {
-        context.go(AppRoutes.home);
       }
     }
 
     return AppBar(
       centerTitle: centerTitle,
       elevation: 0,
+      automaticallyImplyLeading: false,
       backgroundColor: isTransparent ? Colors.transparent : null,
       shadowColor: Colors.transparent,
       title: titleWidget ??
@@ -49,18 +51,20 @@ class AppTopBar extends StatelessWidget implements PreferredSizeWidget {
               fontWeight: FontWeight.w600,
             ),
           ),
-      leadingWidth: 40.w,
-      leading: GestureDetector(
-        onTap: handleBack,
-        child: ColoredBox(
-          color: Colors.transparent,
-          child:               Icon(
-                Icons.arrow_back,
-                color: theme.appBarTheme.iconTheme?.color ?? theme.colorScheme.onSurface,
-              )
-            ,
-        ),
-      ),
+      leadingWidth: showBack ? 40.w : 0,
+      leading: showBack
+          ? GestureDetector(
+              onTap: handleBack,
+              child: ColoredBox(
+                color: Colors.transparent,
+                child: Icon(
+                  Icons.arrow_back,
+                  color: theme.appBarTheme.iconTheme?.color ??
+                      theme.colorScheme.onSurface,
+                ),
+              ),
+            )
+          : null,
       iconTheme: theme.appBarTheme.iconTheme,
       actions: actions ?? [],
     );

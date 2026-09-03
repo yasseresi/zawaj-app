@@ -7,7 +7,6 @@ import 'package:zawaj_app/src/core/i18n/locale_keys.g.dart';
 import '../../data/repositories/stats_repository.dart';
 import '../../extensions/context_extension.dart';
 import '../../shared/widgets/widgets.dart';
-import '../../theme/theme.dart';
 import 'providers/analytics_provider.dart';
 import 'widgets/broadcast_sheet.dart';
 import 'widgets/donut_chart_widget.dart';
@@ -30,13 +29,7 @@ class AnalyticsScreen extends StatelessWidget {
         weddingId: weddingId,
         repository: repository,
       )..load(),
-      // Analytics is always dark to match the prototype (screens-2.jsx `zw dark`),
-      // regardless of the app's light/dark mode. Colors resolve from this dark
-      // ColorScheme, so no hardcoded values. Hex mirrors kBrandPrimaryHex.
-      child: Theme(
-        data: buildDarkTheme(primaryColorHex: '#C9796A'),
-        child: const _AnalyticsView(),
-      ),
+      child: const _AnalyticsView(),
     );
   }
 }
@@ -127,29 +120,35 @@ class _AnalyticsView extends StatelessWidget {
 
   Widget _buildHeader(BuildContext context) {
     final cs = Theme.of(context).colorScheme;
+    // Only when pushed on top of the shell (e.g. a per-wedding view); the
+    // Dashboard tab root can't pop, so it shows no back control.
+    final canPop = Navigator.of(context).canPop();
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          InkWell(
-            onTap: () => Navigator.of(context).maybePop(),
-            borderRadius: BorderRadius.circular(12),
-            child: Container(
-              width: 40,
-              height: 40,
-              decoration: BoxDecoration(
-                color: cs.surfaceContainerHighest,
-                borderRadius: BorderRadius.circular(12),
-                border: Border.all(color: cs.outlineVariant),
+          if (canPop)
+            InkWell(
+              onTap: () => Navigator.of(context).maybePop(),
+              borderRadius: BorderRadius.circular(12),
+              child: Container(
+                width: 40,
+                height: 40,
+                decoration: BoxDecoration(
+                  color: cs.surfaceContainerHighest,
+                  borderRadius: BorderRadius.circular(12),
+                  border: Border.all(color: cs.outlineVariant),
+                ),
+                child: Icon(
+                  Icons.arrow_back,
+                  size: 20,
+                  color: cs.onSurface,
+                ),
               ),
-              child: Icon(
-                Icons.arrow_back,
-                size: 20,
-                color: cs.onSurface,
-              ),
-            ),
-          ),
+            )
+          else
+            const SizedBox(width: 40, height: 40),
           Text(
             LocaleKeys.analytics_title.tr(),
             style: TextStyle(

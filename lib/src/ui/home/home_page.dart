@@ -2,7 +2,6 @@ import 'package:zawaj_app/src/imports/core_imports.dart';
 import 'package:zawaj_app/src/imports/packages_imports.dart';
 
 import 'package:zawaj_app/src/data/models/wedding_model.dart';
-import 'package:zawaj_app/src/shared/providers/theme_provider.dart';
 import 'package:zawaj_app/src/ui/auth/providers/session_provider.dart';
 import 'package:zawaj_app/src/ui/weddings/providers/weddings_provider.dart';
 
@@ -33,18 +32,6 @@ class _HomeView extends StatelessWidget {
       appBar: AppTopBar(
         title: 'home.title'.tr(),
         actions: [
-          IconButton(
-            tooltip: 'settings.language'.tr(),
-            icon: const Icon(Icons.translate_rounded),
-            onPressed: () => _cycleLocale(context),
-          ),
-          IconButton(
-            tooltip: 'settings.theme'.tr(),
-            icon: Icon(context.isDarkMode
-                ? Icons.light_mode_outlined
-                : Icons.dark_mode_outlined),
-            onPressed: () => context.read<ThemeProvider>().toggle(context),
-          ),
           IconButton(
             tooltip: 'settings.logout'.tr(),
             icon: const Icon(Icons.logout_rounded),
@@ -100,15 +87,6 @@ class _HomeView extends StatelessWidget {
     final provider = context.read<WeddingsProvider>();
     final created = await context.pushNamed<Object?>('create_wedding');
     if (created == true) await provider.load();
-  }
-
-  void _cycleLocale(BuildContext context) {
-    const locales = [Locale('ar'), Locale('en'), Locale('fr')];
-    final current = context.locale;
-    final next = locales[
-        (locales.indexWhere((l) => l.languageCode == current.languageCode) + 1) %
-            locales.length];
-    context.setLocale(next);
   }
 }
 
