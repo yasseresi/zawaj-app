@@ -366,7 +366,6 @@ class _TimelineRow extends StatelessWidget {
         ActivityAction.noteAdded => 'guests.act_note_added'.tr(),
         ActivityAction.collaboratorJoined => 'guests.act_collaborator_joined'.tr(),
         ActivityAction.listExported => 'guests.act_list_exported'.tr(),
-        ActivityAction.remindersSent => 'guests.act_reminders_sent'.tr(),
         ActivityAction.unknown => 'guests.act_unknown'.tr(),
       };
 

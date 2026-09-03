@@ -11,7 +11,6 @@ import '../../../shared/enums/app_status.dart';
 enum ActivityItemType {
   confirmed,
   added,
-  reminder,
   declined,
   collaboratorJoined,
   updated,
@@ -202,9 +201,6 @@ class ActivityLogProvider extends ChangeNotifier {
       case ActivityAction.guestUpdated:
         return _item(e, ActivityItemType.updated, 'activity.item_updated',
             {'name': e.guestName ?? e.actorName, 'count': '1'}, whenParts);
-      case ActivityAction.remindersSent:
-        return _item(e, ActivityItemType.reminder, 'activity.item_reminders_sent',
-            {'count': '${e.metaInt('count')}'}, whenParts);
       case ActivityAction.collaboratorJoined:
         return _item(e, ActivityItemType.collaboratorJoined,
             'activity.item_collaborator_joined', {'name': e.actorName}, whenParts);

@@ -29,12 +29,6 @@ class ActivityItemTile extends StatelessWidget {
           cs.primary,
           cs.primary.withValues(alpha: 0.12),
         );
-      case ActivityItemType.reminder:
-        return (
-          Icons.mail_outline_rounded,
-          ac.warning,
-          ac.warning.withValues(alpha: 0.12),
-        );
       case ActivityItemType.declined:
         return (
           Icons.close_rounded,

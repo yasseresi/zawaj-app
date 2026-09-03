@@ -12,8 +12,4 @@ class StatsRepositoryImpl implements StatsRepository {
 
   @override
   FutureEither<WeddingStats> stats(String weddingId) => _service.stats(weddingId);
-
-  @override
-  FutureEither<int> sendReminders(String weddingId) =>
-      _service.sendReminders(weddingId);
 }

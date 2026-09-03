@@ -53,9 +53,9 @@ void main() {
         ),
         ActivityFeedEntry(
           id: '2',
-          action: ActivityAction.remindersSent,
+          action: ActivityAction.guestAdded,
           actorName: 'Sarah',
-          meta: const {'count': 30},
+          meta: const {'count': 3},
           createdAt: DateTime(2026, 9, 2, 8, 0), // today
         ),
         ActivityFeedEntry(
@@ -77,9 +77,9 @@ void main() {
       expect(today.items.first.type, ActivityItemType.confirmed);
       expect(today.items.first.textKey, 'activity.item_confirmed');
       expect(today.items.first.textArgs?['name'], 'Mariam');
-      final reminder = today.items[1];
-      expect(reminder.type, ActivityItemType.reminder);
-      expect(reminder.textArgs?['count'], '30');
+      final added = today.items[1];
+      expect(added.type, ActivityItemType.added);
+      expect(added.textArgs?['count'], '3');
       expect(provider.groups[1].titleKey, 'activity.yesterday');
     });
 

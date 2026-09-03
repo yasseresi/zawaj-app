@@ -8,7 +8,6 @@ import '../../data/repositories/stats_repository.dart';
 import '../../extensions/context_extension.dart';
 import '../../shared/widgets/widgets.dart';
 import 'providers/analytics_provider.dart';
-import 'widgets/broadcast_sheet.dart';
 import 'widgets/donut_chart_widget.dart';
 import 'widgets/timeline_chart_widget.dart';
 
@@ -40,78 +39,23 @@ class _AnalyticsView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final provider = context.watch<AnalyticsProvider>();
-    final cs = Theme.of(context).colorScheme;
 
     return Scaffold(
       body: SafeArea(
-        child: Stack(
+        child: Column(
           children: [
-            Column(
-              children: [
-                _buildHeader(context),
-                Expanded(
-                  child: provider.isLoading
-                      ? _buildLoadingState()
-                      : provider.isEmpty
-                          ? AppEmptyState(
-                              icon: Icons.bar_chart_rounded,
-                              title: LocaleKeys.analytics_empty_title.tr(),
-                              subtitle: LocaleKeys.analytics_empty_subtitle.tr(),
-                            )
-                          : _buildBody(context, provider),
-                ),
-              ],
+            _buildHeader(context),
+            Expanded(
+              child: provider.isLoading
+                  ? _buildLoadingState()
+                  : provider.isEmpty
+                      ? AppEmptyState(
+                          icon: Icons.bar_chart_rounded,
+                          title: LocaleKeys.analytics_empty_title.tr(),
+                          subtitle: LocaleKeys.analytics_empty_subtitle.tr(),
+                        )
+                      : _buildBody(context, provider),
             ),
-
-            if (!provider.isEmpty && !provider.isLoading)
-              Positioned(
-                left: 16,
-                right: 16,
-                bottom: 16,
-                child: SizedBox(
-                  height: 52,
-                  child: ElevatedButton(
-                    onPressed: () => provider.openBroadcastConfirm(),
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: cs.primary,
-                      foregroundColor: cs.onPrimary,
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(16),
-                      ),
-                      elevation: 0,
-                    ),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Icon(
-                          Icons.notifications_active_outlined,
-                          size: 20,
-                          color: cs.onPrimary,
-                        ),
-                        const SizedBox(width: 8),
-                        Text(
-                          LocaleKeys.analytics_send_reminders.tr(),
-                          style: TextStyle(
-                            fontSize: 15,
-                            fontWeight: FontWeight.bold,
-                            color: cs.onPrimary,
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
-              ),
-
-            if (provider.broadcastState != BroadcastState.idle)
-              BroadcastSheet(
-                state: provider.broadcastState,
-                pendingCount: provider.pendingCount,
-                sentCount: provider.lastSentCount,
-                onConfirm: provider.sendReminders,
-                onCancel: provider.cancelBroadcast,
-                onDismiss: provider.dismissBroadcastResult,
-              ),
           ],
         ),
       ),
@@ -227,7 +171,7 @@ class _AnalyticsView extends StatelessWidget {
     final cs = Theme.of(context).colorScheme;
     final ac = context.appColors;
     return SingleChildScrollView(
-      padding: const EdgeInsets.fromLTRB(20, 12, 20, 90),
+      padding: const EdgeInsets.fromLTRB(20, 12, 20, 24),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [

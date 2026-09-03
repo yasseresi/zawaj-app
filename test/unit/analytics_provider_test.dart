@@ -9,20 +9,12 @@ import 'package:zawaj_app/src/utils/typedefs.dart';
 
 class _MockStatsRepository implements StatsRepository {
   Either<Failure, WeddingStats>? statsResult;
-  Either<Failure, int>? sendRemindersResult;
   int statsCalls = 0;
-  int sendRemindersCalls = 0;
 
   @override
   FutureEither<WeddingStats> stats(String weddingId) async {
     statsCalls++;
     return statsResult!;
-  }
-
-  @override
-  FutureEither<int> sendReminders(String weddingId) async {
-    sendRemindersCalls++;
-    return sendRemindersResult!;
   }
 }
 
@@ -45,7 +37,6 @@ void main() {
 
     test('initial state is correctly initialized', () {
       expect(provider.status, AppStatus.initial);
-      expect(provider.broadcastState, BroadcastState.idle);
       expect(provider.totalGuests, 0);
       expect(provider.confirmedCount, 0);
       expect(provider.pendingCount, 0);
@@ -83,35 +74,6 @@ void main() {
 
       expect(provider.status, AppStatus.success);
       expect(provider.isEmpty, isTrue);
-    });
-
-    test('broadcast flow state transitions', () async {
-      repo.sendRemindersResult = const Right(30);
-
-      provider.openBroadcastConfirm();
-      expect(provider.broadcastState, BroadcastState.confirm);
-
-      provider.cancelBroadcast();
-      expect(provider.broadcastState, BroadcastState.idle);
-
-      provider.openBroadcastConfirm();
-      await provider.sendReminders();
-      expect(provider.broadcastState, BroadcastState.success);
-      expect(provider.lastSentCount, 30);
-      expect(repo.sendRemindersCalls, 1);
-
-      provider.dismissBroadcastResult();
-      expect(provider.broadcastState, BroadcastState.idle);
-    });
-
-    test('sendReminders failure sets error state', () async {
-      repo.sendRemindersResult = const Left(NetworkFailure('Connection error'));
-
-      provider.openBroadcastConfirm();
-      await provider.sendReminders();
-
-      expect(provider.broadcastState, BroadcastState.error);
-      expect(provider.errorMessage, 'Connection error');
     });
   });
 }

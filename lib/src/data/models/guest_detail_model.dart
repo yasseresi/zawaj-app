@@ -39,7 +39,6 @@ enum ActivityAction {
   noteAdded,
   collaboratorJoined,
   listExported,
-  remindersSent,
   unknown;
 
   static ActivityAction fromString(String? value) {
@@ -56,8 +55,6 @@ enum ActivityAction {
         return ActivityAction.collaboratorJoined;
       case 'list_exported':
         return ActivityAction.listExported;
-      case 'reminders_sent':
-        return ActivityAction.remindersSent;
       default:
         return ActivityAction.unknown;
     }
