@@ -21,5 +21,11 @@ abstract final class AppRoutes {
   static const String notifications = '/notifications';
   static const String pendingInvites = '/invites';
 
-  static const Set<String> publicPaths = {onboarding, login, signup, recover};
+  static const Set<String> publicPaths = {
+    onboarding,
+    login,
+    signup,
+    recover,
+    invitePreview
+  };
 }

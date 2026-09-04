@@ -241,5 +241,24 @@ abstract class  LocaleKeys {
   static const notifications_empty_title = 'notifications.empty_title';
   static const notifications_empty_subtitle = 'notifications.empty_subtitle';
   static const notifications = 'notifications';
+  static const share_title = 'share.title';
+  static const share_collaborators = 'share.collaborators';
+  static const share_username_hint = 'share.username_hint';
+  static const share_invite_sent = 'share.invite_sent';
+  static const share_link_created = 'share.link_created';
+  static const share_link_section = 'share.link_section';
+  static const share_link = 'share.link';
+  static const share_qr = 'share.qr';
+  static const share_create_link = 'share.create_link';
+  static const share_copied = 'share.copied';
+  static const share_share_link = 'share.share_link';
+  static const share_invite_preview = 'share.invite_preview';
+  static const share_preview_role = 'share.preview_role';
+  static const share_accept_invite = 'share.accept_invite';
+  static const share_login_to_accept = 'share.login_to_accept';
+  static const share_role_owner = 'share.role_owner';
+  static const share_role_editor = 'share.role_editor';
+  static const share_role_viewer = 'share.role_viewer';
+  static const share = 'share';
 
 }

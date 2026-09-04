@@ -1,4 +1,5 @@
 import '../models/wedding_member_model.dart';
+import '../models/invite_link_model.dart';
 import '../models/wedding_model.dart';
 import '../../utils/typedefs.dart';
 
@@ -28,4 +29,7 @@ abstract interface class WeddingRepository {
 
   /// `DELETE /weddings/:id/members/:userId` — remove a collaborator.
   FutureEither<void> removeMember(String id, String userId);
+  FutureEither<InviteLink> createInviteLink(String id, String role);
+  FutureEither<List<InviteLink>> listInviteLinks(String id);
+  FutureEither<void> revokeInviteLink(String id, String linkId);
 }

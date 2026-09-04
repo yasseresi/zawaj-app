@@ -1,6 +1,7 @@
 import '../../services/wedding_service.dart';
 import '../../utils/typedefs.dart';
 import '../models/wedding_member_model.dart';
+import '../models/invite_link_model.dart';
 import '../models/wedding_model.dart';
 import 'wedding_repository.dart';
 
@@ -21,7 +22,8 @@ class WeddingRepositoryImpl implements WeddingRepository {
     String? eventDate,
     String? description,
   }) =>
-      _service.create(name: name, eventDate: eventDate, description: description);
+      _service.create(
+          name: name, eventDate: eventDate, description: description);
 
   @override
   FutureEither<void> delete(String id) => _service.delete(id);
@@ -36,4 +38,14 @@ class WeddingRepositoryImpl implements WeddingRepository {
   @override
   FutureEither<void> removeMember(String id, String userId) =>
       _service.removeMember(id, userId);
+
+  @override
+  FutureEither<InviteLink> createInviteLink(String id, String role) =>
+      _service.createInviteLink(id, role);
+  @override
+  FutureEither<List<InviteLink>> listInviteLinks(String id) =>
+      _service.listInviteLinks(id);
+  @override
+  FutureEither<void> revokeInviteLink(String id, String linkId) =>
+      _service.revokeInviteLink(id, linkId);
 }

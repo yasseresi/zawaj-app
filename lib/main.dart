@@ -2,6 +2,20 @@ import 'src/imports/core_imports.dart';
 import 'src/imports/packages_imports.dart';
 import 'src/app.dart';
 import 'src/ui/auth/providers/session_provider.dart';
+import 'package:app_links/app_links.dart';
+
+void _openInvite(Uri uri) {
+  final token =
+      uri.scheme == 'zawaj' && uri.host == 'i' && uri.pathSegments.isNotEmpty
+          ? uri.pathSegments.first
+          : uri.pathSegments.length >= 2 && uri.pathSegments.first == 'i'
+              ? uri.pathSegments[1]
+              : null;
+  if (token != null && token.isNotEmpty) {
+    pendingInviteToken = token;
+    appRouter.go(AppRoutes.invitePreview.replaceFirst(':token', token));
+  }
+}
 
 Future<void> main() async {
   final widgetsBinding = WidgetsFlutterBinding.ensureInitialized();
@@ -27,4 +41,9 @@ Future<void> main() async {
       ),
     ),
   );
+
+  final links = AppLinks();
+  final initial = await links.getInitialLink();
+  if (initial != null) _openInvite(initial);
+  links.uriLinkStream.listen(_openInvite);
 }

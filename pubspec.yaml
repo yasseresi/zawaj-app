@@ -14,6 +14,11 @@ dependencies:
   # Navigation
   go_router: ^17.1.0
 
+  # Sharing & deep links (share/export + invite links — screen 10)
+  qr_flutter: ^4.1.0
+  share_plus: ^12.0.0
+  app_links: ^6.4.1
+
   # Networking
   internet_connection_checker_plus: ^2.9.1+2
   dio: ^5.9.2

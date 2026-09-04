@@ -13,6 +13,8 @@ import '../ui/invites/pending_invites_screen.dart';
 import '../ui/notifications/notifications_screen.dart';
 import '../ui/onboarding/onboarding_page.dart';
 import '../ui/settings/settings_screen.dart';
+import '../ui/share/share_screen.dart';
+import '../ui/share/invite_preview_screen.dart';
 import '../ui/shell/main_navigation_shell.dart';
 import '../ui/weddings/create_wedding_screen.dart';
 import '../ui/weddings/guest_detail_screen.dart';
@@ -141,13 +143,27 @@ final GoRouter appRouter = GoRouter(
       name: 'notifications',
       builder: (context, state) => const NotificationsScreen(),
     ),
+    GoRoute(
+        path: AppRoutes.share,
+        name: 'share',
+        builder: (context, state) => ShareScreen(
+            weddingId: state.pathParameters['id'] ?? '',
+            wedding: state.extra is Wedding ? state.extra as Wedding : null)),
+    GoRoute(
+        path: AppRoutes.invitePreview,
+        name: 'invite_preview',
+        builder: (context, state) =>
+            InvitePreviewScreen(token: state.pathParameters['token'] ?? '')),
   ],
 );
+
+String? pendingInviteToken;
 
 String? _guard(BuildContext context, GoRouterState state) {
   final status = sessionProvider.status;
   final location = state.matchedLocation;
-  final isPublic = AppRoutes.publicPaths.contains(location);
+  final isInvitePreview = location.startsWith('/invite/');
+  final isPublic = AppRoutes.publicPaths.contains(location) || isInvitePreview;
 
   if (status == SessionStatus.unknown) return null;
 
@@ -155,5 +171,9 @@ String? _guard(BuildContext context, GoRouterState state) {
     return isPublic ? null : AppRoutes.onboarding;
   }
 
-  return isPublic ? AppRoutes.home : null;
+  if (pendingInviteToken != null && !isInvitePreview) {
+    return '/invite/$pendingInviteToken';
+  }
+
+  return isPublic && !isInvitePreview ? AppRoutes.home : null;
 }

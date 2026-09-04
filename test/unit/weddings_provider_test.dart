@@ -1,6 +1,7 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:fpdart/fpdart.dart';
 import 'package:zawaj_app/src/data/models/wedding_member_model.dart';
+import 'package:zawaj_app/src/data/models/invite_link_model.dart';
 import 'package:zawaj_app/src/data/models/wedding_model.dart';
 import 'package:zawaj_app/src/data/repositories/wedding_repository.dart';
 import 'package:zawaj_app/src/shared/enums/app_status.dart';
@@ -9,6 +10,15 @@ import 'package:zawaj_app/src/utils/failure.dart';
 import 'package:zawaj_app/src/utils/typedefs.dart';
 
 class _FakeWeddingRepository implements WeddingRepository {
+  @override
+  FutureEither<InviteLink> createInviteLink(String id, String role) =>
+      throw UnimplementedError();
+  @override
+  FutureEither<List<InviteLink>> listInviteLinks(String id) =>
+      throw UnimplementedError();
+  @override
+  FutureEither<void> revokeInviteLink(String id, String linkId) =>
+      throw UnimplementedError();
   Either<Failure, List<Wedding>>? result;
   Either<Failure, void>? deleteResult;
   final List<String> deletedIds = [];
@@ -35,7 +45,8 @@ class _FakeWeddingRepository implements WeddingRepository {
       throw UnimplementedError();
 
   @override
-  FutureEither<void> setMemberRole(String id, String userId, String role) async =>
+  FutureEither<void> setMemberRole(
+          String id, String userId, String role) async =>
       throw UnimplementedError();
 
   @override

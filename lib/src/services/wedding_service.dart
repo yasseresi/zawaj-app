@@ -1,4 +1,5 @@
 import '../data/models/wedding_member_model.dart';
+import '../data/models/invite_link_model.dart';
 import '../data/models/wedding_model.dart';
 import '../data/services/api_client.dart';
 import '../utils/typedefs.dart';
@@ -71,6 +72,38 @@ class WeddingService {
         '/weddings/$weddingId/members/$userId',
         parse: parseVoid,
       );
+
+  FutureEither<InviteLink> createInviteLink(String weddingId, String role) =>
+      _api.post<InviteLink>(
+        '/weddings/$weddingId/invite-links',
+        body: {'role': role},
+        parse: (d) => InviteLink.fromJson((d as Map).cast<String, dynamic>()),
+      );
+
+  FutureEither<List<InviteLink>> listInviteLinks(String weddingId) =>
+      _api.get<List<InviteLink>>('/weddings/$weddingId/invite-links',
+          parse: (d) {
+        final items = d is Map ? d['items'] : d;
+        return [
+          if (items is List)
+            for (final e in items)
+              if (e is Map) InviteLink.fromJson(e.cast<String, dynamic>())
+        ];
+      });
+
+  FutureEither<void> revokeInviteLink(String weddingId, String linkId) =>
+      _api.delete<void>('/weddings/$weddingId/invite-links/$linkId',
+          parse: parseVoid);
+
+  FutureEither<InvitePreview> previewInvite(String token) =>
+      _api.get<InvitePreview>('/invite/$token',
+          parse: (d) =>
+              InvitePreview.fromJson((d as Map).cast<String, dynamic>()));
+
+  FutureEither<InvitePreview> acceptInviteLink(String token) =>
+      _api.post<InvitePreview>('/invite/$token/accept',
+          parse: (d) =>
+              InvitePreview.fromJson((d as Map).cast<String, dynamic>()));
 
   static List<WeddingMember> _parseMembers(dynamic data) {
     final items = (data is Map ? data['items'] : data) as List? ?? const [];

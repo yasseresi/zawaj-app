@@ -25,15 +25,16 @@ class GuestListScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return ChangeNotifierProvider<GuestsProvider>(
       create: (_) => GuestsProvider(weddingId: weddingId)..load(),
-      child: _GuestListView(wedding: wedding),
+      child: _GuestListView(wedding: wedding, weddingId: weddingId),
     );
   }
 }
 
 class _GuestListView extends StatefulWidget {
-  const _GuestListView({this.wedding});
+  const _GuestListView({this.wedding, required this.weddingId});
 
   final Wedding? wedding;
+  final String weddingId;
 
   @override
   State<_GuestListView> createState() => _GuestListViewState();
@@ -70,6 +71,14 @@ class _GuestListViewState extends State<_GuestListView> {
     return Scaffold(
       appBar: AppTopBar(
         title: widget.wedding?.name ?? 'home.title'.tr(),
+        actions: [
+          IconButton(
+              icon: const Icon(Icons.share_outlined),
+              tooltip: 'share.title'.tr(),
+              onPressed: () => context.push(
+                  '/weddings/${widget.weddingId}/share',
+                  extra: widget.wedding))
+        ],
       ),
       floatingActionButton: canEdit
           ? FloatingActionButton(
@@ -81,10 +90,11 @@ class _GuestListViewState extends State<_GuestListView> {
         top: false,
         child: Column(
           children: [
-            if (widget.wedding != null) _headerSubtitle(context, widget.wedding!),
+            if (widget.wedding != null)
+              _headerSubtitle(context, widget.wedding!),
             Padding(
-              padding: EdgeInsets.fromLTRB(
-                  AppSpacing.lg.w, AppSpacing.sm.h, AppSpacing.lg.w, AppSpacing.sm.h),
+              padding: EdgeInsets.fromLTRB(AppSpacing.lg.w, AppSpacing.sm.h,
+                  AppSpacing.lg.w, AppSpacing.sm.h),
               child: AppTextField(
                 controller: _search,
                 hint: 'guests.search_hint'.tr(),
@@ -107,11 +117,14 @@ class _GuestListViewState extends State<_GuestListView> {
     final count = 'weddings.guests_count'.plural(w.guestCount);
     final text = w.eventDate == null
         ? count
-        : 'guests.count_date'
-            .tr(namedArgs: {'count': count, 'date': w.eventDate!.toIso8601DateOnly});
+        : 'guests.count_date'.tr(namedArgs: {
+            'count': count,
+            'date': w.eventDate!.toIso8601DateOnly
+          });
     return Padding(
       padding: EdgeInsets.only(bottom: AppSpacing.xs.h),
-      child: Text(text, style: tt.bodySmall?.copyWith(color: cs.onSurfaceVariant)),
+      child:
+          Text(text, style: tt.bodySmall?.copyWith(color: cs.onSurfaceVariant)),
     );
   }
 }
@@ -180,15 +193,16 @@ class _FilterChip extends StatelessWidget {
         borderRadius: BorderRadius.circular(999),
         onTap: onTap,
         child: Padding(
-          padding: EdgeInsets.symmetric(horizontal: AppSpacing.md.w, vertical: 8.h),
+          padding:
+              EdgeInsets.symmetric(horizontal: AppSpacing.md.w, vertical: 8.h),
           child: Row(
             mainAxisSize: MainAxisSize.min,
             children: [
               Text(label, style: tt.labelLarge?.copyWith(color: fg)),
               SizedBox(width: 6.w),
               Text('$count',
-                  style: tt.labelMedium?.copyWith(
-                      color: fg, fontWeight: FontWeight.bold)),
+                  style: tt.labelMedium
+                      ?.copyWith(color: fg, fontWeight: FontWeight.bold)),
             ],
           ),
         ),
@@ -308,8 +322,8 @@ class _GuestTile extends StatelessWidget {
             backgroundColor: cs.primary.withValues(alpha: 0.12),
             child: Text(
               guest.initial,
-              style: tt.titleMedium?.copyWith(
-                  color: cs.primary, fontWeight: FontWeight.bold),
+              style: tt.titleMedium
+                  ?.copyWith(color: cs.primary, fontWeight: FontWeight.bold),
             ),
           ),
           SizedBox(width: AppSpacing.md.w),
@@ -369,8 +383,8 @@ class _GuestTile extends StatelessWidget {
           SizedBox(width: AppSpacing.xs.w),
           Text(
             'guests.delete_action'.tr(),
-            style: context.textTheme.labelLarge?.copyWith(
-                color: cs.onError, fontWeight: FontWeight.bold),
+            style: context.textTheme.labelLarge
+                ?.copyWith(color: cs.onError, fontWeight: FontWeight.bold),
           ),
         ],
       ),
