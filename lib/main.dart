@@ -2,15 +2,11 @@ import 'src/imports/core_imports.dart';
 import 'src/imports/packages_imports.dart';
 import 'src/app.dart';
 import 'src/ui/auth/providers/session_provider.dart';
+import 'src/routing/invite_deep_link.dart';
 import 'package:app_links/app_links.dart';
 
 void _openInvite(Uri uri) {
-  final token =
-      uri.scheme == 'zawaj' && uri.host == 'i' && uri.pathSegments.isNotEmpty
-          ? uri.pathSegments.first
-          : uri.pathSegments.length >= 2 && uri.pathSegments.first == 'i'
-              ? uri.pathSegments[1]
-              : null;
+  final token = parseInviteToken(uri);
   if (token != null && token.isNotEmpty) {
     pendingInviteToken = token;
     appRouter.go(AppRoutes.invitePreview.replaceFirst(':token', token));

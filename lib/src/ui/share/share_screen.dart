@@ -1,6 +1,7 @@
 import 'package:qr_flutter/qr_flutter.dart';
 import 'package:share_plus/share_plus.dart';
 import '../../data/models/wedding_model.dart';
+import '../../data/models/wedding_member_model.dart';
 import '../../data/models/invite_link_model.dart';
 import '../../imports/core_imports.dart';
 import '../../imports/packages_imports.dart';
@@ -49,6 +50,30 @@ class _ShareViewState extends State<_ShareView> {
     final p = context.read<ShareProvider>();
     if (p.link == null && await p.createLink(_role) && mounted) {
       context.showSuccessSnackBar('share.link_created'.tr());
+    }
+  }
+
+  Future<void> _confirmRemove(WeddingMember member) async {
+    final confirmed = await showDialog<bool>(
+      context: context,
+      builder: (dialogContext) => AlertDialog(
+        title: Text('share.remove_title'.tr()),
+        content:
+            Text('share.remove_message'.tr(namedArgs: {'name': member.label})),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.of(dialogContext).pop(false),
+            child: Text('actions.cancel'.tr()),
+          ),
+          FilledButton(
+            onPressed: () => Navigator.of(dialogContext).pop(true),
+            child: Text('share.remove_confirm'.tr()),
+          ),
+        ],
+      ),
+    );
+    if ((confirmed ?? false) && mounted) {
+      await context.read<ShareProvider>().removeMember(member.userId);
     }
   }
 
@@ -104,7 +129,7 @@ class _ShareViewState extends State<_ShareView> {
                 if (!m.role.isOwner)
                   IconButton(
                       icon: const Icon(Icons.close),
-                      onPressed: () => p.removeMember(m.userId))
+                      onPressed: () => _confirmRemove(m))
               ])))),
       SizedBox(height: AppSpacing.lg.h),
       Text('share.link_section'.tr(),

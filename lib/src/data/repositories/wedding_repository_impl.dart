@@ -48,4 +48,12 @@ class WeddingRepositoryImpl implements WeddingRepository {
   @override
   FutureEither<void> revokeInviteLink(String id, String linkId) =>
       _service.revokeInviteLink(id, linkId);
+
+  @override
+  FutureEither<InvitePreview> previewInvite(String token) =>
+      _service.previewInvite(token);
+
+  @override
+  FutureEither<InvitePreview> acceptInviteLink(String token) =>
+      _service.acceptInviteLink(token);
 }

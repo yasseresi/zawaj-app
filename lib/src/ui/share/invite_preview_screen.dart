@@ -1,86 +1,73 @@
 import '../../imports/core_imports.dart';
 import '../../imports/packages_imports.dart';
-import '../../data/models/invite_link_model.dart';
-import '../../services/wedding_service.dart';
 import '../../ui/auth/providers/session_provider.dart';
+import 'providers/invite_preview_provider.dart';
 
-class InvitePreviewScreen extends StatefulWidget {
+class InvitePreviewScreen extends StatelessWidget {
   const InvitePreviewScreen({super.key, required this.token});
   final String token;
-  @override
-  State<InvitePreviewScreen> createState() => _InvitePreviewScreenState();
-}
-
-class _InvitePreviewScreenState extends State<InvitePreviewScreen> {
-  InvitePreview? preview;
-  String? error;
-  bool loading = true;
-  @override
-  void initState() {
-    super.initState();
-    _load();
-  }
-
-  Future<void> _load() async {
-    final result = await WeddingService.instance.previewInvite(widget.token);
-    if (!mounted) return;
-    result.match(
-        (f) => setState(() {
-              error = f.message;
-              loading = false;
-            }),
-        (v) => setState(() {
-              preview = v;
-              loading = false;
-            }));
-  }
-
-  void _authenticate() {
-    pendingInviteToken = widget.token;
-    context.go(AppRoutes.login);
-  }
-
-  Future<void> _accept() async {
-    final result = await WeddingService.instance.acceptInviteLink(widget.token);
-    if (!mounted) return;
-    result.match((f) => setState(() => error = f.message), (v) {
-      pendingInviteToken = null;
-      context.go('/weddings/${v.weddingId}');
-    });
-  }
 
   @override
   Widget build(BuildContext context) {
+    return ChangeNotifierProvider(
+      create: (_) => InvitePreviewProvider(token: token)..load(),
+      child: const _InvitePreviewView(),
+    );
+  }
+}
+
+class _InvitePreviewView extends StatelessWidget {
+  const _InvitePreviewView();
+
+  @override
+  Widget build(BuildContext context) {
+    final provider = context.watch<InvitePreviewProvider>();
     final authenticated = sessionProvider.isAuthenticated;
     return Scaffold(
-        appBar: AppTopBar(title: 'share.invite_preview'.tr()),
-        body: Center(
-            child: loading
-                ? const CircularProgressIndicator()
-                : error != null
-                    ? Text(error!)
-                    : Card(
-                        child: Padding(
-                            padding: EdgeInsets.all(AppSpacing.xl.w),
-                            child: Column(
-                                mainAxisSize: MainAxisSize.min,
-                                children: [
-                                  Text(preview!.weddingName,
-                                      style: context.textTheme.headlineSmall),
-                                  SizedBox(height: 8.h),
-                                  Text('share.preview_role'.tr(namedArgs: {
-                                    'role': 'share.role_${preview!.role}'.tr()
-                                  })),
-                                  SizedBox(height: 20.h),
-                                  if (authenticated)
-                                    FilledButton(
-                                        onPressed: _accept,
-                                        child: Text('share.accept_invite'.tr()))
-                                  else
-                                    FilledButton(
-                                        onPressed: _authenticate,
-                                        child:
-                                            Text('share.login_to_accept'.tr()))
-                                ])))));
+      appBar: AppTopBar(title: 'share.invite_preview'.tr()),
+      body: Center(
+        child: provider.isLoading
+            ? const CircularProgressIndicator()
+            : provider.errorMessage != null
+                ? Text(provider.errorMessage!)
+                : Card(
+                    child: Padding(
+                        padding: EdgeInsets.all(AppSpacing.xl.w),
+                        child:
+                            Column(mainAxisSize: MainAxisSize.min, children: [
+                          Text(provider.preview!.weddingName,
+                              style: context.textTheme.headlineSmall),
+                          SizedBox(height: 8.h),
+                          Text('share.preview_role'.tr(namedArgs: {
+                            'role': 'share.role_${provider.preview!.role}'.tr()
+                          })),
+                          SizedBox(height: 20.h),
+                          if (authenticated)
+                            FilledButton(
+                                onPressed: provider.isAccepting
+                                    ? null
+                                    : () async {
+                                        final success = await context
+                                            .read<InvitePreviewProvider>()
+                                            .accept();
+                                        if (success && context.mounted) {
+                                          pendingInviteToken = null;
+                                          context.go(
+                                              '/weddings/${provider.accepted!.weddingId}');
+                                        }
+                                      },
+                                child: Text('share.accept_invite'.tr()))
+                          else
+                            FilledButton(
+                                onPressed: () {
+                                  pendingInviteToken = context
+                                      .read<InvitePreviewProvider>()
+                                      .token;
+                                  context.go(AppRoutes.login);
+                                },
+                                child: Text('share.login_to_accept'.tr()))
+                        ]))),
+      ),
+    );
   }
 }

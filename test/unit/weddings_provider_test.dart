@@ -19,6 +19,12 @@ class _FakeWeddingRepository implements WeddingRepository {
   @override
   FutureEither<void> revokeInviteLink(String id, String linkId) =>
       throw UnimplementedError();
+  @override
+  FutureEither<InvitePreview> previewInvite(String token) =>
+      throw UnimplementedError();
+  @override
+  FutureEither<InvitePreview> acceptInviteLink(String token) =>
+      throw UnimplementedError();
   Either<Failure, List<Wedding>>? result;
   Either<Failure, void>? deleteResult;
   final List<String> deletedIds = [];

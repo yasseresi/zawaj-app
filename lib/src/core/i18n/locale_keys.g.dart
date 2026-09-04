@@ -256,6 +256,9 @@ abstract class  LocaleKeys {
   static const share_export_csv = 'share.export_csv';
   static const share_export_xlsx = 'share.export_xlsx';
   static const share_export_pdf = 'share.export_pdf';
+  static const share_remove_title = 'share.remove_title';
+  static const share_remove_message = 'share.remove_message';
+  static const share_remove_confirm = 'share.remove_confirm';
   static const share_invite_preview = 'share.invite_preview';
   static const share_preview_role = 'share.preview_role';
   static const share_accept_invite = 'share.accept_invite';

@@ -32,4 +32,6 @@ abstract interface class WeddingRepository {
   FutureEither<InviteLink> createInviteLink(String id, String role);
   FutureEither<List<InviteLink>> listInviteLinks(String id);
   FutureEither<void> revokeInviteLink(String id, String linkId);
+  FutureEither<InvitePreview> previewInvite(String token);
+  FutureEither<InvitePreview> acceptInviteLink(String token);
 }
