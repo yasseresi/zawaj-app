@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/foundation.dart';
 import '../../../data/models/invite_link_model.dart';
 import '../../../data/models/wedding_member_model.dart';
@@ -6,6 +8,7 @@ import '../../../data/repositories/invite_repository_impl.dart';
 import '../../../data/repositories/wedding_repository.dart';
 import '../../../data/repositories/wedding_repository_impl.dart';
 import '../../../shared/enums/app_status.dart';
+import '../../../services/export_service.dart';
 
 class ShareProvider extends ChangeNotifier {
   ShareProvider(
@@ -22,10 +25,14 @@ class ShareProvider extends ChangeNotifier {
   List<InviteLink> links = const [];
   String? errorMessage;
   bool busy = false;
+  ExportFormat? exporting;
 
-  InviteLink? get link => links.where((l) => !l.revoked).isEmpty
-      ? null
-      : links.firstWhere((l) => !l.revoked);
+  InviteLink? get link {
+    for (final candidate in links) {
+      if (!candidate.revoked) return candidate;
+    }
+    return null;
+  }
 
   Future<void> load() async {
     status = AppStatus.loading;
@@ -88,5 +95,19 @@ class ShareProvider extends ChangeNotifier {
     busy = false;
     notifyListeners();
     return ok;
+  }
+
+  Future<File?> export(ExportFormat format) async {
+    exporting = format;
+    errorMessage = null;
+    notifyListeners();
+    final result = await ExportService.instance.download(weddingId, format);
+    final file = result.match((failure) {
+      errorMessage = failure.message;
+      return null;
+    }, (value) => value);
+    exporting = null;
+    notifyListeners();
+    return file;
   }
 }

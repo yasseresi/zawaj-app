@@ -257,5 +257,5 @@
     "empty_title": "لا توجد إشعارات",
     "empty_subtitle": "ستظهر هنا التحديثات على قوائمك"
   },
-  "share": {"title":"مشاركة وتصدير","collaborators":"المتعاونون","username_hint":"أدخل اسم المستخدم","invite_sent":"تم إرسال الدعوة","link_created":"تم إنشاء رابط الدعوة","link_section":"مشاركة رابط الدعوة","link":"رابط","qr":"رمز QR","create_link":"إنشاء رابط دعوة","copied":"تم نسخ الرابط","share_link":"مشاركة الرابط","invite_preview":"دعوة","preview_role":"ستنضم بصلاحية {role}","accept_invite":"قبول الدعوة","login_to_accept":"سجّل الدخول للقبول","role_owner":"المالك","role_editor":"يمكنه التعديل","role_viewer":"يمكنه العرض فقط"}
+  "share": {"title":"مشاركة وتصدير","collaborators":"المتعاونون","username_hint":"أدخل اسم المستخدم","invite_sent":"تم إرسال الدعوة","link_created":"تم إنشاء رابط الدعوة","link_section":"مشاركة رابط الدعوة","link":"رابط","qr":"رمز QR","create_link":"إنشاء رابط دعوة","copied":"تم نسخ الرابط","share_link":"مشاركة الرابط","export_section":"تصدير قائمة المدعوين","export_csv":"CSV","export_xlsx":"Excel","export_pdf":"PDF","invite_preview":"دعوة","preview_role":"ستنضم بصلاحية {role}","accept_invite":"قبول الدعوة","login_to_accept":"سجّل الدخول للقبول","role_owner":"المالك","role_editor":"يمكنه التعديل","role_viewer":"يمكنه العرض فقط"}
 }

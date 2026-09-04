@@ -252,6 +252,10 @@ abstract class  LocaleKeys {
   static const share_create_link = 'share.create_link';
   static const share_copied = 'share.copied';
   static const share_share_link = 'share.share_link';
+  static const share_export_section = 'share.export_section';
+  static const share_export_csv = 'share.export_csv';
+  static const share_export_xlsx = 'share.export_xlsx';
+  static const share_export_pdf = 'share.export_pdf';
   static const share_invite_preview = 'share.invite_preview';
   static const share_preview_role = 'share.preview_role';
   static const share_accept_invite = 'share.accept_invite';

@@ -254,5 +254,5 @@
     "empty_title": "No notifications",
     "empty_subtitle": "Updates to your lists will appear here"
   },
-  "share": {"title":"Share and export","collaborators":"Collaborators","username_hint":"Enter username","invite_sent":"Invitation sent","link_created":"Invite link created","link_section":"Share invite link","link":"Link","qr":"QR code","create_link":"Create invite link","copied":"Link copied","share_link":"Share link","invite_preview":"Invitation","preview_role":"You will join as {role}","accept_invite":"Accept invitation","login_to_accept":"Log in to accept","role_owner":"Owner","role_editor":"Can edit","role_viewer":"View only"}
+  "share": {"title":"Share and export","collaborators":"Collaborators","username_hint":"Enter username","invite_sent":"Invitation sent","link_created":"Invite link created","link_section":"Share invite link","link":"Link","qr":"QR code","create_link":"Create invite link","copied":"Link copied","share_link":"Share link","export_section":"Export guest list","export_csv":"CSV","export_xlsx":"Excel","export_pdf":"PDF","invite_preview":"Invitation","preview_role":"You will join as {role}","accept_invite":"Accept invitation","login_to_accept":"Log in to accept","role_owner":"Owner","role_editor":"Can edit","role_viewer":"View only"}
 }

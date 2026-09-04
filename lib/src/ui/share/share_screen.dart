@@ -165,6 +165,64 @@ class _ShareViewState extends State<_ShareView> {
             icon: const Icon(Icons.share),
             label: Text('share.share_link'.tr())),
       ],
+      SizedBox(height: AppSpacing.lg.h),
+      Text('share.export_section'.tr(),
+          style: context.textTheme.titleMedium
+              ?.copyWith(fontWeight: FontWeight.bold)),
+      SizedBox(height: AppSpacing.sm.h),
+      Wrap(
+        spacing: AppSpacing.sm.w,
+        runSpacing: AppSpacing.sm.h,
+        children: [
+          _ExportButton(
+            format: ExportFormat.csv,
+            label: 'share.export_csv'.tr(),
+            icon: Icons.table_view_outlined,
+          ),
+          _ExportButton(
+            format: ExportFormat.xlsx,
+            label: 'share.export_xlsx'.tr(),
+            icon: Icons.grid_on_outlined,
+          ),
+          _ExportButton(
+            format: ExportFormat.pdf,
+            label: 'share.export_pdf'.tr(),
+            icon: Icons.picture_as_pdf_outlined,
+          ),
+        ],
+      ),
     ]);
+  }
+}
+
+class _ExportButton extends StatelessWidget {
+  const _ExportButton(
+      {required this.format, required this.label, required this.icon});
+
+  final ExportFormat format;
+  final String label;
+  final IconData icon;
+
+  @override
+  Widget build(BuildContext context) {
+    final provider = context.watch<ShareProvider>();
+    final isCurrent = provider.exporting == format;
+    return OutlinedButton.icon(
+      onPressed: provider.exporting == null
+          ? () async {
+              final file = await provider.export(format);
+              if (file == null || !context.mounted) return;
+              await SharePlus.instance.share(
+                ShareParams(files: [XFile(file.path)], text: label),
+              );
+            }
+          : null,
+      icon: isCurrent
+          ? SizedBox.square(
+              dimension: 18.r,
+              child: const CircularProgressIndicator(strokeWidth: 2))
+          : Icon(icon),
+      label: Text(label),
+    );
   }
 }
