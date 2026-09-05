@@ -40,11 +40,13 @@ class _HomeView extends StatelessWidget {
           ),
         ],
       ),
-      floatingActionButton: FloatingActionButton.extended(
-        onPressed: () => _openCreate(context),
-        icon: const Icon(Icons.add_rounded),
-        label: Text('weddings.create'.tr()),
-      ),
+      floatingActionButton: provider.isEmpty
+          ? null
+          : FloatingActionButton.extended(
+              onPressed: () => _openCreate(context),
+              icon: const Icon(Icons.add_rounded),
+              label: Text('weddings.create'.tr()),
+            ),
       body: SafeArea(child: _body(context, provider)),
     );
   }
@@ -156,8 +158,7 @@ class _WeddingTile extends StatelessWidget {
     if (!wedding.role.isOwner) return;
 
     final cs = context.colors;
-    final overlay =
-        Overlay.of(context).context.findRenderObject() as RenderBox;
+    final overlay = Overlay.of(context).context.findRenderObject() as RenderBox;
     final selected = await showMenu<String>(
       context: context,
       position: RelativeRect.fromRect(
@@ -189,8 +190,14 @@ class _WeddingTile extends StatelessWidget {
 
   Future<void> _confirmDelete(BuildContext context) async {
     final provider = context.read<WeddingsProvider>();
-    final confirmed =
-        await showAppDialog<bool>(child: const _DeleteConfirmDialog());
+    final confirmed = await showAdaptiveConfirmDialog(
+      context,
+      title: 'weddings.delete_confirm_title'.tr(),
+      message: 'weddings.delete_confirm_message'.tr(),
+      confirmLabel: 'weddings.delete_confirm_action'.tr(),
+      cancelLabel: 'weddings.cancel'.tr(),
+      isDestructive: true,
+    );
     if (confirmed != true || !context.mounted) return;
 
     final ok = await provider.delete(wedding.id);
@@ -219,7 +226,8 @@ class _SharedBadge extends StatelessWidget {
 
     return Container(
       padding: EdgeInsets.symmetric(horizontal: 8.w, vertical: 2.h),
-      decoration: BoxDecoration(color: bg, borderRadius: BorderRadius.circular(999)),
+      decoration:
+          BoxDecoration(color: bg, borderRadius: BorderRadius.circular(999)),
       child: Text(
         'weddings.shared_badge'.tr(),
         style: context.textTheme.labelSmall
@@ -344,65 +352,6 @@ class _SkeletonList extends StatelessWidget {
               Text('245 ضيف · 12 يونيو 2026', style: tt.bodySmall),
             ],
           ),
-        ),
-      ),
-    );
-  }
-}
-
-/// Centered confirm dialog for wedding deletion, matching the prototype's
-/// `zw-dialog`. Pops `true` on confirm, `false`/null on cancel.
-class _DeleteConfirmDialog extends StatelessWidget {
-  const _DeleteConfirmDialog();
-
-  @override
-  Widget build(BuildContext context) {
-    final cs = context.colors;
-    final tt = context.textTheme;
-
-    return Dialog(
-      backgroundColor: cs.surface,
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20.r)),
-      insetPadding: EdgeInsets.symmetric(horizontal: 32.w),
-      child: Padding(
-        padding: EdgeInsets.all(24.w),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Text(
-              'weddings.delete_confirm_title'.tr(),
-              style: tt.titleMedium?.copyWith(fontWeight: FontWeight.bold),
-              textAlign: TextAlign.center,
-            ),
-            SizedBox(height: 10.h),
-            Text(
-              'weddings.delete_confirm_message'.tr(),
-              style: tt.bodyMedium?.copyWith(color: cs.onSurfaceVariant),
-              textAlign: TextAlign.center,
-            ),
-            SizedBox(height: 24.h),
-            Row(
-              children: [
-                Expanded(
-                  child: AppButton(
-                    label: 'weddings.cancel'.tr(),
-                    variant: ButtonVariant.outline,
-                    isFullWidth: true,
-                    onPressed: () => Navigator.of(context).pop(false),
-                  ),
-                ),
-                SizedBox(width: AppSpacing.md.w),
-                Expanded(
-                  child: AppButton(
-                    label: 'weddings.delete_confirm_action'.tr(),
-                    variant: ButtonVariant.danger,
-                    isFullWidth: true,
-                    onPressed: () => Navigator.of(context).pop(true),
-                  ),
-                ),
-              ],
-            ),
-          ],
         ),
       ),
     );

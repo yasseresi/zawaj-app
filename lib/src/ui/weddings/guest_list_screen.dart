@@ -45,6 +45,16 @@ class _GuestListViewState extends State<_GuestListView> {
   final _debouncer = Debouncer(delay: const Duration(milliseconds: 350));
 
   @override
+  void initState() {
+    super.initState();
+    _rememberLastAccessedList();
+  }
+
+  Future<void> _rememberLastAccessedList() async {
+    await StorageService.instance.setLastAccessedWeddingId(widget.weddingId);
+  }
+
+  @override
   void dispose() {
     _search.dispose();
     _debouncer.dispose();
@@ -62,6 +72,7 @@ class _GuestListViewState extends State<_GuestListView> {
     final added = await showAppSheet<bool>(
       child: AddGuestScreen(weddingId: provider.weddingId),
     );
+    if (!mounted) return;
     if (added ?? false) await provider.load();
   }
 
@@ -282,6 +293,17 @@ class _GuestTile extends StatelessWidget {
   final String weddingId;
   final bool canEdit;
 
+  Future<void> _openGuest(BuildContext context) async {
+    final updated = await context.pushNamed<Object?>(
+      'guest_detail',
+      pathParameters: {'id': weddingId, 'gid': guest.id},
+      extra: GuestDetailArgs(initial: guest, canEdit: canEdit),
+    );
+    if (updated == true && context.mounted) {
+      await context.read<GuestsProvider>().load();
+    }
+  }
+
   /// Confirms then deletes via the provider. Always returns false so the
   /// [Dismissible] snaps back and the provider's list rebuild (on success) is
   /// what removes the tile — avoids a dismissed widget lingering in the tree.
@@ -294,9 +316,10 @@ class _GuestTile extends StatelessWidget {
       confirmLabel: 'guests.delete_action'.tr(),
       isDestructive: true,
     );
-    if (confirmed != true) return false;
+    if (confirmed != true || !context.mounted) return false;
 
     final error = await provider.delete(guest.id);
+    if (!context.mounted) return false;
     showGlobalToast(
       message: error ?? 'guests.deleted_toast'.tr(),
       status: error == null ? 'success' : 'error',
@@ -310,11 +333,7 @@ class _GuestTile extends StatelessWidget {
     final tt = context.textTheme;
 
     final card = AppCard(
-      onTap: () => context.pushNamed(
-        'guest_detail',
-        pathParameters: {'id': weddingId, 'gid': guest.id},
-        extra: GuestDetailArgs(initial: guest, canEdit: canEdit),
-      ),
+      onTap: () => _openGuest(context),
       child: Row(
         children: [
           CircleAvatar(

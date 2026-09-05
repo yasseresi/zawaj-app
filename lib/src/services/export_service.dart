@@ -16,11 +16,17 @@ class ExportService {
 
   final ApiClient _api = ApiClient.instance;
 
-  FutureEither<File> download(String weddingId, ExportFormat format) async {
+  FutureEither<File> download(
+    String weddingId,
+    ExportFormat format, {
+    String? languageCode,
+  }) async {
     final response =
         await _api.raw<List<int>>(() => AppConfig.dio.get<List<int>>(
               '/weddings/$weddingId/export.${format.extension}',
               options: Options(responseType: ResponseType.bytes),
+              queryParameters:
+                  languageCode == null ? null : {'lang': languageCode},
             ));
 
     return response.match(

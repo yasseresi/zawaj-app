@@ -54,23 +54,13 @@ class _ShareViewState extends State<_ShareView> {
   }
 
   Future<void> _confirmRemove(WeddingMember member) async {
-    final confirmed = await showDialog<bool>(
-      context: context,
-      builder: (dialogContext) => AlertDialog(
-        title: Text('share.remove_title'.tr()),
-        content:
-            Text('share.remove_message'.tr(namedArgs: {'name': member.label})),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.of(dialogContext).pop(false),
-            child: Text('actions.cancel'.tr()),
-          ),
-          FilledButton(
-            onPressed: () => Navigator.of(dialogContext).pop(true),
-            child: Text('share.remove_confirm'.tr()),
-          ),
-        ],
-      ),
+    final confirmed = await showAdaptiveConfirmDialog(
+      context,
+      title: 'share.remove_title'.tr(),
+      message: 'share.remove_message'.tr(namedArgs: {'name': member.label}),
+      confirmLabel: 'share.remove_confirm'.tr(),
+      cancelLabel: 'actions.cancel'.tr(),
+      isDestructive: true,
     );
     if ((confirmed ?? false) && mounted) {
       await context.read<ShareProvider>().removeMember(member.userId);
@@ -118,19 +108,76 @@ class _ShareViewState extends State<_ShareView> {
             child: Text(p.errorMessage!,
                 style: TextStyle(color: context.colors.error))),
       SizedBox(height: AppSpacing.md.h),
-      ...p.members.map((m) => AppCard(
+      ...p.members.map((m) {
+        final isOwner = m.role.isOwner;
+        final cardColor = isOwner ? context.colors.primaryContainer : null;
+        final titleColor = isOwner
+            ? context.colors.onPrimaryContainer
+            : context.colors.onSurface;
+        final subtitleColor = isOwner
+            ? context.colors.onPrimaryContainer.withValues(alpha: 0.78)
+            : context.colors.onSurfaceVariant;
+
+        return AppCard(
           margin: EdgeInsets.only(bottom: 8.h),
+          color: cardColor,
+          padding: EdgeInsets.symmetric(horizontal: 8.w, vertical: 4.h),
           child: ListTile(
-              leading: CircleAvatar(child: Text(m.avatarInitial)),
-              title: Text(m.label),
-              subtitle: Text('@${m.username}'),
-              trailing: Row(mainAxisSize: MainAxisSize.min, children: [
-                Text('share.role_${m.role.name}'.tr()),
-                if (!m.role.isOwner)
+            contentPadding: EdgeInsets.zero,
+            dense: true,
+            leading: CircleAvatar(
+              radius: 20.r,
+              backgroundColor: isOwner
+                  ? context.colors.primary
+                  : context.colors.primaryContainer,
+              foregroundColor: isOwner
+                  ? context.colors.onPrimary
+                  : context.colors.onPrimaryContainer,
+              child: Text(m.avatarInitial),
+            ),
+            title: Text(
+              m.label,
+              style: context.textTheme.titleMedium?.copyWith(
+                color: titleColor,
+                fontWeight: FontWeight.w700,
+              ),
+            ),
+            subtitle: Text(
+              '@${m.username}',
+              style:
+                  context.textTheme.bodyMedium?.copyWith(color: subtitleColor),
+            ),
+            trailing: Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Container(
+                  padding: EdgeInsets.symmetric(horizontal: 8.w, vertical: 4.h),
+                  decoration: BoxDecoration(
+                    color: isOwner
+                        ? context.colors.primary.withValues(alpha: 0.14)
+                        : context.colors.surfaceContainerHighest,
+                    borderRadius: BorderRadius.circular(999),
+                  ),
+                  child: Text(
+                    'share.role_${m.role.name}'.tr(),
+                    style: context.textTheme.labelSmall?.copyWith(
+                      color: isOwner
+                          ? context.colors.primary
+                          : context.colors.onSurfaceVariant,
+                      fontWeight: FontWeight.w700,
+                    ),
+                  ),
+                ),
+                if (!isOwner)
                   IconButton(
-                      icon: const Icon(Icons.close),
-                      onPressed: () => _confirmRemove(m))
-              ])))),
+                    icon: const Icon(Icons.close),
+                    onPressed: () => _confirmRemove(m),
+                  ),
+              ],
+            ),
+          ),
+        );
+      }),
       SizedBox(height: AppSpacing.lg.h),
       Text('share.link_section'.tr(),
           style: context.textTheme.titleMedium
@@ -235,7 +282,10 @@ class _ExportButton extends StatelessWidget {
     return OutlinedButton.icon(
       onPressed: provider.exporting == null
           ? () async {
-              final file = await provider.export(format);
+              final file = await provider.export(
+                format,
+                languageCode: context.locale.languageCode,
+              );
               if (file == null || !context.mounted) return;
               await SharePlus.instance.share(
                 ShareParams(files: [XFile(file.path)], text: label),

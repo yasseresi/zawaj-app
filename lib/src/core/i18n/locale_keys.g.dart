@@ -2,7 +2,7 @@
 
 // ignore_for_file: constant_identifier_names
 
-abstract class  LocaleKeys {
+abstract class LocaleKeys {
   static const app_name = 'app_name';
   static const onboarding_skip = 'onboarding.skip';
   static const onboarding_next = 'onboarding.next';
@@ -26,7 +26,8 @@ abstract class  LocaleKeys {
   static const auth_password_required = 'auth.password_required';
   static const auth_password_too_short = 'auth.password_too_short';
   static const auth_confirm_password = 'auth.confirm_password';
-  static const auth_confirm_password_required = 'auth.confirm_password_required';
+  static const auth_confirm_password_required =
+      'auth.confirm_password_required';
   static const auth_passwords_do_not_match = 'auth.passwords_do_not_match';
   static const auth_new_password = 'auth.new_password';
   static const auth_forgot_password = 'auth.forgot_password';
@@ -83,8 +84,10 @@ abstract class  LocaleKeys {
   static const weddings_shared_badge = 'weddings.shared_badge';
   static const weddings_delete = 'weddings.delete';
   static const weddings_delete_confirm_title = 'weddings.delete_confirm_title';
-  static const weddings_delete_confirm_message = 'weddings.delete_confirm_message';
-  static const weddings_delete_confirm_action = 'weddings.delete_confirm_action';
+  static const weddings_delete_confirm_message =
+      'weddings.delete_confirm_message';
+  static const weddings_delete_confirm_action =
+      'weddings.delete_confirm_action';
   static const weddings_cancel = 'weddings.cancel';
   static const weddings_deleted_toast = 'weddings.deleted_toast';
   static const weddings_delete_error = 'weddings.delete_error';
@@ -130,9 +133,11 @@ abstract class  LocaleKeys {
   static const guests_history_empty = 'guests.history_empty';
   static const guests_act_guest_added = 'guests.act_guest_added';
   static const guests_act_guest_updated = 'guests.act_guest_updated';
-  static const guests_act_guest_status_changed = 'guests.act_guest_status_changed';
+  static const guests_act_guest_status_changed =
+      'guests.act_guest_status_changed';
   static const guests_act_note_added = 'guests.act_note_added';
-  static const guests_act_collaborator_joined = 'guests.act_collaborator_joined';
+  static const guests_act_collaborator_joined =
+      'guests.act_collaborator_joined';
   static const guests_act_list_exported = 'guests.act_list_exported';
   static const guests_act_unknown = 'guests.act_unknown';
   static const guests_edit_status_title = 'guests.edit_status_title';
@@ -170,9 +175,11 @@ abstract class  LocaleKeys {
   static const settings_premium_member = 'settings.premium_member';
   static const settings_logout = 'settings.logout';
   static const settings_logout_confirm_title = 'settings.logout_confirm_title';
-  static const settings_logout_confirm_message = 'settings.logout_confirm_message';
+  static const settings_logout_confirm_message =
+      'settings.logout_confirm_message';
   static const settings_coming_soon = 'settings.coming_soon';
-  static const settings_collaboration_section = 'settings.collaboration_section';
+  static const settings_collaboration_section =
+      'settings.collaboration_section';
   static const settings_pending_invites = 'settings.pending_invites';
   static const settings_notifications = 'settings.notifications';
   static const settings = 'settings';
@@ -202,6 +209,11 @@ abstract class  LocaleKeys {
   static const analytics_declined = 'analytics.declined';
   static const analytics_pending = 'analytics.pending';
   static const analytics_rsvp_timeline = 'analytics.rsvp_timeline';
+  static const analytics_choose_list = 'analytics.choose_list';
+  static const analytics_guest_capacity = 'analytics.guest_capacity';
+  static const analytics_registered_guests = 'analytics.registered_guests';
+  static const analytics_people_expected = 'analytics.people_expected';
+  static const analytics_confirmed_seats = 'analytics.confirmed_seats';
   static const analytics = 'analytics';
   static const activity_title = 'activity.title';
   static const activity_today = 'activity.today';
@@ -215,7 +227,8 @@ abstract class  LocaleKeys {
   static const activity_item_confirmed = 'activity.item_confirmed';
   static const activity_item_added = 'activity.item_added';
   static const activity_item_declined = 'activity.item_declined';
-  static const activity_item_collaborator_joined = 'activity.item_collaborator_joined';
+  static const activity_item_collaborator_joined =
+      'activity.item_collaborator_joined';
   static const activity_item_updated = 'activity.item_updated';
   static const activity_item_exported = 'activity.item_exported';
   static const activity_time_hours_ago = 'activity.time_hours_ago';
@@ -231,7 +244,8 @@ abstract class  LocaleKeys {
   static const invites_accept = 'invites.accept';
   static const invites_decline = 'invites.decline';
   static const invites_decline_confirm_title = 'invites.decline_confirm_title';
-  static const invites_decline_confirm_message = 'invites.decline_confirm_message';
+  static const invites_decline_confirm_message =
+      'invites.decline_confirm_message';
   static const invites_accept_success = 'invites.accept_success';
   static const invites_decline_success = 'invites.decline_success';
   static const invites = 'invites';
@@ -267,5 +281,4 @@ abstract class  LocaleKeys {
   static const share_role_editor = 'share.role_editor';
   static const share_role_viewer = 'share.role_viewer';
   static const share = 'share';
-
 }

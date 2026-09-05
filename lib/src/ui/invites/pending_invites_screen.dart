@@ -142,38 +142,29 @@ class _PendingInvitesView extends StatelessWidget {
   }
 
   Future<void> _handleAccept(BuildContext context, PendingInvite invite) async {
-    final success = await context.read<PendingInvitesProvider>().acceptInvite(invite.id);
+    final success =
+        await context.read<PendingInvitesProvider>().acceptInvite(invite.id);
     if (success && context.mounted) {
       context.showSuccessSnackBar('invites.accept_success'.tr());
     }
   }
 
-  Future<void> _showDeclineDialog(BuildContext context, PendingInvite invite) async {
-    final confirmed = await showDialog<bool>(
-      context: context,
-      builder: (ctx) => AlertDialog(
-        title: Text('invites.decline_confirm_title'.tr()),
-        content: Text(
-          'invites.decline_confirm_message'.tr(namedArgs: {'event': invite.event}),
-        ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.of(ctx).pop(false),
-            child: Text('actions.cancel'.tr()),
-          ),
-          TextButton(
-            style: TextButton.styleFrom(
-              foregroundColor: ctx.colors.error,
-            ),
-            onPressed: () => Navigator.of(ctx).pop(true),
-            child: Text('invites.decline'.tr()),
-          ),
-        ],
+  Future<void> _showDeclineDialog(
+      BuildContext context, PendingInvite invite) async {
+    final confirmed = await showAdaptiveConfirmDialog(
+      context,
+      title: 'invites.decline_confirm_title'.tr(),
+      message: 'invites.decline_confirm_message'.tr(
+        namedArgs: {'event': invite.event},
       ),
+      confirmLabel: 'invites.decline'.tr(),
+      cancelLabel: 'actions.cancel'.tr(),
+      isDestructive: true,
     );
 
     if ((confirmed ?? false) && context.mounted) {
-      final success = await context.read<PendingInvitesProvider>().declineInvite(invite.id);
+      final success =
+          await context.read<PendingInvitesProvider>().declineInvite(invite.id);
       if (success && context.mounted) {
         context.showSuccessSnackBar('invites.decline_success'.tr());
       }

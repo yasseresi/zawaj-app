@@ -211,7 +211,12 @@
     "confirmed": "Confirmé",
     "declined": "Décliné",
     "pending": "En attente",
-    "rsvp_timeline": "Chronologie des réponses"
+    "rsvp_timeline": "Chronologie des réponses",
+    "choose_list": "Choisir une liste",
+    "guest_capacity": "Capacité d'accueil",
+    "registered_guests": "Invités enregistrés",
+    "people_expected": "Personnes attendues",
+    "confirmed_seats": "Places confirmées"
   },
   "activity": {
     "title": "Journal d'activité",

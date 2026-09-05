@@ -4,6 +4,7 @@ import '../../../data/models/wedding_model.dart';
 import '../../../data/repositories/wedding_repository.dart';
 import '../../../data/repositories/wedding_repository_impl.dart';
 import '../../../shared/enums/app_status.dart';
+import '../../../services/storage_service.dart';
 
 /// Holds the "my weddings" list state for the home screen. Screens bind via
 /// `context.watch` and render off [status] (loading → skeleton, success+empty →
@@ -16,10 +17,12 @@ class WeddingsProvider extends ChangeNotifier {
 
   AppStatus _status = AppStatus.initial;
   List<Wedding> _weddings = const [];
+  String? _selectedWeddingId;
   String? _errorMessage;
 
   AppStatus get status => _status;
   List<Wedding> get weddings => _weddings;
+  String? get selectedWeddingId => _selectedWeddingId;
   String? get errorMessage => _errorMessage;
 
   /// True only once a load has succeeded with no weddings — distinguishes the
@@ -41,10 +44,23 @@ class WeddingsProvider extends ChangeNotifier {
       },
       (weddings) {
         _weddings = weddings;
+        final lastId = StorageService.instance.lastAccessedWeddingId;
+        _selectedWeddingId = weddings.any((w) => w.id == lastId)
+            ? lastId
+            : weddings.isEmpty
+                ? null
+                : weddings.first.id;
         _status = AppStatus.success;
         notifyListeners();
       },
     );
+  }
+
+  Future<void> selectWedding(String id) async {
+    if (!_weddings.any((w) => w.id == id) || _selectedWeddingId == id) return;
+    _selectedWeddingId = id;
+    notifyListeners();
+    await StorageService.instance.setLastAccessedWeddingId(id);
   }
 
   /// Delete a wedding (owner-only, server-enforced). On success the row is

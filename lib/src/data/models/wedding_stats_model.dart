@@ -28,9 +28,14 @@ class WeddingStats extends Equatable {
   }
 
   factory WeddingStats.fromJson(dynamic data) {
-    final map = data is Map ? data.cast<String, dynamic>() : const <String, dynamic>{};
-    final breakdown = map['status_breakdown'];
-    final b = breakdown is Map ? breakdown.cast<String, dynamic>() : const <String, dynamic>{};
+    final map =
+        data is Map ? data.cast<String, dynamic>() : const <String, dynamic>{};
+    // The API currently returns `by_status`; accept the earlier
+    // `status_breakdown` shape as well for compatibility with older builds.
+    final breakdown = map['by_status'] ?? map['status_breakdown'];
+    final b = breakdown is Map
+        ? breakdown.cast<String, dynamic>()
+        : const <String, dynamic>{};
     return WeddingStats(
       totalGuests: _int(map['total_guests']),
       confirmed: _int(b['confirmed']),

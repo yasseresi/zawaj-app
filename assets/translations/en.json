@@ -211,7 +211,12 @@
     "confirmed": "Confirmed",
     "declined": "Declined",
     "pending": "Pending",
-    "rsvp_timeline": "RSVP Timeline"
+    "rsvp_timeline": "RSVP Timeline",
+    "choose_list": "Choose a list",
+    "guest_capacity": "Guest capacity",
+    "registered_guests": "Registered guests",
+    "people_expected": "People expected",
+    "confirmed_seats": "Confirmed seats"
   },
   "activity": {
     "title": "Activity Log",

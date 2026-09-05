@@ -19,6 +19,7 @@ import '../ui/shell/main_navigation_shell.dart';
 import '../ui/weddings/create_wedding_screen.dart';
 import '../ui/weddings/guest_detail_screen.dart';
 import '../ui/weddings/guest_list_screen.dart';
+import '../services/storage_service.dart';
 import 'app_routes.dart';
 import 'global_navigator.dart';
 
@@ -168,7 +169,14 @@ String? _guard(BuildContext context, GoRouterState state) {
   if (status == SessionStatus.unknown) return null;
 
   if (status == SessionStatus.unauthenticated) {
-    return isPublic ? null : AppRoutes.onboarding;
+    final onboardingCompleted = StorageService.instance.hasCompletedOnboarding;
+    if (location == AppRoutes.onboarding) {
+      return onboardingCompleted ? AppRoutes.login : null;
+    }
+    if (!onboardingCompleted) {
+      return isPublic ? null : AppRoutes.onboarding;
+    }
+    return isPublic ? null : AppRoutes.login;
   }
 
   if (pendingInviteToken != null && !isInvitePreview) {

@@ -62,7 +62,8 @@ class GuestService {
             'relationship': relationship,
           if (status != null && status.isNotEmpty) 'status': status,
           if (companions != null) 'companions': companions,
-          if (tableLabel != null && tableLabel.isNotEmpty) 'table_label': tableLabel,
+          if (tableLabel != null && tableLabel.isNotEmpty)
+            'table_label': tableLabel,
           if (meal != null && meal.isNotEmpty) 'meal': meal,
           if (note != null && note.isNotEmpty) 'note': note,
         },
@@ -71,7 +72,8 @@ class GuestService {
 
   /// `PATCH /weddings/:id/guests/:gid/status` → the updated guest (200,
   /// editor+). [status] is a wire value (`pending|confirmed|declined`).
-  FutureEither<Guest> setStatus(String weddingId, String guestId, String status) =>
+  FutureEither<Guest> setStatus(
+          String weddingId, String guestId, String status) =>
       _api.patch<Guest>(
         '/weddings/$weddingId/guests/$guestId/status',
         body: {'status': status},
@@ -87,7 +89,8 @@ class GuestService {
       );
 
   /// `POST /weddings/:id/guests/:gid/notes` → the created note (201, editor+).
-  FutureEither<GuestNote> addNote(String weddingId, String guestId, String body) =>
+  FutureEither<GuestNote> addNote(
+          String weddingId, String guestId, String body) =>
       _api.post<GuestNote>(
         '/weddings/$weddingId/guests/$guestId/notes',
         body: {'body': body},

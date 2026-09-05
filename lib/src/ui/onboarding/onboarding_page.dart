@@ -27,11 +27,18 @@ class _OnboardingPageState extends State<OnboardingPage> {
 
   bool get _isLast => _index == _slides.length - 1;
 
+  Future<void> _finishOnboarding() async {
+    await StorageService.instance.markOnboardingCompleted();
+    if (!mounted) return;
+    context.go(AppRoutes.login);
+  }
+
   void _next() {
     if (_isLast) {
-      context.go(AppRoutes.login);
+      _finishOnboarding();
     } else {
-      _controller.nextPage(duration: AppDurations.normal, curve: AppCurves.standard);
+      _controller.nextPage(
+          duration: AppDurations.normal, curve: AppCurves.standard);
     }
   }
 
@@ -47,7 +54,7 @@ class _OnboardingPageState extends State<OnboardingPage> {
             Align(
               alignment: AlignmentDirectional.centerEnd,
               child: TextButton(
-                onPressed: () => context.go(AppRoutes.login),
+                onPressed: _finishOnboarding,
                 child: Text('onboarding.skip'.tr(),
                     style: tt.labelLarge?.copyWith(color: cs.onSurfaceVariant)),
               ),
@@ -75,11 +82,13 @@ class _OnboardingPageState extends State<OnboardingPage> {
                         SizedBox(height: AppSpacing.xxl.h),
                         Text('onboarding.title_${s.key}'.tr(),
                             textAlign: TextAlign.center,
-                            style: tt.headlineSmall?.copyWith(fontWeight: FontWeight.bold)),
+                            style: tt.headlineSmall
+                                ?.copyWith(fontWeight: FontWeight.bold)),
                         SizedBox(height: AppSpacing.md.h),
                         Text('onboarding.subtitle_${s.key}'.tr(),
                             textAlign: TextAlign.center,
-                            style: tt.bodyMedium?.copyWith(color: cs.onSurfaceVariant, height: 1.5)),
+                            style: tt.bodyMedium?.copyWith(
+                                color: cs.onSurfaceVariant, height: 1.5)),
                       ],
                     ),
                   );
@@ -103,7 +112,9 @@ class _OnboardingPageState extends State<OnboardingPage> {
                   ),
                   SizedBox(height: AppSpacing.xl.h),
                   AppButton(
-                    label: _isLast ? 'onboarding.get_started'.tr() : 'onboarding.next'.tr(),
+                    label: _isLast
+                        ? 'onboarding.get_started'.tr()
+                        : 'onboarding.next'.tr(),
                     isFullWidth: true,
                     onPressed: _next,
                   ),

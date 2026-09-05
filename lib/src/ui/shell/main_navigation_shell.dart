@@ -48,6 +48,9 @@ class DashboardTabPage extends StatelessWidget {
       builder: (weddingId) => AnalyticsScreen(
         key: ValueKey(weddingId),
         weddingId: weddingId,
+        weddings: provider.weddings,
+        selectedWeddingId: provider.selectedWeddingId,
+        onWeddingSelected: provider.selectWedding,
       ),
     );
   }
@@ -95,7 +98,9 @@ Widget _buildWeddingScopedTab({
       if (provider.weddings.isEmpty) {
         return _NoWeddingYet(icon: icon, titleKey: titleKey);
       }
-      return builder(provider.weddings.first.id);
+      final weddingId =
+          provider.selectedWeddingId ?? provider.weddings.first.id;
+      return builder(weddingId);
   }
 }
 

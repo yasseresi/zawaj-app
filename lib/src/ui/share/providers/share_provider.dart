@@ -97,11 +97,15 @@ class ShareProvider extends ChangeNotifier {
     return ok;
   }
 
-  Future<File?> export(ExportFormat format) async {
+  Future<File?> export(ExportFormat format, {String? languageCode}) async {
     exporting = format;
     errorMessage = null;
     notifyListeners();
-    final result = await ExportService.instance.download(weddingId, format);
+    final result = await ExportService.instance.download(
+      weddingId,
+      format,
+      languageCode: languageCode,
+    );
     final file = result.match((failure) {
       errorMessage = failure.message;
       return null;

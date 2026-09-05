@@ -209,32 +209,18 @@ class _SettingsView extends StatelessWidget {
     context.read<SettingsProvider>().setLocale(locale);
   }
 
-  void _showLogoutDialog(BuildContext context) {
-    showDialog<void>(
-      context: context,
-      builder: (ctx) {
-        return AlertDialog(
-          title: Text('settings.logout_confirm_title'.tr()),
-          content: Text('settings.logout_confirm_message'.tr()),
-          actions: [
-            TextButton(
-              onPressed: () => Navigator.pop(ctx),
-              child: Text('actions.cancel'.tr()),
-            ),
-            TextButton(
-              style: TextButton.styleFrom(
-                foregroundColor: ctx.colors.error,
-              ),
-              onPressed: () async {
-                Navigator.pop(ctx);
-                await context.read<SettingsProvider>().logout();
-              },
-              child: Text('settings.logout'.tr()),
-            ),
-          ],
-        );
-      },
+  Future<void> _showLogoutDialog(BuildContext context) async {
+    final confirmed = await showAdaptiveConfirmDialog(
+      context,
+      title: 'settings.logout_confirm_title'.tr(),
+      message: 'settings.logout_confirm_message'.tr(),
+      confirmLabel: 'settings.logout'.tr(),
+      cancelLabel: 'actions.cancel'.tr(),
+      isDestructive: true,
     );
+    if ((confirmed ?? false) && context.mounted) {
+      await context.read<SettingsProvider>().logout();
+    }
   }
 }
 

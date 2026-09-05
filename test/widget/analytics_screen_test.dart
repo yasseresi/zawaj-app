@@ -8,7 +8,7 @@ import 'package:zawaj_app/src/shared/widgets/app_empty_state.dart';
 import 'package:zawaj_app/src/theme/theme.dart';
 import 'package:zawaj_app/src/ui/analytics/analytics_screen.dart';
 import 'package:zawaj_app/src/ui/analytics/widgets/donut_chart_widget.dart';
-import 'package:zawaj_app/src/ui/analytics/widgets/timeline_chart_widget.dart';
+import 'package:zawaj_app/src/ui/analytics/widgets/guest_capacity_chart_widget.dart';
 import 'package:zawaj_app/src/utils/failure.dart';
 import 'package:zawaj_app/src/utils/typedefs.dart';
 
@@ -55,11 +55,10 @@ void main() {
     expect(find.text('79'), findsWidgets);
 
     expect(find.byType(DonutChartWidget), findsOneWidget);
-    expect(find.byType(TimelineChartWidget), findsOneWidget);
+    expect(find.byType(GuestCapacityChartWidget), findsOneWidget);
   });
 
-  testWidgets('shows empty state when total guests count is 0',
-      (tester) async {
+  testWidgets('shows empty state when total guests count is 0', (tester) async {
     final repo = _FakeStatsRepository(
       result: const Right(WeddingStats()),
     );

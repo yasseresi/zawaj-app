@@ -60,7 +60,7 @@ class _GuestDetailView extends StatelessWidget {
     final picked = await showAppSheet<RsvpStatus>(
       child: EditStatusSheet(current: current),
     );
-    if (picked == null || picked == current) return;
+    if (picked == null || picked == current || !context.mounted) return;
     final ok = await provider.setStatus(picked);
     if (!context.mounted) return;
     if (!ok) {
@@ -70,12 +70,13 @@ class _GuestDetailView extends StatelessWidget {
       return;
     }
     showToast(context, message: 'guests.status_toast'.tr(), status: 'success');
+    Navigator.of(context).pop(true);
   }
 
   Future<void> _addNote(BuildContext context) async {
     final provider = context.read<GuestDetailProvider>();
     final body = await showAppSheet<String>(child: const AddNoteSheet());
-    if (body == null || body.isEmpty) return;
+    if (body == null || body.isEmpty || !context.mounted) return;
     final ok = await provider.addNote(body);
     if (!context.mounted) return;
     if (!ok) {
@@ -84,7 +85,8 @@ class _GuestDetailView extends StatelessWidget {
           status: 'error');
       return;
     }
-    showToast(context, message: 'guests.note_added_toast'.tr(), status: 'success');
+    showToast(context,
+        message: 'guests.note_added_toast'.tr(), status: 'success');
   }
 
   @override
@@ -156,7 +158,8 @@ class _GuestDetailView extends StatelessWidget {
           SizedBox(height: AppSpacing.lg.h),
           _InfoCard(guest: guest),
           SizedBox(height: AppSpacing.lg.h),
-          _SectionTitle(title: 'guests.notes_title'.tr(), count: detail?.notes.length),
+          _SectionTitle(
+              title: 'guests.notes_title'.tr(), count: detail?.notes.length),
           SizedBox(height: AppSpacing.sm.h),
           _Notes(notes: detail?.notes ?? const []),
           SizedBox(height: AppSpacing.lg.h),
@@ -219,9 +222,17 @@ class _InfoCard extends StatelessWidget {
     final rows = <(IconData, String, String)>[
       if (guest.contact.isNotEmpty)
         (Icons.mail_outline, 'guests.info_contact'.tr(), guest.contact),
-      (Icons.group_outlined, 'guests.info_companions'.tr(), '${guest.companions}'),
+      (
+        Icons.group_outlined,
+        'guests.info_companions'.tr(),
+        '${guest.companions}'
+      ),
       if (guest.tableLabel.isNotEmpty)
-        (Icons.table_restaurant_outlined, 'guests.info_table'.tr(), guest.tableLabel),
+        (
+          Icons.table_restaurant_outlined,
+          'guests.info_table'.tr(),
+          guest.tableLabel
+        ),
       if (guest.meal.isNotEmpty)
         (Icons.restaurant_outlined, 'guests.info_meal'.tr(), guest.meal),
     ];
@@ -240,7 +251,8 @@ class _InfoCard extends StatelessWidget {
 }
 
 class _InfoRow extends StatelessWidget {
-  const _InfoRow({required this.icon, required this.label, required this.value});
+  const _InfoRow(
+      {required this.icon, required this.label, required this.value});
   final IconData icon;
   final String label;
   final String value;
@@ -279,9 +291,11 @@ class _SectionTitle extends StatelessWidget {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
-        Text(title, style: tt.titleMedium?.copyWith(fontWeight: FontWeight.bold)),
+        Text(title,
+            style: tt.titleMedium?.copyWith(fontWeight: FontWeight.bold)),
         if (count != null && count! > 0)
-          Text('$count', style: tt.bodySmall?.copyWith(color: cs.onSurfaceVariant)),
+          Text('$count',
+              style: tt.bodySmall?.copyWith(color: cs.onSurfaceVariant)),
       ],
     );
   }
@@ -362,9 +376,11 @@ class _TimelineRow extends StatelessWidget {
   static String _label(ActivityAction a) => switch (a) {
         ActivityAction.guestAdded => 'guests.act_guest_added'.tr(),
         ActivityAction.guestUpdated => 'guests.act_guest_updated'.tr(),
-        ActivityAction.guestStatusChanged => 'guests.act_guest_status_changed'.tr(),
+        ActivityAction.guestStatusChanged =>
+          'guests.act_guest_status_changed'.tr(),
         ActivityAction.noteAdded => 'guests.act_note_added'.tr(),
-        ActivityAction.collaboratorJoined => 'guests.act_collaborator_joined'.tr(),
+        ActivityAction.collaboratorJoined =>
+          'guests.act_collaborator_joined'.tr(),
         ActivityAction.listExported => 'guests.act_list_exported'.tr(),
         ActivityAction.unknown => 'guests.act_unknown'.tr(),
       };
@@ -383,7 +399,8 @@ class _TimelineRow extends StatelessWidget {
             child: Container(
               width: 10.r,
               height: 10.r,
-              decoration: BoxDecoration(color: cs.primary, shape: BoxShape.circle),
+              decoration:
+                  BoxDecoration(color: cs.primary, shape: BoxShape.circle),
             ),
           ),
           SizedBox(width: AppSpacing.sm.w),
@@ -410,7 +427,8 @@ class _EmptyLine extends StatelessWidget {
       padding: EdgeInsets.symmetric(vertical: AppSpacing.md.h),
       child: Text(
         text,
-        style: context.textTheme.bodyMedium?.copyWith(color: cs.onSurfaceVariant),
+        style:
+            context.textTheme.bodyMedium?.copyWith(color: cs.onSurfaceVariant),
         textAlign: TextAlign.center,
       ),
     );

@@ -18,14 +18,10 @@ class AnalyticsProvider extends ChangeNotifier {
   AppStatus _status = AppStatus.initial;
   WeddingStats _stats = const WeddingStats();
   String? _errorMessage;
-  final List<int> _timelineData = const [12, 28, 45, 68, 92, 118, 142];
-
   String get weddingId => _weddingId;
   AppStatus get status => _status;
   WeddingStats get stats => _stats;
   String? get errorMessage => _errorMessage;
-  List<int> get timelineData => _timelineData;
-
   int get totalGuests => _stats.totalGuests;
   int get confirmedCount => _stats.confirmed;
   int get declinedCount => _stats.declined;

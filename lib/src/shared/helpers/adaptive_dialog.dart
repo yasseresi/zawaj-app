@@ -5,7 +5,7 @@ import '../../imports/core_imports.dart';
 /// iOS → [CupertinoAlertDialog]; everything else → Material [AlertDialog].
 ///
 /// Returns `true` when the confirm action is tapped, `false`/`null` otherwise.
-/// [isDestructive] tints the confirm action with the error color.
+/// [isDestructive] uses the platform's destructive action treatment.
 Future<bool?> showAdaptiveConfirmDialog(
   BuildContext context, {
   required String title,
@@ -44,19 +44,35 @@ Future<bool?> showAdaptiveConfirmDialog(
   return showDialog<bool>(
     context: context,
     builder: (ctx) => AlertDialog(
-      title: Text(title),
-      content: Text(message),
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(28),
+      ),
+      title: Text(title, textAlign: TextAlign.center),
+      content: Text(message, textAlign: TextAlign.center),
+      actionsPadding: const EdgeInsets.fromLTRB(24, 0, 24, 24),
       actions: [
-        TextButton(
-          onPressed: () => Navigator.of(ctx).pop(false),
-          child: Text(cancel),
-        ),
-        TextButton(
-          style: isDestructive
-              ? TextButton.styleFrom(foregroundColor: ctx.colors.error)
-              : null,
-          onPressed: () => Navigator.of(ctx).pop(true),
-          child: Text(confirmLabel),
+        Row(
+          children: [
+            Expanded(
+              child: OutlinedButton(
+                onPressed: () => Navigator.of(ctx).pop(false),
+                child: Text(cancel),
+              ),
+            ),
+            const SizedBox(width: 12),
+            Expanded(
+              child: FilledButton(
+                style: isDestructive
+                    ? FilledButton.styleFrom(
+                        backgroundColor: ctx.colors.error,
+                        foregroundColor: ctx.colors.onError,
+                      )
+                    : null,
+                onPressed: () => Navigator.of(ctx).pop(true),
+                child: Text(confirmLabel),
+              ),
+            ),
+          ],
         ),
       ],
     ),

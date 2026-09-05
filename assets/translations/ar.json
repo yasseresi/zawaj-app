@@ -214,7 +214,12 @@
     "confirmed": "مؤكد",
     "declined": "معتذر",
     "pending": "معلق",
-    "rsvp_timeline": "مسار الردود"
+    "rsvp_timeline": "مسار الردود",
+    "choose_list": "اختر قائمة",
+    "guest_capacity": "حجم الحضور المتوقع",
+    "registered_guests": "الضيوف المسجلون",
+    "people_expected": "إجمالي الأشخاص المتوقعين",
+    "confirmed_seats": "الأشخاص المؤكد حضورهم"
   },
   "activity": {
     "title": "سجل النشاط",

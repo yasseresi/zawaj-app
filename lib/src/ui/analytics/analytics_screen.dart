@@ -4,21 +4,29 @@ import 'package:provider/provider.dart';
 import 'package:skeletonizer/skeletonizer.dart';
 
 import 'package:zawaj_app/src/core/i18n/locale_keys.g.dart';
+import '../../data/models/wedding_model.dart';
 import '../../data/repositories/stats_repository.dart';
 import '../../extensions/context_extension.dart';
+import '../../shared/helpers/show_app_sheet.dart';
 import '../../shared/widgets/widgets.dart';
 import 'providers/analytics_provider.dart';
 import 'widgets/donut_chart_widget.dart';
-import 'widgets/timeline_chart_widget.dart';
+import 'widgets/guest_capacity_chart_widget.dart';
 
 class AnalyticsScreen extends StatelessWidget {
   const AnalyticsScreen({
     super.key,
     required this.weddingId,
+    this.weddings = const [],
+    this.selectedWeddingId,
+    this.onWeddingSelected,
     this.repository,
   });
 
   final String weddingId;
+  final List<Wedding> weddings;
+  final String? selectedWeddingId;
+  final ValueChanged<String>? onWeddingSelected;
   final StatsRepository? repository;
 
   @override
@@ -28,13 +36,28 @@ class AnalyticsScreen extends StatelessWidget {
         weddingId: weddingId,
         repository: repository,
       )..load(),
-      child: const _AnalyticsView(),
+      child: _AnalyticsView(
+        weddingId: weddingId,
+        weddings: weddings,
+        selectedWeddingId: selectedWeddingId,
+        onWeddingSelected: onWeddingSelected,
+      ),
     );
   }
 }
 
 class _AnalyticsView extends StatelessWidget {
-  const _AnalyticsView();
+  const _AnalyticsView({
+    required this.weddingId,
+    required this.weddings,
+    required this.selectedWeddingId,
+    required this.onWeddingSelected,
+  });
+
+  final String weddingId;
+  final List<Wedding> weddings;
+  final String? selectedWeddingId;
+  final ValueChanged<String>? onWeddingSelected;
 
   @override
   Widget build(BuildContext context) {
@@ -64,6 +87,7 @@ class _AnalyticsView extends StatelessWidget {
 
   Widget _buildHeader(BuildContext context) {
     final cs = Theme.of(context).colorScheme;
+    final selected = _selectedWedding;
     // Only when pushed on top of the shell (e.g. a per-wedding view); the
     // Dashboard tab root can't pop, so it shows no back control.
     final canPop = Navigator.of(context).canPop();
@@ -93,32 +117,47 @@ class _AnalyticsView extends StatelessWidget {
             )
           else
             const SizedBox(width: 40, height: 40),
-          Text(
-            LocaleKeys.analytics_title.tr(),
-            style: TextStyle(
-              fontSize: 22,
-              fontWeight: FontWeight.bold,
-              color: cs.onSurface,
-              fontFamily: 'serif',
+          Expanded(
+            child: Text(
+              selected?.name ?? LocaleKeys.analytics_title.tr(),
+              textAlign: TextAlign.center,
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
+              style: TextStyle(
+                fontSize: 22,
+                fontWeight: FontWeight.bold,
+                color: cs.onSurface,
+                fontFamily: 'serif',
+              ),
             ),
           ),
-          Container(
-            width: 40,
-            height: 40,
-            decoration: BoxDecoration(
-              color: cs.surfaceContainerHighest,
-              borderRadius: BorderRadius.circular(12),
-              border: Border.all(color: cs.outlineVariant),
-            ),
-            child: Icon(
-              Icons.filter_list,
-              size: 20,
-              color: cs.onSurface,
-            ),
+          IconButton(
+            tooltip: LocaleKeys.analytics_choose_list.tr(),
+            icon: const Icon(Icons.filter_list),
+            onPressed:
+                weddings.length < 2 ? null : () => _chooseWedding(context),
           ),
         ],
       ),
     );
+  }
+
+  Wedding? get _selectedWedding {
+    final id = selectedWeddingId ?? weddingId;
+    for (final wedding in weddings) {
+      if (wedding.id == id) return wedding;
+    }
+    return null;
+  }
+
+  Future<void> _chooseWedding(BuildContext context) async {
+    final selectedId = await showAppSheet<String>(
+      child: _WeddingPickerSheet(
+        weddings: weddings,
+        selectedId: selectedWeddingId ?? weddingId,
+      ),
+    );
+    if (selectedId != null) onWeddingSelected?.call(selectedId);
   }
 
   Widget _buildLoadingState() {
@@ -250,7 +289,7 @@ class _AnalyticsView extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  LocaleKeys.analytics_rsvp_timeline.tr(),
+                  LocaleKeys.analytics_guest_capacity.tr(),
                   style: TextStyle(
                     fontSize: 17,
                     fontWeight: FontWeight.bold,
@@ -259,8 +298,10 @@ class _AnalyticsView extends StatelessWidget {
                   ),
                 ),
                 const SizedBox(height: 16),
-                TimelineChartWidget(
-                  data: provider.timelineData,
+                GuestCapacityChartWidget(
+                  totalGuests: provider.totalGuests,
+                  totalPeople: provider.stats.totalPeople,
+                  confirmedSeats: provider.stats.confirmedSeats,
                 ),
               ],
             ),
@@ -269,6 +310,43 @@ class _AnalyticsView extends StatelessWidget {
       ),
     );
   }
+}
+
+class _WeddingPickerSheet extends StatelessWidget {
+  const _WeddingPickerSheet({required this.weddings, required this.selectedId});
+
+  final List<Wedding> weddings;
+  final String selectedId;
+
+  @override
+  Widget build(BuildContext context) => SafeArea(
+        child: Padding(
+          padding: const EdgeInsets.fromLTRB(20, 12, 20, 20),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              Text(LocaleKeys.analytics_choose_list.tr(),
+                  style: context.textTheme.titleLarge
+                      ?.copyWith(fontWeight: FontWeight.bold)),
+              const SizedBox(height: 12),
+              for (final wedding in weddings)
+                ListTile(
+                  contentPadding: EdgeInsets.zero,
+                  title: Text(wedding.name),
+                  subtitle:
+                      Text('weddings.guests_count'.plural(wedding.guestCount)),
+                  leading: Icon(Icons.event_note_outlined,
+                      color: context.colors.primary),
+                  trailing: wedding.id == selectedId
+                      ? Icon(Icons.check_circle, color: context.colors.primary)
+                      : null,
+                  onTap: () => Navigator.of(context).pop(wedding.id),
+                ),
+            ],
+          ),
+        ),
+      );
 }
 
 class _StatCard extends StatelessWidget {
