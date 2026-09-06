@@ -18,7 +18,13 @@ import 'package:zawaj_app/src/utils/typedefs.dart';
 
 class _FakeAuthRepository implements AuthRepository {
   @override
-  FutureEither<AuthResult> login({required String username, required String password}) async =>
+  FutureEitherVoid changePassword(
+          {required String oldPassword, required String newPassword}) async =>
+      const Right(null);
+
+  @override
+  FutureEither<AuthResult> login(
+          {required String username, required String password}) async =>
       const Left(AuthFailure('nope'));
   @override
   FutureEither<AuthResult> register({

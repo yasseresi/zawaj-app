@@ -3,14 +3,18 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:zawaj_app/src/utils/error_handler.dart';
 import 'package:zawaj_app/src/utils/failure.dart';
 
-DioException _dioWith({int? status, dynamic data, DioExceptionType type = DioExceptionType.badResponse}) {
+DioException _dioWith(
+    {int? status,
+    dynamic data,
+    DioExceptionType type = DioExceptionType.badResponse}) {
   final req = RequestOptions(path: '/x');
   return DioException(
     requestOptions: req,
     type: type,
     response: status == null && data == null
         ? null
-        : Response<dynamic>(requestOptions: req, statusCode: status, data: data),
+        : Response<dynamic>(
+            requestOptions: req, statusCode: status, data: data),
   );
 }
 
@@ -21,7 +25,10 @@ void main() {
         status: 400,
         data: {
           'data': null,
-          'error': {'code': 'validation_error', 'message': 'username too short'},
+          'error': {
+            'code': 'validation_error',
+            'message': 'username too short'
+          },
         },
       ));
       expect(f, isA<ValidationFailure>());
@@ -32,7 +39,12 @@ void main() {
     test('unauthenticated -> AuthFailure', () {
       final f = AppErrorHandler.toFailure(_dioWith(
         status: 401,
-        data: {'error': {'code': 'unauthenticated', 'message': 'invalid username or password'}},
+        data: {
+          'error': {
+            'code': 'unauthenticated',
+            'message': 'invalid username or password'
+          }
+        },
       ));
       expect(f, isA<AuthFailure>());
     });
@@ -40,7 +52,9 @@ void main() {
     test('conflict -> ConflictFailure', () {
       final f = AppErrorHandler.toFailure(_dioWith(
         status: 409,
-        data: {'error': {'code': 'conflict', 'message': 'username already taken'}},
+        data: {
+          'error': {'code': 'conflict', 'message': 'username already taken'}
+        },
       ));
       expect(f, isA<ConflictFailure>());
     });
@@ -48,7 +62,9 @@ void main() {
     test('locked -> LockedFailure', () {
       final f = AppErrorHandler.toFailure(_dioWith(
         status: 423,
-        data: {'error': {'code': 'locked', 'message': 'account locked'}},
+        data: {
+          'error': {'code': 'locked', 'message': 'account locked'}
+        },
       ));
       expect(f, isA<LockedFailure>());
     });
@@ -56,12 +72,14 @@ void main() {
 
   group('AppErrorHandler.toFailure — transport', () {
     test('connection timeout -> NetworkFailure', () {
-      final f = AppErrorHandler.toFailure(_dioWith(type: DioExceptionType.connectionTimeout));
+      final f = AppErrorHandler.toFailure(
+          _dioWith(type: DioExceptionType.connectionTimeout));
       expect(f, isA<NetworkFailure>());
     });
 
     test('connection error -> NetworkFailure', () {
-      final f = AppErrorHandler.toFailure(_dioWith(type: DioExceptionType.connectionError));
+      final f = AppErrorHandler.toFailure(
+          _dioWith(type: DioExceptionType.connectionError));
       expect(f, isA<NetworkFailure>());
     });
 
@@ -74,5 +92,38 @@ void main() {
   test('non-Dio error -> UnknownFailure', () {
     final f = AppErrorHandler.toFailure(StateError('boom'));
     expect(f, isA<UnknownFailure>());
+  });
+
+  test('maps common auth and sharing failures to stable UI keys', () {
+    expect(
+      AppErrorHandler.userMessage(
+        const ConflictFailure('username already taken'),
+      ),
+      'auth.username_taken',
+    );
+    expect(
+      AppErrorHandler.userMessage(
+        const NotFoundFailure('user not found'),
+        context: 'share_username',
+      ),
+      'share.username_not_found',
+    );
+  });
+
+  test('maps stable backend error codes without inspecting message text', () {
+    final f = AppErrorHandler.toFailure(_dioWith(
+      status: 409,
+      data: {
+        'error': {
+          'code': 'invite_pending',
+          'message': 'localized server wording',
+        },
+      },
+    ));
+    expect(f.code, 'invite_pending');
+    expect(
+      AppErrorHandler.userMessage(f, context: 'share_username'),
+      'share.invite_already_pending',
+    );
   });
 }

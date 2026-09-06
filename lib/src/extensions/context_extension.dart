@@ -4,6 +4,7 @@ import 'package:go_router/go_router.dart';
 import '../theme/color_schemes.dart';
 import '../theme/theme.dart';
 import '../shared/enums/snack_bar_type.dart';
+import '../shared/helpers/show_toast.dart';
 
 extension ContextExtension on BuildContext {
   // ── Theme shortcuts ──────────────────────────────────────────────────────
@@ -15,7 +16,8 @@ extension ContextExtension on BuildContext {
 
   /// Semantic/custom colors (success, warning, info).
   AppColorsExtension get appColors =>
-      theme.extension<AppColorsExtension>() ?? (isDarkMode ? AppPalettes.dark : AppPalettes.light);
+      theme.extension<AppColorsExtension>() ??
+      (isDarkMode ? AppPalettes.dark : AppPalettes.light);
 
   /// Design tokens (spacing, border radii, elevation defaults).
   AppDesignTokens get designTokens =>
@@ -44,37 +46,21 @@ extension ContextExtension on BuildContext {
     SnackBarAction? action,
     Duration duration = const Duration(seconds: 3),
   }) {
-    ScaffoldMessenger.of(this)
-      ..clearSnackBars()
-      ..showSnackBar(
-        SnackBar(
-          content: Text(message),
-          action: action,
-          duration: duration,
-        ),
-      );
+    showToast(
+      this,
+      message: message,
+      status: 'info',
+      action: action,
+      duration: duration,
+    );
   }
 
   void showSuccessSnackBar(String message) {
-    ScaffoldMessenger.of(this)
-      ..clearSnackBars()
-      ..showSnackBar(
-        SnackBar(
-          content: Text(message),
-          backgroundColor: appColors.success,
-        ),
-      );
+    showToast(this, message: message, status: 'success');
   }
 
   void showErrorSnackBar(String message) {
-    ScaffoldMessenger.of(this)
-      ..clearSnackBars()
-      ..showSnackBar(
-        SnackBar(
-          content: Text(message),
-          backgroundColor: colors.error,
-        ),
-      );
+    showToast(this, message: message, status: 'error');
   }
 
   Future<T?> showAppBottomSheet<T>({
@@ -107,31 +93,23 @@ extension ContextExtension on BuildContext {
     SnackBarType type = SnackBarType.info,
     Duration duration = const Duration(seconds: 3),
   }) {
-    final bg = switch (type) {
-      SnackBarType.success => appColors.success,
-      SnackBarType.warning => appColors.warning,
-      SnackBarType.error   => colors.error,
-      SnackBarType.info    => colors.inverseSurface,
+    final status = switch (type) {
+      SnackBarType.success => 'success',
+      SnackBarType.warning => 'warning',
+      SnackBarType.error => 'error',
+      SnackBarType.info => 'info',
     };
-    ScaffoldMessenger.of(this)
-      ..clearSnackBars()
-      ..showSnackBar(
-        SnackBar(
-          content: Text(message),
-          backgroundColor: bg,
-          duration: duration,
-        ),
-      );
+    showToast(this, message: message, status: status, duration: duration);
   }
 
   // ── Routing shortcuts ────────────────────────────────────────────────────
   String get currentRoute {
     final router = GoRouter.of(this);
-    final RouteMatch lastMatch = router.routerDelegate.currentConfiguration.last;
+    final RouteMatch lastMatch =
+        router.routerDelegate.currentConfiguration.last;
     final RouteMatchList matchList = lastMatch is ImperativeRouteMatch
         ? lastMatch.matches
         : router.routerDelegate.currentConfiguration;
     return matchList.uri.toString();
   }
-
 }

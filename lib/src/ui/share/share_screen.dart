@@ -295,7 +295,7 @@ class _ExportButton extends StatelessWidget {
       icon: isCurrent
           ? SizedBox.square(
               dimension: 18.r,
-              child: const CircularProgressIndicator(strokeWidth: 2))
+              child: const CircularProgressIndicator.adaptive(strokeWidth: 2))
           : Icon(icon),
       label: Text(label),
     );

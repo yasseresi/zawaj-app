@@ -2,7 +2,7 @@ import 'package:equatable/equatable.dart';
 
 /// Aggregate RSVP figures for a wedding (screen 8). Mirrors the backend
 /// `service.StatsResult` returned by `GET /weddings/:id/stats`:
-/// `{ total_guests, status_breakdown{confirmed,pending,declined}, total_people,
+/// `{ total_guests, by_status{confirmed,pending,declined}, total_people,
 /// confirmed_seats }`.
 class WeddingStats extends Equatable {
   const WeddingStats({

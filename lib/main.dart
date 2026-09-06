@@ -4,6 +4,16 @@ import 'src/app.dart';
 import 'src/ui/auth/providers/session_provider.dart';
 import 'src/routing/invite_deep_link.dart';
 import 'package:app_links/app_links.dart';
+import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
+import 'firebase_options.dart';
+
+@pragma('vm:entry-point')
+Future<void> firebaseMessagingBackgroundHandler(RemoteMessage _) async {
+  await Firebase.initializeApp(
+    options: DefaultFirebaseOptions.currentPlatform,
+  );
+}
 
 void _openInvite(Uri uri) {
   final token = parseInviteToken(uri);
@@ -17,6 +27,11 @@ Future<void> main() async {
   final widgetsBinding = WidgetsFlutterBinding.ensureInitialized();
   FlutterNativeSplash.preserve(widgetsBinding: widgetsBinding);
 
+  await Firebase.initializeApp(
+    options: DefaultFirebaseOptions.currentPlatform,
+  );
+  FirebaseMessaging.onBackgroundMessage(firebaseMessagingBackgroundHandler);
+
   await EasyLocalization.ensureInitialized();
   await dotenv.load(fileName: '.env');
 
@@ -25,6 +40,7 @@ Future<void> main() async {
   await StorageService.instance.init();
   await AppConfig.init();
   await sessionProvider.bootstrap();
+  await PushNotificationService.instance.initialize();
 
   runApp(
     EasyLocalization(

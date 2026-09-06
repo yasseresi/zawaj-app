@@ -4,6 +4,7 @@ export 'dio_service.dart';
 export 'storage_service.dart';
 export 'secure_storage_service.dart';
 export 'path_service.dart';
+export 'push_notification_service.dart';
 export 'copy_service.dart';
 export 'export_service.dart';
 export 'permission_service.dart';

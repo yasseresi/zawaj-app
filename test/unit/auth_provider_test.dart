@@ -13,7 +13,13 @@ class _FakeAuthRepository implements AuthRepository {
   Either<Failure, AuthResult>? registerResult;
 
   @override
-  FutureEither<AuthResult> login({required String username, required String password}) async =>
+  FutureEitherVoid changePassword(
+          {required String oldPassword, required String newPassword}) async =>
+      const Right(null);
+
+  @override
+  FutureEither<AuthResult> login(
+          {required String username, required String password}) async =>
       loginResult!;
 
   @override
@@ -58,7 +64,7 @@ void main() {
         AuthResult(user: _user, access: 'a', refresh: 'r'),
       );
 
-      final ok = await auth.login(username: 'leila', password: 'password1');
+      final ok = await auth.login(username: 'leila', password: 'Password1!');
 
       expect(ok, isTrue);
       expect(auth.status, AppStatus.success);
@@ -66,8 +72,10 @@ void main() {
       expect(session.user, _user);
     });
 
-    test('login failure sets error message and does not authenticate', () async {
-      repo.loginResult = const Left(AuthFailure('invalid username or password'));
+    test('login failure sets error message and does not authenticate',
+        () async {
+      repo.loginResult =
+          const Left(AuthFailure('invalid username or password'));
 
       final ok = await auth.login(username: 'leila', password: 'wrong');
 
@@ -77,13 +85,15 @@ void main() {
       expect(session.isAuthenticated, isFalse);
     });
 
-    test('register defers session promotion until recovery code is confirmed', () async {
+    test('register defers session promotion until recovery code is confirmed',
+        () async {
       repo.registerResult = const Right(
-        AuthResult(user: _user, access: 'a', refresh: 'r', recoveryCode: 'CODE-1'),
+        AuthResult(
+            user: _user, access: 'a', refresh: 'r', recoveryCode: 'CODE-1'),
       );
 
       final ok = await auth.register(
-          username: 'leila', displayName: 'Leila', password: 'password1');
+          username: 'leila', displayName: 'Leila', password: 'Password1!');
 
       expect(ok, isTrue);
       expect(auth.pendingRecoveryCode, 'CODE-1');

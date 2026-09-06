@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/foundation.dart';
 
 import '../../../config/app_config.dart';
@@ -5,6 +7,7 @@ import '../../../data/models/user_model.dart';
 import '../../../data/repositories/auth_repository.dart';
 import '../../../data/repositories/auth_repository_impl.dart';
 import '../../../data/services/token_storage.dart';
+import '../../../services/push_notification_service.dart';
 import '../../../utils/logger.dart';
 
 enum SessionStatus { unknown, authenticated, unauthenticated }
@@ -49,14 +52,20 @@ class SessionProvider extends ChangeNotifier {
   }
 
   /// Promote to authenticated after a successful login/register/recover.
-  void setAuthenticated(AppUser user) => _set(SessionStatus.authenticated, user);
+  void setAuthenticated(AppUser user) {
+    _set(SessionStatus.authenticated, user);
+    unawaited(PushNotificationService.instance.registerCurrentDevice());
+  }
 
   /// Update the cached user in place (e.g. after editing profile/settings).
   void updateUser(AppUser user) {
-    if (_status == SessionStatus.authenticated) _set(SessionStatus.authenticated, user);
+    if (_status == SessionStatus.authenticated) {
+      _set(SessionStatus.authenticated, user);
+    }
   }
 
   Future<void> signOut() async {
+    await PushNotificationService.instance.unregisterCurrentDevice();
     await _repository.logout();
     _set(SessionStatus.unauthenticated, null);
   }

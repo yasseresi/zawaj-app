@@ -139,7 +139,7 @@ class _GuestDetailView extends StatelessWidget {
       return AppLoading(message: 'guests.loading'.tr());
     }
 
-    return RefreshIndicator(
+    return RefreshIndicator.adaptive(
       onRefresh: () => context.read<GuestDetailProvider>().load(),
       child: ListView(
         padding: EdgeInsets.fromLTRB(

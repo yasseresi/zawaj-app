@@ -265,7 +265,7 @@ class _GuestBody extends StatelessWidget {
       );
     }
 
-    return RefreshIndicator(
+    return RefreshIndicator.adaptive(
       onRefresh: () => context.read<GuestsProvider>().load(),
       child: ListView.separated(
         padding: EdgeInsets.fromLTRB(

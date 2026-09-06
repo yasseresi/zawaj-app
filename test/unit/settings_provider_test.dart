@@ -10,6 +10,18 @@ import 'package:zawaj_app/src/utils/typedefs.dart';
 
 class _FakeAuthRepository implements AuthRepository {
   bool logoutCalled = false;
+  bool changePasswordCalled = false;
+  String? oldPassword;
+  String? newPassword;
+
+  @override
+  FutureEitherVoid changePassword(
+      {required String oldPassword, required String newPassword}) async {
+    changePasswordCalled = true;
+    this.oldPassword = oldPassword;
+    this.newPassword = newPassword;
+    return const Right(null);
+  }
 
   @override
   FutureEitherVoid logout() async {
@@ -18,7 +30,8 @@ class _FakeAuthRepository implements AuthRepository {
   }
 
   @override
-  FutureEither<AuthResult> login({required String username, required String password}) async =>
+  FutureEither<AuthResult> login(
+          {required String username, required String password}) async =>
       throw UnimplementedError();
 
   @override
@@ -52,6 +65,7 @@ void main() {
       session = SessionProvider(repository: repo);
       provider = SettingsProvider(
         session: session,
+        authRepository: repo,
         initialLocale: const Locale('ar'),
       );
     });
@@ -124,6 +138,20 @@ void main() {
       expect(repo.logoutCalled, isTrue);
       expect(session.isAuthenticated, isFalse);
       expect(notifiedCount, 2);
+    });
+
+    test('changePassword delegates credentials and reports success', () async {
+      final ok = await provider.changePassword(
+        oldPassword: 'OldPassword1!',
+        newPassword: 'NewPassword1!',
+      );
+
+      expect(ok, isTrue);
+      expect(repo.changePasswordCalled, isTrue);
+      expect(repo.oldPassword, 'OldPassword1!');
+      expect(repo.newPassword, 'NewPassword1!');
+      expect(provider.isChangingPassword, isFalse);
+      expect(provider.passwordErrorMessage, isNull);
     });
 
     test('interacts correctly with ThemeProvider when provided', () async {

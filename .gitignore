@@ -46,3 +46,14 @@ app.*.map.json
 /android/app/debug
 /android/app/profile
 /android/app/release
+.env
+
+# Apple/Firebase private credentials (never commit)
+**/secrets/
+*serviceAccount*.json
+*firebase*adminsdk*.json
+*.pem
+*.key
+*.p8
+*.p12
+*.mobileprovision

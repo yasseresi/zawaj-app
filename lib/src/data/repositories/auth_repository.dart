@@ -23,6 +23,9 @@ abstract interface class AuthRepository {
     required String newPassword,
   });
 
+  FutureEitherVoid changePassword(
+      {required String oldPassword, required String newPassword});
+
   FutureEitherVoid logout();
 
   /// Fetch the authenticated user (`GET /me`) — used to bootstrap the session

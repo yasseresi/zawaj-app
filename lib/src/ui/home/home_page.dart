@@ -66,7 +66,7 @@ class _HomeView extends StatelessWidget {
         if (provider.isEmpty) {
           return _EmptyLists(onCreate: () => _openCreate(context));
         }
-        return RefreshIndicator(
+        return RefreshIndicator.adaptive(
           onRefresh: () => context.read<WeddingsProvider>().load(),
           child: ListView.separated(
             padding: EdgeInsets.all(AppSpacing.lg.w),

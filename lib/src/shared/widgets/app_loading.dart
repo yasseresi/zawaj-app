@@ -32,9 +32,9 @@ class AppLoading extends StatelessWidget {
           SizedBox(
             width: size,
             height: size,
-            child: CircularProgressIndicator(
+            child: CircularProgressIndicator.adaptive(
               strokeWidth: strokeWidth,
-              color: cs.primary,
+              valueColor: AlwaysStoppedAnimation<Color>(cs.primary),
             ),
           ),
           if (message != null) ...[
@@ -42,8 +42,8 @@ class AppLoading extends StatelessWidget {
             Text(
               message!,
               style: context.theme.textTheme.bodyMedium?.copyWith(
-                    color: cs.onSurfaceVariant,
-                  ),
+                color: cs.onSurfaceVariant,
+              ),
               textAlign: TextAlign.center,
             ),
           ],

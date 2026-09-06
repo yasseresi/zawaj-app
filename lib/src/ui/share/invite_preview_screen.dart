@@ -27,7 +27,7 @@ class _InvitePreviewView extends StatelessWidget {
       appBar: AppTopBar(title: 'share.invite_preview'.tr()),
       body: Center(
         child: provider.isLoading
-            ? const CircularProgressIndicator()
+            ? const CircularProgressIndicator.adaptive()
             : provider.errorMessage != null
                 ? Text(provider.errorMessage!)
                 : Card(

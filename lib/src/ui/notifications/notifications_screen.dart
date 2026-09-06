@@ -74,7 +74,7 @@ class _NotificationsView extends StatelessWidget {
       );
     }
 
-    return RefreshIndicator(
+    return RefreshIndicator.adaptive(
       onRefresh: () => context.read<NotificationsProvider>().load(),
       child: ListView.separated(
         padding: EdgeInsets.all(AppSpacing.md.w),

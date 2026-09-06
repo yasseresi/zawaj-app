@@ -80,7 +80,7 @@ class _ActivityLogView extends StatelessWidget {
       );
     }
 
-    return RefreshIndicator(
+    return RefreshIndicator.adaptive(
       onRefresh: () => context.read<ActivityLogProvider>().load(),
       child: ListView.builder(
         padding: EdgeInsets.symmetric(

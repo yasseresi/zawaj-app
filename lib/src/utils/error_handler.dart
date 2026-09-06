@@ -16,6 +16,47 @@ class AppErrorHandler {
   /// Legacy string extractor kept for callers that only need a message.
   static String format(dynamic error) => toFailure(error).message;
 
+  /// Converts typed failures into stable, localized UI copy. A server message
+  /// is still retained on [Failure] for logging/debugging, but screens should
+  /// use this method so common cases do not leak backend wording.
+  static String userMessage(Failure failure, {String? context}) {
+    if (context == 'share_username') {
+      if (failure is NotFoundFailure) return _tr('share.username_not_found');
+      if (failure.code == 'invite_pending') {
+        return _tr('share.invite_already_pending');
+      }
+      if (failure.code == 'already_member') {
+        return _tr('share.already_collaborator');
+      }
+      if (failure.code == 'self_invite') {
+        return _tr('share.cannot_invite_self');
+      }
+      if (failure is ConflictFailure &&
+          failure.message.toLowerCase().contains('pending')) {
+        return _tr('share.invite_already_pending');
+      }
+      if (failure is ConflictFailure &&
+          failure.message.toLowerCase().contains('member')) {
+        return _tr('share.already_collaborator');
+      }
+      if (failure is ValidationFailure &&
+          failure.message.toLowerCase().contains('yourself')) {
+        return _tr('share.cannot_invite_self');
+      }
+    }
+    if (failure.code == 'username_taken' ||
+        (failure is ConflictFailure &&
+            failure.message.toLowerCase().contains('username'))) {
+      return _tr('auth.username_taken');
+    }
+    if (failure is LockedFailure) return _tr('errors.locked');
+    if (failure is RateLimitFailure) return _tr('errors.rate_limited');
+    if (failure is ValidationFailure) return _tr('errors.validation');
+    if (failure is NotFoundFailure) return _tr('errors.not_found');
+    if (failure is ConflictFailure) return _tr('errors.conflict');
+    return failure.message;
+  }
+
   static Failure toFailure(dynamic error) {
     if (error is Failure) return error;
     if (error is DioException) return _fromDio(error);
@@ -61,8 +102,8 @@ class AppErrorHandler {
     return _byStatus(status, _messageForStatus(status), e, response);
   }
 
-  static Failure _byCode(
-      String? code, String message, dynamic details, DioException e, Response<dynamic>? response) {
+  static Failure _byCode(String? code, String message, dynamic details,
+      DioException e, Response<dynamic>? response) {
     switch (code) {
       case 'validation_error':
         return ValidationFailure(message, details: details, error: e);
@@ -74,10 +115,19 @@ class AppErrorHandler {
         return NotFoundFailure(message, error: e);
       case 'conflict':
         return ConflictFailure(message, error: e);
+      case 'username_taken':
+        return ConflictFailure(message, code: code, error: e);
+      case 'invite_pending':
+        return ConflictFailure(message, code: code, error: e);
+      case 'already_member':
+        return ConflictFailure(message, code: code, error: e);
+      case 'self_invite':
+        return ValidationFailure(message, code: code, error: e);
       case 'locked':
         return LockedFailure(message, error: e);
       case 'rate_limited':
-        return RateLimitFailure(message, retryAfter: _retryAfter(response), error: e);
+        return RateLimitFailure(message,
+            retryAfter: _retryAfter(response), error: e);
       case 'internal':
         return ServerFailure(message, code: 'internal', error: e);
       default:
@@ -85,7 +135,8 @@ class AppErrorHandler {
     }
   }
 
-  static Failure _byStatus(int status, String message, DioException e, Response<dynamic>? response) {
+  static Failure _byStatus(
+      int status, String message, DioException e, Response<dynamic>? response) {
     switch (status) {
       case 400:
         return ValidationFailure(message, error: e);
@@ -100,7 +151,8 @@ class AppErrorHandler {
       case 423:
         return LockedFailure(message, error: e);
       case 429:
-        return RateLimitFailure(message, retryAfter: _retryAfter(response), error: e);
+        return RateLimitFailure(message,
+            retryAfter: _retryAfter(response), error: e);
       default:
         return ServerFailure(message, code: 'internal', error: e);
     }

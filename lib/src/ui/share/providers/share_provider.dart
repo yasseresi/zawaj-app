@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:flutter/foundation.dart';
+import 'package:easy_localization/easy_localization.dart';
 import '../../../data/models/invite_link_model.dart';
 import '../../../data/models/wedding_member_model.dart';
 import '../../../data/repositories/invite_repository.dart';
@@ -9,6 +10,8 @@ import '../../../data/repositories/wedding_repository.dart';
 import '../../../data/repositories/wedding_repository_impl.dart';
 import '../../../shared/enums/app_status.dart';
 import '../../../services/export_service.dart';
+import '../../../utils/error_handler.dart';
+import '../../../utils/input_validation.dart';
 
 class ShareProvider extends ChangeNotifier {
   ShareProvider(
@@ -49,13 +52,19 @@ class ShareProvider extends ChangeNotifier {
   }
 
   Future<bool> invite(String username, String role) async {
-    if (username.trim().isEmpty) return false;
+    final usernameError = AppInputValidation.usernameError(username);
+    if (usernameError != null) {
+      errorMessage = usernameError.tr();
+      notifyListeners();
+      return false;
+    }
     busy = true;
     errorMessage = null;
     notifyListeners();
-    final result = await _invites.invite(weddingId, username.trim(), role);
+    final normalizedUsername = AppInputValidation.normalizeUsername(username);
+    final result = await _invites.invite(weddingId, normalizedUsername, role);
     final ok = result.match((f) {
-      errorMessage = f.message;
+      errorMessage = AppErrorHandler.userMessage(f, context: 'share_username');
       return false;
     }, (_) => true);
     busy = false;

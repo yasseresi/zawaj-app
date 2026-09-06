@@ -35,7 +35,8 @@ class _LoginScreenState extends State<LoginScreen> {
       password: _password.text,
     );
     if (!ok && mounted) {
-      showToast(context, message: auth.errorMessage ?? 'errors.server'.tr(), status: 'error');
+      showToast(context,
+          message: auth.errorMessage ?? 'errors.server'.tr(), status: 'error');
     }
   }
 
@@ -58,11 +59,13 @@ class _LoginScreenState extends State<LoginScreen> {
                   const AuthHeader(),
                   SizedBox(height: AppSpacing.xl.h),
                   Text('auth.login_title'.tr(),
-                      style: tt.headlineSmall?.copyWith(fontWeight: FontWeight.bold)),
+                      style: tt.headlineSmall
+                          ?.copyWith(fontWeight: FontWeight.bold)),
                   SizedBox(height: AppSpacing.xs.h),
                   Text('auth.login_subtitle'.tr(),
                       textAlign: TextAlign.center,
-                      style: tt.bodyMedium?.copyWith(color: cs.onSurfaceVariant)),
+                      style:
+                          tt.bodyMedium?.copyWith(color: cs.onSurfaceVariant)),
                   SizedBox(height: AppSpacing.xl.h),
                   AppTextField(
                     controller: _username,
@@ -70,8 +73,7 @@ class _LoginScreenState extends State<LoginScreen> {
                     label: 'auth.username'.tr(),
                     textInputAction: TextInputAction.next,
                     prefixIcon: const Icon(Icons.person_outline),
-                    validator: (v) =>
-                        AppUtils.isBlank(v) ? 'auth.username_required'.tr() : null,
+                    validator: (v) => AppInputValidation.usernameError(v)?.tr(),
                   ),
                   SizedBox(height: AppSpacing.md.h),
                   AppTextField(
@@ -83,16 +85,20 @@ class _LoginScreenState extends State<LoginScreen> {
                     onFieldSubmitted: (_) => _submit(),
                     prefixIcon: const Icon(Icons.lock_outline),
                     suffixIcon: IconButton(
-                      icon: Icon(_obscure ? Icons.visibility_off : Icons.visibility),
+                      icon: Icon(
+                          _obscure ? Icons.visibility_off : Icons.visibility),
                       onPressed: () => setState(() => _obscure = !_obscure),
                     ),
-                    validator: (v) =>
-                        AppUtils.isBlank(v) ? 'auth.password_required'.tr() : null,
+                    validator: (v) => AppUtils.isBlank(v)
+                        ? 'auth.password_required'.tr()
+                        : null,
                   ),
                   Align(
                     alignment: AlignmentDirectional.centerEnd,
                     child: TextButton(
-                      onPressed: isLoading ? null : () => context.push(AppRoutes.recover),
+                      onPressed: isLoading
+                          ? null
+                          : () => context.push(AppRoutes.recover),
                       child: Text('auth.forgot_password'.tr(),
                           style: tt.bodySmall?.copyWith(color: cs.primary)),
                     ),
@@ -106,16 +112,18 @@ class _LoginScreenState extends State<LoginScreen> {
                   ),
                   SizedBox(height: AppSpacing.lg.h),
                   TextButton(
-                    onPressed: isLoading ? null : () => context.push(AppRoutes.signup),
+                    onPressed:
+                        isLoading ? null : () => context.push(AppRoutes.signup),
                     child: RichText(
                       text: TextSpan(
                         text: 'auth.no_account'.tr(),
-                        style: tt.bodyMedium?.copyWith(color: cs.onSurfaceVariant),
+                        style:
+                            tt.bodyMedium?.copyWith(color: cs.onSurfaceVariant),
                         children: [
                           TextSpan(
                             text: ' ${'auth.sign_up'.tr()}',
-                            style: tt.bodyMedium
-                                ?.copyWith(color: cs.primary, fontWeight: FontWeight.bold),
+                            style: tt.bodyMedium?.copyWith(
+                                color: cs.primary, fontWeight: FontWeight.bold),
                           ),
                         ],
                       ),

@@ -40,7 +40,8 @@ class _RecoverScreenState extends State<RecoverScreen> {
     );
     if (!mounted) return;
     if (!ok) {
-      showToast(context, message: auth.errorMessage ?? 'errors.server'.tr(), status: 'error');
+      showToast(context,
+          message: auth.errorMessage ?? 'errors.server'.tr(), status: 'error');
       return;
     }
     await showAppDialog<bool>(
@@ -70,11 +71,13 @@ class _RecoverScreenState extends State<RecoverScreen> {
                   SizedBox(height: AppSpacing.md.h),
                   Text('auth.recover_title'.tr(),
                       textAlign: TextAlign.center,
-                      style: tt.headlineSmall?.copyWith(fontWeight: FontWeight.bold)),
+                      style: tt.headlineSmall
+                          ?.copyWith(fontWeight: FontWeight.bold)),
                   SizedBox(height: AppSpacing.xs.h),
                   Text('auth.recover_subtitle'.tr(),
                       textAlign: TextAlign.center,
-                      style: tt.bodyMedium?.copyWith(color: cs.onSurfaceVariant)),
+                      style:
+                          tt.bodyMedium?.copyWith(color: cs.onSurfaceVariant)),
                   SizedBox(height: AppSpacing.xl.h),
                   AppTextField(
                     controller: _username,
@@ -82,8 +85,7 @@ class _RecoverScreenState extends State<RecoverScreen> {
                     label: 'auth.username'.tr(),
                     textInputAction: TextInputAction.next,
                     prefixIcon: const Icon(Icons.person_outline),
-                    validator: (v) =>
-                        AppUtils.isBlank(v) ? 'auth.username_required'.tr() : null,
+                    validator: (v) => AppInputValidation.usernameError(v)?.tr(),
                   ),
                   SizedBox(height: AppSpacing.md.h),
                   AppTextField(
@@ -92,8 +94,9 @@ class _RecoverScreenState extends State<RecoverScreen> {
                     label: 'auth.recovery_code'.tr(),
                     textInputAction: TextInputAction.next,
                     prefixIcon: const Icon(Icons.vpn_key_outlined),
-                    validator: (v) =>
-                        AppUtils.isBlank(v) ? 'auth.recovery_code_required'.tr() : null,
+                    validator: (v) => AppUtils.isBlank(v)
+                        ? 'auth.recovery_code_required'.tr()
+                        : null,
                   ),
                   SizedBox(height: AppSpacing.md.h),
                   AppTextField(
@@ -105,14 +108,11 @@ class _RecoverScreenState extends State<RecoverScreen> {
                     onFieldSubmitted: (_) => _submit(),
                     prefixIcon: const Icon(Icons.lock_outline),
                     suffixIcon: IconButton(
-                      icon: Icon(_obscure ? Icons.visibility_off : Icons.visibility),
+                      icon: Icon(
+                          _obscure ? Icons.visibility_off : Icons.visibility),
                       onPressed: () => setState(() => _obscure = !_obscure),
                     ),
-                    validator: (v) {
-                      if (AppUtils.isBlank(v)) return 'auth.password_required'.tr();
-                      if (v!.length < 8) return 'auth.password_too_short'.tr();
-                      return null;
-                    },
+                    validator: (v) => AppInputValidation.passwordError(v)?.tr(),
                   ),
                   SizedBox(height: AppSpacing.lg.h),
                   AppButton(

@@ -1,5 +1,6 @@
 import 'package:flutter/widgets.dart';
 import 'package:go_router/go_router.dart';
+import 'package:provider/provider.dart';
 
 import '../data/models/wedding_model.dart';
 import '../ui/activity/activity_log_screen.dart';
@@ -13,6 +14,8 @@ import '../ui/invites/pending_invites_screen.dart';
 import '../ui/notifications/notifications_screen.dart';
 import '../ui/onboarding/onboarding_page.dart';
 import '../ui/settings/settings_screen.dart';
+import '../ui/settings/change_password_screen.dart';
+import '../ui/settings/providers/settings_provider.dart';
 import '../ui/share/share_screen.dart';
 import '../ui/share/invite_preview_screen.dart';
 import '../ui/shell/main_navigation_shell.dart';
@@ -48,6 +51,14 @@ final GoRouter appRouter = GoRouter(
       path: AppRoutes.recover,
       name: 'recover',
       builder: (context, state) => const RecoverScreen(),
+    ),
+    GoRoute(
+      path: AppRoutes.changePassword,
+      name: 'change_password',
+      builder: (context, state) => ChangeNotifierProvider<SettingsProvider>(
+        create: (_) => SettingsProvider(),
+        child: const ChangePasswordScreen(),
+      ),
     ),
     StatefulShellRoute.indexedStack(
       builder: (context, state, navigationShell) => MainNavigationShell(

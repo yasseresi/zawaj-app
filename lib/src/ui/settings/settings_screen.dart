@@ -57,7 +57,7 @@ class _SettingsView extends StatelessWidget {
                   SettingsRow(
                     label: 'settings.change_password'.tr(),
                     icon: Icons.lock_outline_rounded,
-                    onTap: () => _showComingSoonToast(context),
+                    onTap: () => context.push(AppRoutes.changePassword),
                   ),
                 ],
               ),

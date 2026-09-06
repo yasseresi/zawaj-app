@@ -65,7 +65,7 @@ class _PendingInvitesView extends StatelessWidget {
       );
     }
 
-    return RefreshIndicator(
+    return RefreshIndicator.adaptive(
       onRefresh: () => context.read<PendingInvitesProvider>().load(),
       child: ListView.builder(
         padding: EdgeInsets.all(AppSpacing.md.w),

@@ -1,11 +1,14 @@
 import 'package:flutter/foundation.dart';
 import 'package:fpdart/fpdart.dart';
+import 'package:easy_localization/easy_localization.dart';
 
 import '../../../data/models/user_model.dart';
 import '../../../utils/failure.dart';
+import '../../../utils/error_handler.dart';
 import '../../../data/repositories/auth_repository.dart';
 import '../../../data/repositories/auth_repository_impl.dart';
 import '../../../shared/enums/app_status.dart';
+import '../../../utils/input_validation.dart';
 import 'session_provider.dart';
 
 /// Drives the login / signup / recover forms. Holds an [AppStatus] + last error
@@ -35,7 +38,14 @@ class AuthProvider extends ChangeNotifier {
   /// Login: on success the session is promoted immediately (router redirects to
   /// home). Returns true on success.
   Future<bool> login({required String username, required String password}) {
-    return _run(() => _repository.login(username: username, password: password),
+    final usernameError = AppInputValidation.usernameError(username);
+    if (usernameError != null) return _reject(usernameError);
+    if (password.isEmpty) return _reject('auth.password_required');
+    return _run(
+        () => _repository.login(
+              username: AppInputValidation.normalizeUsername(username),
+              password: password,
+            ),
         onSuccess: (r) => _session.setAuthenticated(r.user));
   }
 
@@ -46,9 +56,15 @@ class AuthProvider extends ChangeNotifier {
     required String displayName,
     required String password,
   }) {
+    final usernameError = AppInputValidation.usernameError(username);
+    final passwordError = AppInputValidation.passwordError(password);
+    if (usernameError != null) return _reject(usernameError);
+    if (passwordError != null) return _reject(passwordError);
     return _run(
       () => _repository.register(
-          username: username, displayName: displayName, password: password),
+          username: AppInputValidation.normalizeUsername(username),
+          displayName: displayName.trim(),
+          password: password),
       onSuccess: (r) => _pending = r,
     );
   }
@@ -60,9 +76,15 @@ class AuthProvider extends ChangeNotifier {
     required String recoveryCode,
     required String newPassword,
   }) {
+    final usernameError = AppInputValidation.usernameError(username);
+    final passwordError = AppInputValidation.passwordError(newPassword);
+    if (usernameError != null) return _reject(usernameError);
+    if (passwordError != null) return _reject(passwordError);
     return _run(
       () => _repository.recover(
-          username: username, recoveryCode: recoveryCode, newPassword: newPassword),
+          username: AppInputValidation.normalizeUsername(username),
+          recoveryCode: recoveryCode.trim(),
+          newPassword: newPassword),
       onSuccess: (r) => _pending = r,
     );
   }
@@ -83,6 +105,13 @@ class AuthProvider extends ChangeNotifier {
     }
   }
 
+  Future<bool> _reject(String key) async {
+    _status = AppStatus.failure;
+    _errorMessage = key.tr();
+    notifyListeners();
+    return false;
+  }
+
   Future<bool> _run(
     Future<Either<Failure, AuthResult>> Function() action, {
     required void Function(AuthResult) onSuccess,
@@ -95,7 +124,7 @@ class AuthProvider extends ChangeNotifier {
     return result.match(
       (failure) {
         _status = AppStatus.failure;
-        _errorMessage = failure.message;
+        _errorMessage = AppErrorHandler.userMessage(failure);
         notifyListeners();
         return false;
       },

@@ -4,6 +4,7 @@ void showToast(
   BuildContext context, {
   required String message,
   String? status = 'success',
+  SnackBarAction? action,
   dynamic icon,
   Duration? duration,
   bool? autoDismiss,
@@ -14,31 +15,36 @@ void showToast(
 
   final (backgroundColor, foregroundColor, iconColor) = switch (toastStatus) {
     'error' => (
-      colorScheme.errorContainer,
-      colorScheme.onErrorContainer,
-      colorScheme.error,
-    ),
+        colorScheme.errorContainer,
+        colorScheme.onErrorContainer,
+        colorScheme.error,
+      ),
     'success' => (
-      appColors.successContainer ?? appColors.success,
-      appColors.onSuccessContainer ?? appColors.onSuccess,
-      appColors.success,
-    ),
+        appColors.successContainer ?? appColors.success,
+        appColors.onSuccessContainer ?? appColors.onSuccess,
+        appColors.success,
+      ),
     'warning' => (
-      appColors.warningContainer ?? appColors.warning,
-      appColors.onWarningContainer ?? appColors.onWarning,
-      appColors.warning,
-    ),
+        appColors.warningContainer ?? appColors.warning,
+        appColors.onWarningContainer ?? appColors.onWarning,
+        appColors.warning,
+      ),
     'info' => (
-      appColors.infoContainer ?? appColors.info,
-      appColors.onInfoContainer ?? appColors.onInfo,
-      appColors.info,
-    ),
+        appColors.infoContainer ?? appColors.info,
+        appColors.onInfoContainer ?? appColors.onInfo,
+        appColors.info,
+      ),
     _ => (
-      context.theme.scaffoldBackgroundColor,
-      colorScheme.onSurface,
-      colorScheme.onSurfaceVariant,
-    ),
+        context.theme.scaffoldBackgroundColor,
+        colorScheme.onSurface,
+        colorScheme.onSurfaceVariant,
+      ),
   };
+
+  // Keep one clear, current notification visible at a time. This prevents
+  // messages from different notification entry points stacking over each
+  // other while preserving the same top placement across the whole app.
+  ToastBar.removeAll();
 
   return ToastBar(
     position: ToastPosition.top,
@@ -55,7 +61,9 @@ void showToast(
                 ? Icons.check_circle_outline
                 : toastStatus == 'error'
                     ? Icons.error_outline
-                    : Icons.info_outline),
+                    : toastStatus == 'warning'
+                        ? Icons.warning_amber_rounded
+                        : Icons.info_outline),
         color: iconColor,
         size: 22.sp,
       ),
@@ -67,6 +75,13 @@ void showToast(
           color: foregroundColor,
         ),
       ),
+      trailing: action == null
+          ? null
+          : TextButton(
+              onPressed: action.onPressed,
+              style: TextButton.styleFrom(foregroundColor: foregroundColor),
+              child: Text(action.label),
+            ),
     ),
   ).show(context);
 }

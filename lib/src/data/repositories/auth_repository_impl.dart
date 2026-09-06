@@ -32,6 +32,10 @@ class AuthRepositoryImpl implements AuthRepository {
       _service.recover(username: username, recoveryCode: recoveryCode, newPassword: newPassword);
 
   @override
+  FutureEitherVoid changePassword({required String oldPassword, required String newPassword}) =>
+      _service.changePassword(oldPassword: oldPassword, newPassword: newPassword);
+
+  @override
   FutureEitherVoid logout() => _service.logout();
 
   @override

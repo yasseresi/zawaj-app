@@ -117,7 +117,7 @@ class AppCachedImage extends StatelessWidget {
       height: height,
       color: context.theme.colorScheme.surfaceContainerHighest .withValues(alpha: 0.9),
       child: const Center(
-        child: CircularProgressIndicator(strokeWidth: 2),
+        child: CircularProgressIndicator.adaptive(strokeWidth: 2),
       ),
     );
   }
