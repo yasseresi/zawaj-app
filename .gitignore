@@ -57,3 +57,10 @@ app.*.map.json
 *.p8
 *.p12
 *.mobileprovision
+
+# Local AI & Architecture documentation
+AGENTS.md
+SETUP.md
+DESIGN.md
+architecture.md
+CLAUDE.md
