@@ -86,7 +86,12 @@ class AppConfig {
     AppLogger.error('❌ [DIO] $status $path');
 
     // Only try to recover genuine session expiry on non-auth calls, once.
-    if (status == 401 && !isAuthPath && e.requestOptions.extra['retried'] != true) {
+    // `skipAuthRefresh`: the caller treats 401 as a business error (e.g. a
+    // wrong password re-check) — retrying would repeat that attempt.
+    if (status == 401 &&
+        !isAuthPath &&
+        e.requestOptions.extra['retried'] != true &&
+        e.requestOptions.extra['skipAuthRefresh'] != true) {
       final refreshed = await _tryRefresh();
       if (refreshed) {
         try {

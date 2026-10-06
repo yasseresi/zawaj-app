@@ -54,6 +54,15 @@ class _FakeAuthRepository implements AuthRepository {
   @override
   FutureEither<AppUser> me() async => throw UnimplementedError();
 
+  Either<Failure, void> deleteResult = const Right(null);
+  String? deletedWithPassword;
+
+  @override
+  FutureEitherVoid deleteAccount({required String password}) async {
+    deletedWithPassword = password;
+    return deleteResult;
+  }
+
   /// Recorded calls + canned results for profile/settings writes.
   final profileCalls = <({String? displayName, String? phone})>[];
   final settingsCalls = <({bool? notifPush, bool? notifRsvp})>[];
@@ -277,6 +286,31 @@ void main() {
         expect(second, isFalse);
         expect(repo.settingsCalls, hasLength(1));
         expect(provider.isSavingNotifPush, isFalse);
+      });
+    });
+
+    group('SessionProvider.deleteAccount', () {
+      const user = AppUser(id: 'u1', username: 'sarah', displayName: 'Sarah');
+
+      setUp(() => session.setAuthenticated(user));
+
+      test('signs out locally after the server deletes the account', () async {
+        final failure = await session.deleteAccount('Password123!');
+
+        expect(failure, isNull);
+        expect(repo.deletedWithPassword, 'Password123!');
+        expect(session.status, SessionStatus.unauthenticated);
+        expect(session.user, isNull);
+      });
+
+      test('stays signed in and returns the failure on a wrong password', () async {
+        repo.deleteResult = const Left(AuthFailure('password is incorrect'));
+
+        final failure = await session.deleteAccount('nope');
+
+        expect(failure, isA<AuthFailure>());
+        expect(session.status, SessionStatus.authenticated);
+        expect(session.user, user);
       });
     });
   });

@@ -19,7 +19,8 @@ Let users permanently delete their account from inside the app (an App Store / P
   - Weddings the user only collaborates on: "You'll be removed from N shared weddings."
   - A "Continue" button.
 - **Step 2, confirm:** a password field (obscured, with a show toggle) and a destructive button "Delete my account permanently". The button is disabled until a password is entered and shows a spinner while the request runs.
-- On success: unregister the push device (best effort), clear the tokens and session, go to onboarding/login, and show a toast "Account deleted".
+- On success: clear the tokens and session, go to login, and show a toast "Account deleted". *(Changed during build: the server's delete cascade already removes `device_tokens`, so the client doesn't call `DELETE /me/devices`. After deletion that call would only 401.)*
+- Transport: `GET /me` first, so an expired access token is refreshed. The `DELETE` then skips the 401 refresh-retry (`skipAuthRefresh`), because a retry would replay a wrong password and count it twice toward the lockout.
 - On 401: an inline error under the password field; the field keeps focus. On 423: the lockout message.
 
 ## Code

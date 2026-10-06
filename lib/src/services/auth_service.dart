@@ -120,9 +120,20 @@ class AuthService {
         parse: (d) => AppUser.fromJson((d as Map).cast<String, dynamic>()),
       );
 
-  /// `DELETE /me` — hard-delete account + cascade owned weddings.
-  FutureEitherVoid deleteAccount() async {
-    final result = await _api.delete<void>('/me', parse: parseVoid);
+  /// `DELETE /me` `{password}` — hard-delete the account and cascade owned
+  /// weddings (server also drops device tokens). 401 = wrong password, 423 =
+  /// locked. A `GET /me` first refreshes an expired access token, so the
+  /// DELETE can skip the 401 refresh-retry: a retry would replay the wrong
+  /// password and count twice toward the lockout.
+  FutureEitherVoid deleteAccount({required String password}) async {
+    final fresh = await getMe();
+    if (fresh.isLeft()) return fresh.map((_) {});
+    final result = await _api.delete<void>(
+      '/me',
+      body: {'password': password},
+      skipAuthRefresh: true,
+      parse: parseVoid,
+    );
     if (result.isRight()) await _tokens.clear();
     return result;
   }

@@ -18,6 +18,10 @@ import 'package:zawaj_app/src/utils/typedefs.dart';
 
 class _FakeAuthRepository implements AuthRepository {
   @override
+  FutureEitherVoid deleteAccount({required String password}) async =>
+      throw UnimplementedError();
+
+  @override
   FutureEitherVoid changePassword(
           {required String oldPassword, required String newPassword}) async =>
       const Right(null);

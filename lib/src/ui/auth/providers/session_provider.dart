@@ -8,6 +8,7 @@ import '../../../data/repositories/auth_repository.dart';
 import '../../../data/repositories/auth_repository_impl.dart';
 import '../../../data/services/token_storage.dart';
 import '../../../services/push_notification_service.dart';
+import '../../../utils/failure.dart';
 import '../../../utils/logger.dart';
 
 enum SessionStatus { unknown, authenticated, unauthenticated }
@@ -68,6 +69,17 @@ class SessionProvider extends ChangeNotifier {
     await PushNotificationService.instance.unregisterCurrentDevice();
     await _repository.logout();
     _set(SessionStatus.unauthenticated, null);
+  }
+
+  /// Permanently delete the account (password re-check on the server). On
+  /// success the server has already dropped the device tokens, so this only
+  /// ends the local session. Returns the failure, or null on success.
+  Future<Failure?> deleteAccount(String password) async {
+    final result = await _repository.deleteAccount(password: password);
+    return result.match((failure) => failure, (_) {
+      _set(SessionStatus.unauthenticated, null);
+      return null;
+    });
   }
 
   void _onExpired() {

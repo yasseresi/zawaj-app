@@ -43,7 +43,7 @@ Details, acceptance criteria and files for each task: [plan.md](plan.md). Specs:
 - [x] Human review (waived: /build auto)
 
 ## Phase 4: Account deletion
-- [ ] T17 App: `deleteAccount(password)` + session teardown — `account-delete`
+- [x] T17 App: `deleteAccount(password)` + session teardown — `account-delete`
 - [ ] T18 App: Danger zone → impact screen → password confirm — `account-delete`
 
 ### Checkpoint 4: Complete

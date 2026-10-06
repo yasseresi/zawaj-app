@@ -48,13 +48,24 @@ class ApiClient {
   }) =>
       _send(() => _dio.patch(path, data: body, queryParameters: query), parse);
 
+  /// [skipAuthRefresh]: don't refresh-and-retry on 401 — for endpoints where
+  /// 401 means "wrong password", not an expired session.
   FutureEither<T> delete<T>(
     String path, {
     Object? body,
     Map<String, dynamic>? query,
+    bool skipAuthRefresh = false,
     required T Function(dynamic data) parse,
   }) =>
-      _send(() => _dio.delete(path, data: body, queryParameters: query), parse);
+      _send(
+        () => _dio.delete(path,
+            data: body,
+            queryParameters: query,
+            options: skipAuthRefresh
+                ? Options(extra: {'skipAuthRefresh': true})
+                : null),
+        parse,
+      );
 
   /// Raw response accessor for non-enveloped endpoints (e.g. CSV export).
   FutureEither<Response<T>> raw<T>(Future<Response<T>> Function() call) =>

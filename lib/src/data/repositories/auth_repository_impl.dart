@@ -51,4 +51,8 @@ class AuthRepositoryImpl implements AuthRepository {
         if (notifPush != null) 'notif_push': notifPush,
         if (notifRsvp != null) 'notif_rsvp': notifRsvp,
       });
+
+  @override
+  FutureEitherVoid deleteAccount({required String password}) =>
+      _service.deleteAccount(password: password);
 }

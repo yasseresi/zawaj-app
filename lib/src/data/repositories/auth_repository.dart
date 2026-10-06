@@ -37,4 +37,8 @@ abstract interface class AuthRepository {
 
   /// `PATCH /me/settings` with only the given notification preferences.
   FutureEither<AppUser> updateSettings({bool? notifPush, bool? notifRsvp});
+
+  /// `DELETE /me` with the current password. Permanent: deletes owned
+  /// weddings for every collaborator. Clears the stored tokens on success.
+  FutureEitherVoid deleteAccount({required String password});
 }
