@@ -210,7 +210,11 @@
     "notifications": "Notifications",
     "display_name_too_long": "Name must be at most 80 characters",
     "phone_helper": "Optional. Your contact number, never used to sign in.",
-    "profile_saved": "Profile updated"
+    "profile_saved": "Profile updated",
+    "notifications_section": "Notifications",
+    "notif_push": "Push notifications",
+    "notif_rsvp": "RSVP updates",
+    "notif_rsvp_subtitle": "When a guest's status changes"
   },
   "errors": {
     "no_connection": "No internet connection. Check your connection and try again.",

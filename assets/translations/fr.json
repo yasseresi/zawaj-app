@@ -210,7 +210,11 @@
     "notifications": "Notifications",
     "display_name_too_long": "Le nom ne doit pas dépasser 80 caractères",
     "phone_helper": "Facultatif. Votre numéro de contact, jamais utilisé pour la connexion.",
-    "profile_saved": "Profil mis à jour"
+    "profile_saved": "Profil mis à jour",
+    "notifications_section": "Notifications",
+    "notif_push": "Notifications push",
+    "notif_rsvp": "Réponses des invités",
+    "notif_rsvp_subtitle": "Quand le statut d'un invité change"
   },
   "errors": {
     "no_connection": "Pas de connexion Internet. Vérifiez votre connexion et réessayez.",

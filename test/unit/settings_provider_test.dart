@@ -237,5 +237,47 @@ void main() {
         expect(session.user, current);
       });
     });
+
+    group('notification preferences', () {
+      const current = AppUser(id: 'u1', username: 'sarah', displayName: 'Sarah');
+
+      setUp(() => session.setAuthenticated(current));
+
+      test('push toggle updates the session optimistically and keeps the server copy', () async {
+        repo.settingsResult = Right(current.copyWith(notifPush: false));
+
+        final pending = provider.setNotifPush(false);
+        expect(session.user!.notifPush, isFalse); // optimistic, before the reply
+        final ok = await pending;
+
+        expect(ok, isTrue);
+        expect(repo.settingsCalls.single, (notifPush: false, notifRsvp: null));
+        expect(session.user!.notifPush, isFalse);
+      });
+
+      test('a failed toggle rolls back and exposes an error', () async {
+        repo.settingsResult = const Left(ServerFailure('boom'));
+
+        final ok = await provider.setNotifRsvp(false);
+
+        expect(ok, isFalse);
+        expect(repo.settingsCalls.single, (notifPush: null, notifRsvp: false));
+        expect(session.user!.notifRsvp, isTrue);
+        expect(provider.preferencesErrorMessage, isNotNull);
+      });
+
+      test('ignores taps while a request for the same switch is in flight', () async {
+        repo.settingsResult = Right(current.copyWith(notifPush: false));
+
+        final first = provider.setNotifPush(false);
+        expect(provider.isSavingNotifPush, isTrue);
+        final second = await provider.setNotifPush(true);
+        await first;
+
+        expect(second, isFalse);
+        expect(repo.settingsCalls, hasLength(1));
+        expect(provider.isSavingNotifPush, isFalse);
+      });
+    });
   });
 }

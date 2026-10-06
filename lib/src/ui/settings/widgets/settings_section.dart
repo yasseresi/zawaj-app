@@ -57,12 +57,14 @@ class SettingsRow extends StatelessWidget {
   const SettingsRow({
     super.key,
     required this.label,
+    this.subtitle,
     this.icon,
     this.trailing,
     this.onTap,
   });
 
   final String label;
+  final String? subtitle;
   final IconData? icon;
   final Widget? trailing;
   final VoidCallback? onTap;
@@ -87,12 +89,27 @@ class SettingsRow extends StatelessWidget {
               SizedBox(width: 12.w),
             ],
             Expanded(
-              child: Text(
-                label,
-                style: context.textTheme.bodyMedium?.copyWith(
-                  fontSize: 14.sp,
-                  fontWeight: FontWeight.w500,
-                ),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    label,
+                    style: context.textTheme.bodyMedium?.copyWith(
+                      fontSize: 14.sp,
+                      fontWeight: FontWeight.w500,
+                    ),
+                  ),
+                  if (subtitle != null) ...[
+                    SizedBox(height: 2.h),
+                    Text(
+                      subtitle!,
+                      style: context.textTheme.bodySmall?.copyWith(
+                        fontSize: 12.sp,
+                        color: cs.onSurfaceVariant,
+                      ),
+                    ),
+                  ],
+                ],
               ),
             ),
             if (trailing != null)

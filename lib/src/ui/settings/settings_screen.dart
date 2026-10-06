@@ -104,6 +104,34 @@ class _SettingsView extends StatelessWidget {
               ),
               SizedBox(height: AppSpacing.lg.h),
               SettingsSection(
+                title: 'settings.notifications_section'.tr(),
+                children: [
+                  SettingsRow(
+                    label: 'settings.notif_push'.tr(),
+                    icon: Icons.notifications_active_outlined,
+                    trailing: Switch.adaptive(
+                      value: session.user?.notifPush ?? true,
+                      onChanged: (value) => _togglePreference(
+                          context, (p) => p.setNotifPush(value)),
+                    ),
+                  ),
+                  SettingsRow(
+                    label: 'settings.notif_rsvp'.tr(),
+                    subtitle: 'settings.notif_rsvp_subtitle'.tr(),
+                    icon: Icons.how_to_reg_outlined,
+                    trailing: Switch.adaptive(
+                      value: session.user?.notifRsvp ?? true,
+                      // RSVP alerts arrive by push, so they need push enabled.
+                      onChanged: (session.user?.notifPush ?? true)
+                          ? (value) => _togglePreference(
+                              context, (p) => p.setNotifRsvp(value))
+                          : null,
+                    ),
+                  ),
+                ],
+              ),
+              SizedBox(height: AppSpacing.lg.h),
+              SettingsSection(
                 title: 'settings.collaboration_section'.tr(),
                 children: [
                   SettingsRow(
@@ -140,6 +168,15 @@ class _SettingsView extends StatelessWidget {
       'fr' => 'settings.french'.tr(),
       _ => 'settings.arabic'.tr(),
     };
+  }
+
+  Future<void> _togglePreference(BuildContext context,
+      Future<bool> Function(SettingsProvider) toggle) async {
+    final settings = context.read<SettingsProvider>();
+    if (!await toggle(settings) && settings.preferencesErrorMessage != null) {
+      showGlobalToast(
+          message: settings.preferencesErrorMessage!, status: 'error');
+    }
   }
 
   Future<void> _showEditProfile(BuildContext context) async {

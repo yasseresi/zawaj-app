@@ -1,11 +1,13 @@
 import 'package:flutter/material.dart';
 
+import '../../../data/models/user_model.dart';
 import '../../../data/repositories/auth_repository.dart';
 import '../../../data/repositories/auth_repository_impl.dart';
 import '../../../shared/enums/app_status.dart';
 import '../../../shared/providers/theme_provider.dart';
 import '../../../utils/error_handler.dart';
 import '../../../utils/phone.dart';
+import '../../../utils/typedefs.dart';
 import '../../auth/providers/session_provider.dart';
 
 class SettingsProvider extends ChangeNotifier {
@@ -30,6 +32,9 @@ class SettingsProvider extends ChangeNotifier {
   String? _passwordErrorMessage;
   bool _isSavingProfile = false;
   String? _profileErrorMessage;
+  bool _isSavingNotifPush = false;
+  bool _isSavingNotifRsvp = false;
+  String? _preferencesErrorMessage;
 
   Locale get locale => _locale;
 
@@ -44,6 +49,9 @@ class SettingsProvider extends ChangeNotifier {
   String? get passwordErrorMessage => _passwordErrorMessage;
   bool get isSavingProfile => _isSavingProfile;
   String? get profileErrorMessage => _profileErrorMessage;
+  bool get isSavingNotifPush => _isSavingNotifPush;
+  bool get isSavingNotifRsvp => _isSavingNotifRsvp;
+  String? get preferencesErrorMessage => _preferencesErrorMessage;
 
   void setLocale(Locale locale) {
     if (_locale == locale) return;
@@ -133,6 +141,59 @@ class SettingsProvider extends ChangeNotifier {
       (user) {
         _session.updateUser(user);
         notifyListeners();
+        return true;
+      },
+    );
+  }
+
+  /// Toggle push notifications (`notif_push`). Optimistic: the session flips
+  /// immediately and rolls back on failure. Taps while a request is in flight
+  /// are ignored (returns false).
+  Future<bool> setNotifPush(bool value) async {
+    if (_isSavingNotifPush) return false;
+    _isSavingNotifPush = true;
+    final ok = await _savePreference(
+      (u) => u.copyWith(notifPush: value),
+      () => _authRepository.updateSettings(notifPush: value),
+    );
+    _isSavingNotifPush = false;
+    notifyListeners();
+    return ok;
+  }
+
+  /// Toggle RSVP-change alerts (`notif_rsvp`). Same optimistic contract as
+  /// [setNotifPush].
+  Future<bool> setNotifRsvp(bool value) async {
+    if (_isSavingNotifRsvp) return false;
+    _isSavingNotifRsvp = true;
+    final ok = await _savePreference(
+      (u) => u.copyWith(notifRsvp: value),
+      () => _authRepository.updateSettings(notifRsvp: value),
+    );
+    _isSavingNotifRsvp = false;
+    notifyListeners();
+    return ok;
+  }
+
+  Future<bool> _savePreference(
+    AppUser Function(AppUser) apply,
+    FutureEither<AppUser> Function() request,
+  ) async {
+    final previous = _session.user;
+    if (previous == null) return false;
+    _preferencesErrorMessage = null;
+    _session.updateUser(apply(previous));
+    notifyListeners();
+
+    final result = await request();
+    return result.match(
+      (failure) {
+        _session.updateUser(previous);
+        _preferencesErrorMessage = AppErrorHandler.userMessage(failure);
+        return false;
+      },
+      (user) {
+        _session.updateUser(user);
         return true;
       },
     );

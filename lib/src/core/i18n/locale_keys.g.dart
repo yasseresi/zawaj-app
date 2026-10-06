@@ -203,6 +203,10 @@ abstract class  LocaleKeys {
   static const settings_display_name_too_long = 'settings.display_name_too_long';
   static const settings_phone_helper = 'settings.phone_helper';
   static const settings_profile_saved = 'settings.profile_saved';
+  static const settings_notifications_section = 'settings.notifications_section';
+  static const settings_notif_push = 'settings.notif_push';
+  static const settings_notif_rsvp = 'settings.notif_rsvp';
+  static const settings_notif_rsvp_subtitle = 'settings.notif_rsvp_subtitle';
   static const settings = 'settings';
   static const errors_no_connection = 'errors.no_connection';
   static const errors_timeout = 'errors.timeout';

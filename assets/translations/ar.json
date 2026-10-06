@@ -213,7 +213,11 @@
     "notifications": "الإشعارات",
     "display_name_too_long": "يجب ألا يتجاوز الاسم 80 حرفًا",
     "phone_helper": "اختياري. رقم للتواصل معك، ولا يُستخدم لتسجيل الدخول.",
-    "profile_saved": "تم تحديث الملف الشخصي"
+    "profile_saved": "تم تحديث الملف الشخصي",
+    "notifications_section": "الإشعارات",
+    "notif_push": "الإشعارات الفورية",
+    "notif_rsvp": "تحديثات الردود",
+    "notif_rsvp_subtitle": "عند تغيّر حالة أحد الضيوف"
   },
   "errors": {
     "no_connection": "لا يوجد اتصال بالإنترنت. تحقّق من اتصالك وحاول مجدداً.",
