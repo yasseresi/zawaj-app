@@ -113,14 +113,20 @@ class AppButton extends StatelessWidget {
                   prefixIcon!,
                   SizedBox(width: 8.w),
                 ],
-                Text(
-                  label,
-                  style: TextStyle(
-                    fontSize: fontSize,
-                    fontWeight: FontWeight.w600,
-                    color: isDisabled
-                        ? fg.withValues(alpha: 0.5)
-                        : textColor ?? fg,
+                // Flexible: long (often translated) labels ellipsize instead
+                // of overflowing the button.
+                Flexible(
+                  child: Text(
+                    label,
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                    style: TextStyle(
+                      fontSize: fontSize,
+                      fontWeight: FontWeight.w600,
+                      color: isDisabled
+                          ? fg.withValues(alpha: 0.5)
+                          : textColor ?? fg,
+                    ),
                   ),
                 ),
                 if (suffixIcon != null) ...[
