@@ -172,7 +172,12 @@
     "delete_title": "هل تريد حذف هذا الضيف؟",
     "delete_message": "سيتم حذف «{name}» من قائمة الضيوف نهائياً.",
     "deleted_toast": "تم حذف الضيف",
-    "delete_error": "تعذّر حذف الضيف"
+    "delete_error": "تعذّر حذف الضيف",
+    "contact_call": "اتصال",
+    "contact_whatsapp": "واتساب",
+    "contact_copy": "نسخ الرقم",
+    "contact_copied": "تم نسخ الرقم",
+    "contact_launch_failed": "تعذّر فتح التطبيق"
   },
   "actions": {
     "cancel": "إلغاء",

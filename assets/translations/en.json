@@ -169,7 +169,12 @@
     "delete_title": "Delete this guest?",
     "delete_message": "“{name}” will be permanently removed from the guest list.",
     "deleted_toast": "Guest deleted",
-    "delete_error": "Couldn't delete the guest"
+    "delete_error": "Couldn't delete the guest",
+    "contact_call": "Call",
+    "contact_whatsapp": "WhatsApp",
+    "contact_copy": "Copy number",
+    "contact_copied": "Number copied",
+    "contact_launch_failed": "Couldn't open the app"
   },
   "actions": {
     "cancel": "Cancel",

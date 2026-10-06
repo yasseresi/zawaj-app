@@ -164,6 +164,11 @@ abstract class  LocaleKeys {
   static const guests_delete_message = 'guests.delete_message';
   static const guests_deleted_toast = 'guests.deleted_toast';
   static const guests_delete_error = 'guests.delete_error';
+  static const guests_contact_call = 'guests.contact_call';
+  static const guests_contact_whatsapp = 'guests.contact_whatsapp';
+  static const guests_contact_copy = 'guests.contact_copy';
+  static const guests_contact_copied = 'guests.contact_copied';
+  static const guests_contact_launch_failed = 'guests.contact_launch_failed';
   static const guests = 'guests';
   static const actions_cancel = 'actions.cancel';
   static const actions_done = 'actions.done';

@@ -112,5 +112,44 @@ void main() {
       expect(find.byType(AppErrorWidget), findsOneWidget);
       expect(find.text('Amina Al-Mansoor'), findsOneWidget);
     });
+
+    testWidgets('tapping a phone contact opens Call / WhatsApp / Copy actions', (tester) async {
+      tester.view.physicalSize = const Size(1125, 2436);
+      tester.view.devicePixelRatio = 3.0;
+      addTearDown(tester.view.resetPhysicalSize);
+      addTearDown(tester.view.resetDevicePixelRatio);
+
+      const guest = Guest(id: 'g1', fullName: 'Amina', contact: '0672859965', status: RsvpStatus.pending);
+      final repo = _MockGuestRepo(result: const Right(GuestDetail(guest: guest)));
+
+      await tester.pumpWidget(_buildScreen(initial: guest, repository: repo));
+      await tester.pumpAndSettle();
+
+      // Shown grouped for readability.
+      expect(find.text('0672 85 99 65'), findsOneWidget);
+      await tester.tap(find.text('0672 85 99 65'));
+      await tester.pumpAndSettle();
+
+      expect(find.text('guests.contact_call'), findsOneWidget);
+      expect(find.text('guests.contact_whatsapp'), findsOneWidget);
+      expect(find.text('guests.contact_copy'), findsOneWidget);
+    });
+
+    testWidgets('a non-phone contact is plain text with no actions', (tester) async {
+      tester.view.physicalSize = const Size(1125, 2436);
+      tester.view.devicePixelRatio = 3.0;
+      addTearDown(tester.view.resetPhysicalSize);
+      addTearDown(tester.view.resetDevicePixelRatio);
+
+      const guest = Guest(id: 'g1', fullName: 'Amina', contact: 'ali@x.dz', status: RsvpStatus.pending);
+      final repo = _MockGuestRepo(result: const Right(GuestDetail(guest: guest)));
+
+      await tester.pumpWidget(_buildScreen(initial: guest, repository: repo));
+      await tester.pumpAndSettle();
+
+      await tester.tap(find.text('ali@x.dz'));
+      await tester.pumpAndSettle();
+      expect(find.text('guests.contact_call'), findsNothing);
+    });
   });
 }

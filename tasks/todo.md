@@ -7,7 +7,7 @@ Details, acceptance criteria and files for each task: [plan.md](plan.md). Specs:
 - [x] T2 Backend: `DELETE /me` requires password + shared lockout — `account-delete`
 - [x] T3 App: `phone.dart` utils (normalize/format/tel/whatsapp) + tests — `phone-contact`
 - [x] T4 App: `AppPhoneField` shared widget + strings + widget test — `phone-contact`
-- [ ] T5 App: guest contact Call/WhatsApp/Copy sheet — `phone-contact`
+- [x] T5 App: guest contact Call/WhatsApp/Copy sheet — `phone-contact`
 
 ### Checkpoint 1
 - [ ] Backend `make test` + integration tests green

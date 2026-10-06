@@ -169,7 +169,12 @@
     "delete_title": "Supprimer cet invité ?",
     "delete_message": "« {name} » sera définitivement retiré de la liste des invités.",
     "deleted_toast": "Invité supprimé",
-    "delete_error": "Impossible de supprimer l'invité"
+    "delete_error": "Impossible de supprimer l'invité",
+    "contact_call": "Appeler",
+    "contact_whatsapp": "WhatsApp",
+    "contact_copy": "Copier le numéro",
+    "contact_copied": "Numéro copié",
+    "contact_launch_failed": "Impossible d'ouvrir l'application"
   },
   "actions": {
     "cancel": "Annuler",
