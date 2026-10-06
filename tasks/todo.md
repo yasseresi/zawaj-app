@@ -22,7 +22,7 @@ Details, acceptance criteria and files for each task: [plan.md](plan.md). Specs:
 - [x] T9 App: wedding `get`/`update` data + `WeddingsProvider.refresh` — `wedding-manage`
 - [x] T10 App: cold-load `/weddings/:id` fallback — `wedding-manage` ⚠ router WIP
 - [x] T11a App: extract `WeddingForm` (create unchanged) — `wedding-manage`
-- [ ] T11b App: Edit wedding screen + route + owner overflow item — `wedding-manage`
+- [x] T11b App: Edit wedding screen + route + owner overflow item — `wedding-manage`
 - [ ] T12a App: guest `update` data + `GuestsProvider.replace` — `guest-edit`
 - [ ] T12b App: extract `GuestForm` (+ `AppPhoneField` for contact) — `guest-edit`
 - [ ] T13 App: Edit guest screen + route + detail action — `guest-edit`

@@ -102,6 +102,10 @@ abstract class  LocaleKeys {
   static const weddings_delete_error = 'weddings.delete_error';
   static const weddings_not_found_title = 'weddings.not_found_title';
   static const weddings_not_found_subtitle = 'weddings.not_found_subtitle';
+  static const weddings_edit = 'weddings.edit';
+  static const weddings_edit_title = 'weddings.edit_title';
+  static const weddings_updated_toast = 'weddings.updated_toast';
+  static const weddings_more_actions = 'weddings.more_actions';
   static const weddings = 'weddings';
   static const guests_loading = 'guests.loading';
   static const guests_search_hint = 'guests.search_hint';

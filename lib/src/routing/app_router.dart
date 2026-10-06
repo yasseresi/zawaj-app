@@ -20,6 +20,7 @@ import '../ui/share/share_screen.dart';
 import '../ui/share/invite_preview_screen.dart';
 import '../ui/shell/main_navigation_shell.dart';
 import '../ui/weddings/create_wedding_screen.dart';
+import '../ui/weddings/edit_wedding_screen.dart';
 import '../ui/weddings/guest_detail_screen.dart';
 import '../ui/weddings/guest_list_screen.dart';
 import '../services/storage_service.dart';
@@ -115,6 +116,17 @@ final GoRouter appRouter = GoRouter(
         weddingId: state.pathParameters['id'] ?? '',
         wedding: state.extra is Wedding ? state.extra as Wedding : null,
       ),
+    ),
+    GoRoute(
+      path: AppRoutes.editWedding,
+      name: 'edit_wedding',
+      // Needs the wedding (with the caller's role) from the wedding screen;
+      // a cold deep link goes to the wedding itself instead.
+      redirect: (context, state) => state.extra is Wedding
+          ? null
+          : '/weddings/${state.pathParameters['id']}',
+      builder: (context, state) =>
+          EditWeddingScreen(wedding: state.extra! as Wedding),
     ),
     GoRoute(
       path: AppRoutes.guestDetail,

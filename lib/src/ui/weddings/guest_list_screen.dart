@@ -99,6 +99,13 @@ class _GuestListViewState extends State<_GuestListView> {
     if (added ?? false) await provider.load();
   }
 
+  Future<void> _openEdit(Wedding wedding) async {
+    final weddingState = context.read<WeddingProvider>();
+    final updated = await context.push<Wedding>('/weddings/${wedding.id}/edit',
+        extra: wedding);
+    if (updated != null) weddingState.applyUpdate(updated);
+  }
+
   @override
   Widget build(BuildContext context) {
     final weddingState = context.watch<WeddingProvider>();
@@ -135,9 +142,25 @@ class _GuestListViewState extends State<_GuestListView> {
           IconButton(
               icon: const Icon(Icons.share_outlined),
               tooltip: 'share.title'.tr(),
-              onPressed: () => context.push(
-                  '/weddings/${widget.weddingId}/share',
-                  extra: wedding))
+              onPressed: () => context
+                  .push('/weddings/${widget.weddingId}/share', extra: wedding)),
+          if (wedding.role.isOwner)
+            PopupMenuButton<_WeddingAction>(
+              tooltip: 'weddings.more_actions'.tr(),
+              onSelected: (action) => switch (action) {
+                _WeddingAction.edit => _openEdit(wedding),
+              },
+              itemBuilder: (_) => [
+                PopupMenuItem(
+                  value: _WeddingAction.edit,
+                  child: ListTile(
+                    contentPadding: EdgeInsets.zero,
+                    leading: const Icon(Icons.edit_outlined),
+                    title: Text('weddings.edit'.tr()),
+                  ),
+                ),
+              ],
+            ),
         ],
       ),
       floatingActionButton: canEdit
@@ -458,3 +481,5 @@ class _GuestTile extends StatelessWidget {
     );
   }
 }
+
+enum _WeddingAction { edit }

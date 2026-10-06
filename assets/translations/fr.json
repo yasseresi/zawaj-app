@@ -106,7 +106,11 @@
     "deleted_toast": "Liste supprimée avec succès",
     "delete_error": "Impossible de supprimer la liste",
     "not_found_title": "Mariage indisponible",
-    "not_found_subtitle": "Il a été supprimé ou vous n'y avez plus accès."
+    "not_found_subtitle": "Il a été supprimé ou vous n'y avez plus accès.",
+    "edit": "Modifier les détails",
+    "edit_title": "Modifier le mariage",
+    "updated_toast": "Mariage mis à jour",
+    "more_actions": "Plus d'actions"
   },
   "guests": {
     "loading": "Chargement des invités…",

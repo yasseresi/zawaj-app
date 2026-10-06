@@ -14,6 +14,7 @@ abstract final class AppRoutes {
 
   static const String createWedding = '/weddings/new';
   static const String wedding = '/weddings/:id';
+  static const String editWedding = '/weddings/:id/edit';
   static const String guestDetail = '/weddings/:id/guests/:gid';
   static const String activity = '/weddings/:id/activity';
   static const String stats = '/weddings/:id/stats';

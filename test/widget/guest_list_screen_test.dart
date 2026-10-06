@@ -122,4 +122,26 @@ void main() {
 
     expect(find.byType(FloatingActionButton), findsNothing);
   });
+
+  testWidgets('only the owner gets the edit action', (tester) async {
+    const owned = Wedding(
+        id: 'w1', name: 'Leila & Omar', ownerId: 'u1', role: WeddingRole.owner);
+    await _pump(tester, _FakeWeddingRepository(const Right(owned)),
+        initial: owned);
+    await tester.tap(find.byTooltip('More actions'));
+    await tester.pumpAndSettle();
+    expect(find.text('Edit details'), findsOneWidget);
+  });
+
+  testWidgets('editors do not get the owner menu', (tester) async {
+    const shared = Wedding(
+        id: 'w1',
+        name: 'Leila & Omar',
+        ownerId: 'u1',
+        role: WeddingRole.editor);
+    await _pump(tester, _FakeWeddingRepository(const Right(shared)),
+        initial: shared);
+
+    expect(find.byTooltip('More actions'), findsNothing);
+  });
 }

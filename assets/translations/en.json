@@ -106,7 +106,11 @@
     "deleted_toast": "List deleted successfully",
     "delete_error": "Couldn't delete the list",
     "not_found_title": "Wedding not available",
-    "not_found_subtitle": "It was deleted, or you no longer have access to it."
+    "not_found_subtitle": "It was deleted, or you no longer have access to it.",
+    "edit": "Edit details",
+    "edit_title": "Edit wedding",
+    "updated_toast": "Wedding updated",
+    "more_actions": "More actions"
   },
   "guests": {
     "loading": "Loading guests…",
