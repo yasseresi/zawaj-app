@@ -291,5 +291,10 @@ abstract class  LocaleKeys {
   static const share_role_editor = 'share.role_editor';
   static const share_role_viewer = 'share.role_viewer';
   static const share = 'share';
+  static const phone_label = 'phone.label';
+  static const phone_hint = 'phone.hint';
+  static const phone_invalid = 'phone.invalid';
+  static const phone_required = 'phone.required';
+  static const phone = 'phone';
 
 }

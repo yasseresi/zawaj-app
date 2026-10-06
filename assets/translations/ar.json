@@ -277,5 +277,11 @@
     "empty_title": "لا توجد إشعارات",
     "empty_subtitle": "ستظهر هنا التحديثات على قوائمك"
   },
-  "share": {"title":"مشاركة وتصدير","collaborators":"المتعاونون","username_hint":"أدخل اسم المستخدم","username_not_found":"لم يتم العثور على حساب بهذا الاسم","invite_already_pending":"توجد دعوة معلقة لهذا المستخدم بالفعل","already_collaborator":"هذا المستخدم متعاون بالفعل","cannot_invite_self":"لا يمكنك دعوة نفسك","invite_sent":"تم إرسال الدعوة","link_created":"تم إنشاء رابط الدعوة","link_section":"مشاركة رابط الدعوة","link":"رابط","qr":"رمز QR","create_link":"إنشاء رابط دعوة","copied":"تم نسخ الرابط","share_link":"مشاركة الرابط","export_section":"تصدير قائمة المدعوين","export_csv":"CSV","export_xlsx":"Excel","export_pdf":"PDF","remove_title":"إزالة المتعاون","remove_message":"إزالة {name} من هذا الحفل؟","remove_confirm":"إزالة","invite_preview":"دعوة","preview_role":"ستنضم بصلاحية {role}","accept_invite":"قبول الدعوة","login_to_accept":"سجّل الدخول للقبول","role_owner":"المالك","role_editor":"يمكنه التعديل","role_viewer":"يمكنه العرض فقط"}
+  "share": {"title":"مشاركة وتصدير","collaborators":"المتعاونون","username_hint":"أدخل اسم المستخدم","username_not_found":"لم يتم العثور على حساب بهذا الاسم","invite_already_pending":"توجد دعوة معلقة لهذا المستخدم بالفعل","already_collaborator":"هذا المستخدم متعاون بالفعل","cannot_invite_self":"لا يمكنك دعوة نفسك","invite_sent":"تم إرسال الدعوة","link_created":"تم إنشاء رابط الدعوة","link_section":"مشاركة رابط الدعوة","link":"رابط","qr":"رمز QR","create_link":"إنشاء رابط دعوة","copied":"تم نسخ الرابط","share_link":"مشاركة الرابط","export_section":"تصدير قائمة المدعوين","export_csv":"CSV","export_xlsx":"Excel","export_pdf":"PDF","remove_title":"إزالة المتعاون","remove_message":"إزالة {name} من هذا الحفل؟","remove_confirm":"إزالة","invite_preview":"دعوة","preview_role":"ستنضم بصلاحية {role}","accept_invite":"قبول الدعوة","login_to_accept":"سجّل الدخول للقبول","role_owner":"المالك","role_editor":"يمكنه التعديل","role_viewer":"يمكنه العرض فقط"},
+  "phone": {
+    "label": "رقم الهاتف",
+    "hint": "0672 85 99 65",
+    "invalid": "أدخل رقمًا جزائريًا صحيحًا، مثل 0672 85 99 65",
+    "required": "رقم الهاتف مطلوب"
+  }
 }
