@@ -180,7 +180,15 @@
     "contact_whatsapp": "WhatsApp",
     "contact_copy": "Copy number",
     "contact_copied": "Number copied",
-    "contact_launch_failed": "Couldn't open the app"
+    "contact_launch_failed": "Couldn't open the app",
+    "contact_legacy_hint": "This saved contact is not a phone number. Replace it with one, or leave it as is.",
+    "relationship_label": "Relationship",
+    "relationship_hint": "e.g. Cousin, colleague",
+    "table_field_label": "Table",
+    "table_hint": "e.g. 5",
+    "meal_field_label": "Meal",
+    "meal_hint": "e.g. Vegetarian",
+    "field_too_long": "Must be at most {max} characters"
   },
   "actions": {
     "cancel": "Cancel",

@@ -14,6 +14,8 @@ class AppPhoneField extends StatelessWidget {
     this.required = false,
     this.onChanged,
     this.textInputAction,
+    this.legacyValue,
+    this.enabled = true,
   });
 
   final TextEditingController? controller;
@@ -25,6 +27,11 @@ class AppPhoneField extends StatelessWidget {
   final bool required;
   final ValueChanged<String>? onChanged;
   final TextInputAction? textInputAction;
+  final bool enabled;
+
+  /// A previously saved non-phone contact (e.g. an email from before phones
+  /// were enforced). It stays valid while left unchanged.
+  final String? legacyValue;
 
   /// Canonical value for [text]: the national number, `''` when empty, or
   /// null when the input is not a valid Algerian number.
@@ -32,6 +39,7 @@ class AppPhoneField extends StatelessWidget {
       text.trim().isEmpty ? '' : normalizePhone(text);
 
   String? _validate(String? value) {
+    if (legacyValue != null && value == legacyValue) return null;
     final v = valueOf(value ?? '');
     if (v == null) return 'phone.invalid'.tr();
     if (v.isEmpty && required) return 'phone.required'.tr();
@@ -42,6 +50,7 @@ class AppPhoneField extends StatelessWidget {
   Widget build(BuildContext context) {
     return AppTextField(
       controller: controller,
+      enabled: enabled,
       label: label ?? 'phone.label'.tr(),
       hint: 'phone.hint'.tr(),
       keyboardType: TextInputType.phone,

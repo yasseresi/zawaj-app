@@ -180,7 +180,15 @@
     "contact_whatsapp": "WhatsApp",
     "contact_copy": "Copier le numéro",
     "contact_copied": "Numéro copié",
-    "contact_launch_failed": "Impossible d'ouvrir l'application"
+    "contact_launch_failed": "Impossible d'ouvrir l'application",
+    "contact_legacy_hint": "Ce contact enregistré n'est pas un numéro de téléphone. Remplacez-le ou laissez-le tel quel.",
+    "relationship_label": "Lien",
+    "relationship_hint": "ex. Cousin, collègue",
+    "table_field_label": "Table",
+    "table_hint": "ex. 5",
+    "meal_field_label": "Repas",
+    "meal_hint": "ex. Végétarien",
+    "field_too_long": "{max} caractères maximum"
   },
   "actions": {
     "cancel": "Annuler",

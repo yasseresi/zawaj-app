@@ -24,7 +24,7 @@ Details, acceptance criteria and files for each task: [plan.md](plan.md). Specs:
 - [x] T11a App: extract `WeddingForm` (create unchanged) — `wedding-manage`
 - [x] T11b App: Edit wedding screen + route + owner overflow item — `wedding-manage`
 - [x] T12a App: guest `update` data + `GuestsProvider.replace` — `guest-edit`
-- [ ] T12b App: extract `GuestForm` (+ `AppPhoneField` for contact) — `guest-edit`
+- [x] T12b App: extract `GuestForm` (+ `AppPhoneField` for contact) — `guest-edit`
 - [ ] T13 App: Edit guest screen + route + detail action — `guest-edit`
 
 ### Checkpoint 2

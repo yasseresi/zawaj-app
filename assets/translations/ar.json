@@ -183,7 +183,15 @@
     "contact_whatsapp": "واتساب",
     "contact_copy": "نسخ الرقم",
     "contact_copied": "تم نسخ الرقم",
-    "contact_launch_failed": "تعذّر فتح التطبيق"
+    "contact_launch_failed": "تعذّر فتح التطبيق",
+    "contact_legacy_hint": "جهة الاتصال المحفوظة ليست رقم هاتف. استبدلها برقم أو اتركها كما هي.",
+    "relationship_label": "صلة القرابة",
+    "relationship_hint": "مثال: ابن العم، زميل",
+    "table_field_label": "الطاولة",
+    "table_hint": "مثال: 5",
+    "meal_field_label": "الوجبة",
+    "meal_hint": "مثال: نباتية",
+    "field_too_long": "يجب ألا يتجاوز {max} حرفًا"
   },
   "actions": {
     "cancel": "إلغاء",

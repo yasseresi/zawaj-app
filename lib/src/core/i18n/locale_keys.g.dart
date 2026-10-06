@@ -175,6 +175,14 @@ abstract class  LocaleKeys {
   static const guests_contact_copy = 'guests.contact_copy';
   static const guests_contact_copied = 'guests.contact_copied';
   static const guests_contact_launch_failed = 'guests.contact_launch_failed';
+  static const guests_contact_legacy_hint = 'guests.contact_legacy_hint';
+  static const guests_relationship_label = 'guests.relationship_label';
+  static const guests_relationship_hint = 'guests.relationship_hint';
+  static const guests_table_field_label = 'guests.table_field_label';
+  static const guests_table_hint = 'guests.table_hint';
+  static const guests_meal_field_label = 'guests.meal_field_label';
+  static const guests_meal_hint = 'guests.meal_hint';
+  static const guests_field_too_long = 'guests.field_too_long';
   static const guests = 'guests';
   static const actions_cancel = 'actions.cancel';
   static const actions_done = 'actions.done';
