@@ -199,6 +199,7 @@ class _DeleteAccountViewState extends State<_DeleteAccountView> {
           controller: _password,
           focusNode: _passwordFocus,
           obscureText: _obscure,
+          textDirection: TextDirection.ltr,
           enabled: !provider.isSubmitting,
           autofillHints: const [AutofillHints.password],
           textInputAction: TextInputAction.done,

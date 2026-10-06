@@ -83,7 +83,9 @@ class AppTextField extends StatelessWidget {
       autofocus: autofocus,
       inputFormatters: inputFormatters,
       autofillHints: autofillHints,
-      textDirection: textDirection,
+      // Passwords are Latin by nature; in RTL layouts a trailing symbol
+      // (e.g. "!") would otherwise render at the start.
+      textDirection: textDirection ?? (obscureText ? TextDirection.ltr : null),
       style: tt.bodyLarge?.copyWith(color: cs.onSurface),
       cursorColor: cs.primary,
       decoration: InputDecoration(
