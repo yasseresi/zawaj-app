@@ -6,6 +6,7 @@ import '../../data/models/invite_link_model.dart';
 import '../../imports/core_imports.dart';
 import '../../imports/packages_imports.dart';
 import 'providers/share_provider.dart';
+import 'widgets/invite_link_tile.dart';
 import 'widgets/member_tile.dart';
 import 'widgets/role_picker_sheet.dart';
 
@@ -76,6 +77,21 @@ class _ShareViewState extends State<_ShareView> {
       showToast(context,
           message: provider.errorMessage ?? 'errors.unknown'.tr(),
           status: 'error');
+    }
+  }
+
+  Future<void> _confirmRevoke(InviteLink link) async {
+    final provider = context.read<ShareProvider>();
+    final confirmed = await showAdaptiveConfirmDialog(
+      context,
+      title: 'share.revoke_title'.tr(),
+      message: 'share.revoke_message'.tr(),
+      confirmLabel: 'share.revoke_link'.tr(),
+      isDestructive: true,
+    );
+    if (!(confirmed ?? false) || !mounted) return;
+    if (await provider.revokeLink(link.id) && mounted) {
+      context.showSuccessSnackBar('share.link_revoked'.tr());
     }
   }
 
@@ -205,6 +221,26 @@ class _ShareViewState extends State<_ShareView> {
               icon: const Icon(Icons.share),
               label: Text('share.share_link'.tr())),
         ],
+        if (p.activeLinks.isNotEmpty) ...[
+          SizedBox(height: AppSpacing.md.h),
+          Text(
+              'share.active_links'
+                  .tr(namedArgs: {'count': '${p.activeLinks.length}'}),
+              style: context.textTheme.labelLarge
+                  ?.copyWith(color: context.colors.onSurfaceVariant)),
+          SizedBox(height: AppSpacing.xs.h),
+        ],
+        AnimatedSize(
+          duration: const Duration(milliseconds: 200),
+          child: Column(children: [
+            for (final l in p.activeLinks)
+              InviteLinkTile(
+                key: ValueKey(l.id),
+                link: l,
+                onRevoke: p.busy ? null : () => _confirmRevoke(l),
+              ),
+          ]),
+        ),
       ],
       SizedBox(height: AppSpacing.lg.h),
       Text('share.export_section'.tr(),

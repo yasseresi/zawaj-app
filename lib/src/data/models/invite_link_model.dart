@@ -5,11 +5,13 @@ class InviteLink extends Equatable {
       {required this.id,
       required this.token,
       required this.role,
-      this.revoked = false});
+      this.revoked = false,
+      this.createdAt});
   final String id;
   final String token;
   final String role;
   final bool revoked;
+  final DateTime? createdAt;
   String get appUrl => 'zawaj://i/$token';
   String get displayUrl => 'zawaj.app/i/$token';
 
@@ -18,9 +20,10 @@ class InviteLink extends Equatable {
         token: (json['token'] ?? '').toString(),
         role: (json['role'] ?? 'viewer').toString(),
         revoked: json['revoked'] == true,
+        createdAt: DateTime.tryParse((json['created_at'] ?? '').toString()),
       );
   @override
-  List<Object?> get props => [id, token, role, revoked];
+  List<Object?> get props => [id, token, role, revoked, createdAt];
 }
 
 class InvitePreview extends Equatable {

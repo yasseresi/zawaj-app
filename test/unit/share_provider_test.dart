@@ -58,6 +58,15 @@ class _FakeWeddingRepository implements WeddingRepository {
     return setRoleResult;
   }
 
+  Either<Failure, void> revokeResult = const Right(null);
+  final revoked = <String>[];
+
+  @override
+  FutureEither<void> revokeInviteLink(String id, String linkId) async {
+    revoked.add(linkId);
+    return revokeResult;
+  }
+
   @override
   dynamic noSuchMethod(Invocation invocation) => throw UnimplementedError();
 }
@@ -148,5 +157,51 @@ void main() {
       expect(await p.setRole('u2', WeddingRole.editor), isTrue);
       expect(repo.roleCalls, isEmpty);
     });
+  });
+
+  group('revokeLink', () {
+    test('drops the link from the active list', () async {
+      final repo = _FakeWeddingRepository();
+      final p = _provider(repo, wedding: _wedding(WeddingRole.owner));
+      await p.load();
+      expect(p.link?.id, 'l1');
+
+      expect(await p.revokeLink('l1'), isTrue);
+
+      expect(repo.revoked.single, 'l1');
+      expect(p.activeLinks, isEmpty);
+      expect(p.link, isNull); // the shown link/QR clears
+    });
+
+    test('an already-revoked link (404) counts as success', () async {
+      final repo = _FakeWeddingRepository()
+        ..revokeResult = const Left(NotFoundFailure('gone'));
+      final p = _provider(repo, wedding: _wedding(WeddingRole.owner));
+      await p.load();
+
+      expect(await p.revokeLink('l1'), isTrue);
+      expect(p.activeLinks, isEmpty);
+    });
+
+    test('other failures keep the link and expose the error', () async {
+      final repo = _FakeWeddingRepository()
+        ..revokeResult = const Left(ServerFailure('boom'));
+      final p = _provider(repo, wedding: _wedding(WeddingRole.owner));
+      await p.load();
+
+      expect(await p.revokeLink('l1'), isFalse);
+      expect(p.activeLinks, hasLength(1));
+      expect(p.errorMessage, isNotNull);
+    });
+  });
+
+  test('InviteLink parses created_at', () {
+    final link = InviteLink.fromJson(const {
+      'id': 'l1',
+      'token': 't',
+      'role': 'editor',
+      'created_at': '2026-10-01T10:00:00Z',
+    });
+    expect(link.createdAt, DateTime.utc(2026, 10, 1, 10));
   });
 }

@@ -34,7 +34,7 @@ Details, acceptance criteria and files for each task: [plan.md](plan.md). Specs:
 
 ## Phase 3: Collaboration admin
 - [x] T14 App: change member role (menu + sheet, optimistic) — `collab-admin`
-- [ ] T15 App: invite links list + revoke — `collab-admin`
+- [x] T15 App: invite links list + revoke — `collab-admin`
 - [ ] T16 App: transfer ownership + post-transfer refresh — `collab-admin`
 
 ### Checkpoint 3

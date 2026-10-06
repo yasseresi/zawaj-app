@@ -331,6 +331,13 @@ abstract class  LocaleKeys {
   static const share_role_viewer_desc = 'share.role_viewer_desc';
   static const share_role_changed = 'share.role_changed';
   static const share_make_owner = 'share.make_owner';
+  static const share_active_links = 'share.active_links';
+  static const share_link_grants = 'share.link_grants';
+  static const share_link_created_on = 'share.link_created_on';
+  static const share_revoke_link = 'share.revoke_link';
+  static const share_revoke_title = 'share.revoke_title';
+  static const share_revoke_message = 'share.revoke_message';
+  static const share_link_revoked = 'share.link_revoked';
   static const share = 'share';
   static const phone_label = 'phone.label';
   static const phone_hint = 'phone.hint';

@@ -12,6 +12,7 @@ import '../../../data/repositories/wedding_repository_impl.dart';
 import '../../../shared/enums/app_status.dart';
 import '../../../services/export_service.dart';
 import '../../../utils/error_handler.dart';
+import '../../../utils/failure.dart';
 import '../../../utils/input_validation.dart';
 
 /// Share screen state: collaborators, invite links and exports. Owner-only
@@ -40,12 +41,12 @@ class ShareProvider extends ChangeNotifier {
   WeddingRole? get role => _role;
   bool get isOwner => _role == WeddingRole.owner;
 
-  InviteLink? get link {
-    for (final candidate in links) {
-      if (!candidate.revoked) return candidate;
-    }
-    return null;
-  }
+  /// Links that still work, newest first (as returned).
+  List<InviteLink> get activeLinks =>
+      links.where((l) => !l.revoked).toList(growable: false);
+
+  /// The link shown as URL / QR: the newest active one.
+  InviteLink? get link => activeLinks.isEmpty ? null : activeLinks.first;
 
   Future<void> load() async {
     status = AppStatus.loading;
@@ -124,6 +125,27 @@ class ShareProvider extends ChangeNotifier {
       links = [v, ...links];
       return true;
     });
+    busy = false;
+    notifyListeners();
+    return ok;
+  }
+
+  /// Revoke an invite link (owner). People who haven't joined can no longer
+  /// use it. A 404 means it's already gone — treated as success.
+  Future<bool> revokeLink(String linkId) async {
+    busy = true;
+    errorMessage = null;
+    notifyListeners();
+    final result = await _weddings.revokeInviteLink(weddingId, linkId);
+    final ok = result.match(
+      (f) {
+        if (f is NotFoundFailure) return true;
+        errorMessage = AppErrorHandler.userMessage(f);
+        return false;
+      },
+      (_) => true,
+    );
+    if (ok) links = links.where((l) => l.id != linkId).toList();
     busy = false;
     notifyListeners();
     return ok;
