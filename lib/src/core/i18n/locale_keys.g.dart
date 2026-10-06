@@ -338,6 +338,10 @@ abstract class  LocaleKeys {
   static const share_revoke_title = 'share.revoke_title';
   static const share_revoke_message = 'share.revoke_message';
   static const share_link_revoked = 'share.link_revoked';
+  static const share_transfer_title = 'share.transfer_title';
+  static const share_transfer_message = 'share.transfer_message';
+  static const share_transfer_confirm = 'share.transfer_confirm';
+  static const share_transferred = 'share.transferred';
   static const share = 'share';
   static const phone_label = 'phone.label';
   static const phone_hint = 'phone.hint';

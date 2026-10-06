@@ -105,6 +105,15 @@ class WeddingService {
         parse: parseVoid,
       );
 
+  /// `POST /weddings/:id/transfer` `{user_id}` (owner). The target must already
+  /// be a member; the server makes them owner and demotes the caller to editor.
+  FutureEither<void> transferOwnership(String weddingId, String userId) =>
+      _api.post<void>(
+        '/weddings/$weddingId/transfer',
+        body: {'user_id': userId},
+        parse: parseVoid,
+      );
+
   FutureEither<InviteLink> createInviteLink(String weddingId, String role) =>
       _api.post<InviteLink>(
         '/weddings/$weddingId/invite-links',

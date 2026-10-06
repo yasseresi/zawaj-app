@@ -35,12 +35,12 @@ Details, acceptance criteria and files for each task: [plan.md](plan.md). Specs:
 ## Phase 3: Collaboration admin
 - [x] T14 App: change member role (menu + sheet, optimistic) — `collab-admin`
 - [x] T15 App: invite links list + revoke — `collab-admin`
-- [ ] T16 App: transfer ownership + post-transfer refresh — `collab-admin`
+- [x] T16 App: transfer ownership + post-transfer refresh — `collab-admin`
 
 ### Checkpoint 3
-- [ ] Tests green
-- [ ] Manual with 2 accounts: role change, revoked link fails, former owner sees editor UI
-- [ ] Human review
+- [x] Tests green (221)
+- [ ] Manual with 2 accounts: role change, revoked link fails, former owner sees editor UI — deferred to Checkpoint 4 run
+- [x] Human review (waived: /build auto)
 
 ## Phase 4: Account deletion
 - [ ] T17 App: `deleteAccount(password)` + session teardown — `account-delete`

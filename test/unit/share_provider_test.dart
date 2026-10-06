@@ -42,7 +42,12 @@ class _FakeWeddingRepository implements WeddingRepository {
 
   @override
   FutureEither<List<WeddingMember>> members(String id) async =>
-      const Right([_owner, _omar]);
+      Right(transferred
+          ? [
+              _owner.copyWith(role: WeddingRole.editor),
+              _omar.copyWith(role: WeddingRole.owner)
+            ]
+          : const [_owner, _omar]);
 
   @override
   FutureEither<List<InviteLink>> listInviteLinks(String id) async {
@@ -56,6 +61,17 @@ class _FakeWeddingRepository implements WeddingRepository {
     roleCalls.add((userId, role));
     await setRoleGate?.future;
     return setRoleResult;
+  }
+
+  Either<Failure, void> transferResult = const Right(null);
+  final transfers = <String>[];
+  bool transferred = false;
+
+  @override
+  FutureEither<void> transferOwnership(String id, String userId) async {
+    transfers.add(userId);
+    transferred = transferResult.isRight();
+    return transferResult;
   }
 
   Either<Failure, void> revokeResult = const Right(null);
@@ -203,5 +219,33 @@ void main() {
       'created_at': '2026-10-01T10:00:00Z',
     });
     expect(link.createdAt, DateTime.utc(2026, 10, 1, 10));
+  });
+
+  group('transferOwnership', () {
+    test('demotes the caller to editor and reloads members', () async {
+      final repo = _FakeWeddingRepository();
+      final p = _provider(repo, wedding: _wedding(WeddingRole.owner));
+      await p.load();
+
+      expect(await p.transferOwnership('u2'), isTrue);
+
+      expect(repo.transfers.single, 'u2');
+      expect(p.isOwner, isFalse);
+      expect(p.role, WeddingRole.editor);
+      expect(p.members.firstWhere((m) => m.userId == 'u2').role,
+          WeddingRole.owner);
+      expect(p.links, isEmpty); // owner-only data is dropped
+    });
+
+    test('keeps ownership and exposes the error on failure', () async {
+      final repo = _FakeWeddingRepository()
+        ..transferResult = const Left(ValidationFailure('bad'));
+      final p = _provider(repo, wedding: _wedding(WeddingRole.owner));
+      await p.load();
+
+      expect(await p.transferOwnership('u2'), isFalse);
+      expect(p.isOwner, isTrue);
+      expect(p.errorMessage, isNotNull);
+    });
   });
 }

@@ -37,6 +37,10 @@ abstract interface class WeddingRepository {
 
   /// `DELETE /weddings/:id/members/:userId` — remove a collaborator.
   FutureEither<void> removeMember(String id, String userId);
+  /// `POST /weddings/:id/transfer` — hand ownership to an existing member
+  /// (owner). The caller becomes an editor.
+  FutureEither<void> transferOwnership(String id, String userId);
+
   FutureEither<InviteLink> createInviteLink(String id, String role);
   FutureEither<List<InviteLink>> listInviteLinks(String id);
   FutureEither<void> revokeInviteLink(String id, String linkId);

@@ -99,6 +99,14 @@ class _GuestListViewState extends State<_GuestListView> {
     if (added ?? false) await provider.load();
   }
 
+  /// Share can change the caller's role (ownership transfer), so re-check it
+  /// on return.
+  Future<void> _openShare(Wedding wedding) async {
+    final weddingState = context.read<WeddingProvider>();
+    await context.push('/weddings/${widget.weddingId}/share', extra: wedding);
+    await weddingState.load();
+  }
+
   Future<void> _openEdit(Wedding wedding) async {
     final weddingState = context.read<WeddingProvider>();
     final updated = await context.push<Wedding>('/weddings/${wedding.id}/edit',
@@ -142,8 +150,7 @@ class _GuestListViewState extends State<_GuestListView> {
           IconButton(
               icon: const Icon(Icons.share_outlined),
               tooltip: 'share.title'.tr(),
-              onPressed: () => context
-                  .push('/weddings/${widget.weddingId}/share', extra: wedding)),
+              onPressed: () => _openShare(wedding)),
           if (wedding.role.isOwner)
             PopupMenuButton<_WeddingAction>(
               tooltip: 'weddings.more_actions'.tr(),

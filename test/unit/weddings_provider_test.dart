@@ -11,6 +11,10 @@ import 'package:zawaj_app/src/utils/typedefs.dart';
 
 class _FakeWeddingRepository implements WeddingRepository {
   @override
+  FutureEither<void> transferOwnership(String id, String userId) async =>
+      throw UnimplementedError();
+
+  @override
   FutureEither<InviteLink> createInviteLink(String id, String role) =>
       throw UnimplementedError();
   @override

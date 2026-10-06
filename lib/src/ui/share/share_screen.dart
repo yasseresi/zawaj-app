@@ -80,6 +80,28 @@ class _ShareViewState extends State<_ShareView> {
     }
   }
 
+  Future<void> _confirmTransfer(WeddingMember member) async {
+    final provider = context.read<ShareProvider>();
+    final confirmed = await showAdaptiveConfirmDialog(
+      context,
+      title: 'share.transfer_title'.tr(),
+      message: 'share.transfer_message'.tr(namedArgs: {'name': member.label}),
+      confirmLabel: 'share.transfer_confirm'.tr(),
+      isDestructive: true,
+    );
+    if (!(confirmed ?? false) || !mounted) return;
+    final ok = await provider.transferOwnership(member.userId);
+    if (!mounted) return;
+    if (ok) {
+      context.showSuccessSnackBar(
+          'share.transferred'.tr(namedArgs: {'name': member.label}));
+    } else {
+      showToast(context,
+          message: provider.errorMessage ?? 'errors.unknown'.tr(),
+          status: 'error');
+    }
+  }
+
   Future<void> _confirmRevoke(InviteLink link) async {
     final provider = context.read<ShareProvider>();
     final confirmed = await showAdaptiveConfirmDialog(
@@ -158,6 +180,8 @@ class _ShareViewState extends State<_ShareView> {
           // Owners manage everyone but themselves (the owner row).
           onChangeRole:
               (p.isOwner && !m.role.isOwner) ? () => _changeRole(m) : null,
+          onMakeOwner:
+              (p.isOwner && !m.role.isOwner) ? () => _confirmTransfer(m) : null,
           onRemove:
               (p.isOwner && !m.role.isOwner) ? () => _confirmRemove(m) : null,
         ),

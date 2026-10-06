@@ -49,6 +49,10 @@ class WeddingRepositoryImpl implements WeddingRepository {
       _service.removeMember(id, userId);
 
   @override
+  FutureEither<void> transferOwnership(String id, String userId) =>
+      _service.transferOwnership(id, userId);
+
+  @override
   FutureEither<InviteLink> createInviteLink(String id, String role) =>
       _service.createInviteLink(id, role);
   @override

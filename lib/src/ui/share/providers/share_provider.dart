@@ -130,6 +130,27 @@ class ShareProvider extends ChangeNotifier {
     return ok;
   }
 
+  /// Hand the wedding to [userId] (owner). On success the caller is now an
+  /// editor: owner-only data is dropped and members reload.
+  Future<bool> transferOwnership(String userId) async {
+    busy = true;
+    errorMessage = null;
+    notifyListeners();
+    final result = await _weddings.transferOwnership(weddingId, userId);
+    final ok = result.match((f) {
+      errorMessage = AppErrorHandler.userMessage(f);
+      return false;
+    }, (_) => true);
+    busy = false;
+    if (!ok) {
+      notifyListeners();
+      return false;
+    }
+    _role = WeddingRole.editor;
+    await load();
+    return true;
+  }
+
   /// Revoke an invite link (owner). People who haven't joined can no longer
   /// use it. A 404 means it's already gone — treated as success.
   Future<bool> revokeLink(String linkId) async {

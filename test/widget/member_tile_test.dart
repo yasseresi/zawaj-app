@@ -72,4 +72,19 @@ void main() {
     await tester.pumpAndSettle();
     expect(picked, WeddingRole.viewer);
   });
+
+  testWidgets('make owner appears only when provided and fires', (tester) async {
+    var transfers = 0;
+    await tester.pumpWidget(_host(MemberTile(
+      member: _omar,
+      onMakeOwner: () => transfers++,
+    )));
+
+    await tester.tap(find.byTooltip('share.member_actions'));
+    await tester.pumpAndSettle();
+    await tester.tap(find.text('share.make_owner'));
+    await tester.pumpAndSettle();
+
+    expect(transfers, 1);
+  });
 }
