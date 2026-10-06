@@ -3,9 +3,9 @@
 Details, acceptance criteria and files for each task: [plan.md](plan.md). Specs: [SPEC-map.md](../SPEC-map.md).
 
 ## Phase 1: Foundation
-- [ ] T1 Backend: user `phone` (migration 000009, DTO, normaliser, drop `email` from response) — `phone-contact`
-- [ ] T2 Backend: `DELETE /me` requires password + shared lockout — `account-delete`
-- [ ] T3 App: `phone.dart` utils (normalize/format/tel/whatsapp) + tests — `phone-contact`
+- [x] T1 Backend: user `phone` (migration 000009, DTO, normaliser, drop `email` from response) — `phone-contact`
+- [x] T2 Backend: `DELETE /me` requires password + shared lockout — `account-delete`
+- [x] T3 App: `phone.dart` utils (normalize/format/tel/whatsapp) + tests — `phone-contact`
 - [ ] T4 App: `AppPhoneField` shared widget + strings + widget test — `phone-contact`
 - [ ] T5 App: guest contact Call/WhatsApp/Copy sheet — `phone-contact`
 
