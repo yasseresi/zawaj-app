@@ -65,8 +65,6 @@ GuestFormValues _values({
   String relationship = 'Cousin',
   RsvpStatus status = RsvpStatus.pending,
   int companions = 2,
-  String tableLabel = '5',
-  String meal = '',
 }) =>
     GuestFormValues(
       fullName: fullName,
@@ -74,8 +72,6 @@ GuestFormValues _values({
       relationship: relationship,
       status: status,
       companions: companions,
-      tableLabel: tableLabel,
-      meal: meal,
     );
 
 void main() {
@@ -116,23 +112,23 @@ void main() {
         fullName: ' Amina B ',
         contact: '+213 551 23 45 67',
         status: RsvpStatus.confirmed,
-        meal: ' Veg '));
+        relationship: ' Aunt '));
 
     final call = repo.calls.single;
     expect(call.fullName, 'Amina B');
     expect(call.contact, '0551234567');
     expect(call.status, 'confirmed');
-    expect(call.meal, 'Veg');
-    expect(call.relationship, isNull);
+    expect(call.relationship, 'Aunt');
+    expect(call.meal, isNull); // table/meal are no longer edited
   });
 
   test('clearing an optional field sends an empty string', () async {
     repo.updateResult = const Right(_guest);
 
-    await provider.save(_values(contact: '', tableLabel: ' '));
+    await provider.save(_values(contact: '', relationship: ' '));
 
     expect(repo.calls.single.contact, '');
-    expect(repo.calls.single.tableLabel, '');
+    expect(repo.calls.single.relationship, '');
   });
 
   test('an unchanged legacy contact is not sent', () async {
@@ -147,9 +143,7 @@ void main() {
         contact: 'ali@x.dz',
         relationship: '',
         status: RsvpStatus.pending,
-        companions: 0,
-        tableLabel: '',
-        meal: ''));
+        companions: 0));
 
     expect(repo.calls.single.contact, isNull);
     expect(repo.calls.single.fullName, 'Ali B');

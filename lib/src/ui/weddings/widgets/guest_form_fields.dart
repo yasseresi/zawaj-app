@@ -5,7 +5,7 @@ import 'package:zawaj_app/src/data/models/guest_model.dart';
 
 /// The guest fields shared by add and edit: name (required, ≤120), phone
 /// contact, RSVP status and companions; [showDetails] adds relationship,
-/// table and meal (edit). Place inside a [Form]; the parent owns the state.
+/// (edit). Place inside a [Form]; the parent owns the state.
 class GuestFormFields extends StatelessWidget {
   const GuestFormFields({
     super.key,
@@ -18,8 +18,6 @@ class GuestFormFields extends StatelessWidget {
     this.enabled = true,
     this.showDetails = false,
     this.relationship,
-    this.tableLabel,
-    this.meal,
     this.legacyContact,
   });
 
@@ -34,8 +32,6 @@ class GuestFormFields extends StatelessWidget {
   final bool enabled;
   final bool showDetails;
   final TextEditingController? relationship;
-  final TextEditingController? tableLabel;
-  final TextEditingController? meal;
 
   /// A saved contact that isn't a phone number; accepted while unchanged.
   final String? legacyContact;
@@ -104,37 +100,6 @@ class GuestFormFields extends StatelessWidget {
           enabled: enabled,
           onChanged: onCompanionsChanged,
         ),
-        if (showDetails) ...[
-          gap,
-          Row(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Expanded(
-                child: AppTextField(
-                  controller: tableLabel,
-                  enabled: enabled,
-                  label: 'guests.table_field_label'.tr(),
-                  hint: 'guests.table_hint'.tr(),
-                  textInputAction: TextInputAction.next,
-                  prefixIcon: const Icon(Icons.table_restaurant_outlined),
-                  validator: maxLength(40),
-                ),
-              ),
-              SizedBox(width: AppSpacing.sm.w),
-              Expanded(
-                child: AppTextField(
-                  controller: meal,
-                  enabled: enabled,
-                  label: 'guests.meal_field_label'.tr(),
-                  hint: 'guests.meal_hint'.tr(),
-                  textInputAction: TextInputAction.done,
-                  prefixIcon: const Icon(Icons.restaurant_outlined),
-                  validator: maxLength(40),
-                ),
-              ),
-            ],
-          ),
-        ],
       ],
     );
   }

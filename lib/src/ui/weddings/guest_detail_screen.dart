@@ -267,14 +267,6 @@ class _InfoCard extends StatelessWidget {
         'guests.info_companions'.tr(),
         '${guest.companions}'
       ),
-      if (guest.tableLabel.isNotEmpty)
-        (
-          Icons.table_restaurant_outlined,
-          'guests.info_table'.tr(),
-          guest.tableLabel
-        ),
-      if (guest.meal.isNotEmpty)
-        (Icons.restaurant_outlined, 'guests.info_meal'.tr(), guest.meal),
     ];
 
     return AppCard(

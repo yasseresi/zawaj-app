@@ -14,8 +14,6 @@ class GuestFormValues {
     required this.relationship,
     required this.status,
     required this.companions,
-    required this.tableLabel,
-    required this.meal,
   });
 
   final String fullName;
@@ -23,8 +21,6 @@ class GuestFormValues {
   final String relationship;
   final RsvpStatus status;
   final int companions;
-  final String tableLabel;
-  final String meal;
 }
 
 /// Edit form state for one guest (editor+). Diffs the form against the
@@ -67,8 +63,6 @@ class EditGuestProvider extends ChangeNotifier {
     String? relationship,
     String? status,
     int? companions,
-    String? tableLabel,
-    String? meal,
   }) _diff(GuestFormValues v) {
     String? changed(String value, String original) {
       final t = value.trim();
@@ -82,8 +76,6 @@ class EditGuestProvider extends ChangeNotifier {
       relationship: changed(v.relationship, _original.relationship),
       status: v.status == _original.status ? null : v.status.wire,
       companions: v.companions == _original.companions ? null : v.companions,
-      tableLabel: changed(v.tableLabel, _original.tableLabel),
-      meal: changed(v.meal, _original.meal),
     );
   }
 
@@ -95,8 +87,6 @@ class EditGuestProvider extends ChangeNotifier {
       d.relationship,
       d.status,
       d.companions,
-      d.tableLabel,
-      d.meal,
     ].any((f) => f != null);
   }
 
@@ -117,8 +107,6 @@ class EditGuestProvider extends ChangeNotifier {
       relationship: d.relationship,
       status: d.status,
       companions: d.companions,
-      tableLabel: d.tableLabel,
-      meal: d.meal,
     );
     _isSaving = false;
     return result.match(

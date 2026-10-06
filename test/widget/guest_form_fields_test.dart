@@ -26,8 +26,6 @@ Widget _host({
               onCompanionsChanged: (_) {},
               showDetails: showDetails,
               relationship: TextEditingController(),
-              tableLabel: TextEditingController(),
-              meal: TextEditingController(),
               legacyContact: legacyContact,
             ),
           ),
@@ -61,7 +59,7 @@ void main() {
     expect(find.text('guests.contact_legacy_hint'), findsOneWidget);
   });
 
-  testWidgets('relationship, table and meal only appear with showDetails',
+  testWidgets('relationship only appears with showDetails; no table or meal',
       (tester) async {
     await tester.pumpWidget(_host(
         formKey: GlobalKey<FormState>(), contact: TextEditingController()));
@@ -72,7 +70,7 @@ void main() {
         contact: TextEditingController(),
         showDetails: true));
     expect(find.text('guests.relationship_label'), findsOneWidget);
-    expect(find.text('guests.table_field_label'), findsOneWidget);
-    expect(find.text('guests.meal_field_label'), findsOneWidget);
+    expect(find.byIcon(Icons.table_restaurant_outlined), findsNothing);
+    expect(find.byIcon(Icons.restaurant_outlined), findsNothing);
   });
 }

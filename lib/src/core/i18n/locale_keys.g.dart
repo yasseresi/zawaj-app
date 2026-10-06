@@ -140,8 +140,6 @@ abstract class  LocaleKeys {
   static const guests_detail_error_title = 'guests.detail_error_title';
   static const guests_info_contact = 'guests.info_contact';
   static const guests_info_companions = 'guests.info_companions';
-  static const guests_info_table = 'guests.info_table';
-  static const guests_info_meal = 'guests.info_meal';
   static const guests_notes_title = 'guests.notes_title';
   static const guests_notes_empty = 'guests.notes_empty';
   static const guests_history_title = 'guests.history_title';
@@ -178,10 +176,6 @@ abstract class  LocaleKeys {
   static const guests_contact_legacy_hint = 'guests.contact_legacy_hint';
   static const guests_relationship_label = 'guests.relationship_label';
   static const guests_relationship_hint = 'guests.relationship_hint';
-  static const guests_table_field_label = 'guests.table_field_label';
-  static const guests_table_hint = 'guests.table_hint';
-  static const guests_meal_field_label = 'guests.meal_field_label';
-  static const guests_meal_hint = 'guests.meal_hint';
   static const guests_field_too_long = 'guests.field_too_long';
   static const guests_edit_action = 'guests.edit_action';
   static const guests_edit_title = 'guests.edit_title';

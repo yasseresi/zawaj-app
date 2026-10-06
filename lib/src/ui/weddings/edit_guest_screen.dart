@@ -49,14 +49,12 @@ class _EditGuestViewState extends State<_EditGuestView> {
           ? formatPhone(normalizePhone(_g.contact)!)
           : _g.contact);
   late final _relationship = TextEditingController(text: _g.relationship);
-  late final _table = TextEditingController(text: _g.tableLabel);
-  late final _meal = TextEditingController(text: _g.meal);
   late RsvpStatus _status = _g.status;
   late int _companions = _g.companions;
 
   @override
   void dispose() {
-    for (final c in [_name, _contact, _relationship, _table, _meal]) {
+    for (final c in [_name, _contact, _relationship]) {
       c.dispose();
     }
     super.dispose();
@@ -68,8 +66,6 @@ class _EditGuestViewState extends State<_EditGuestView> {
         relationship: _relationship.text,
         status: _status,
         companions: _companions,
-        tableLabel: _table.text,
-        meal: _meal.text,
       );
 
   bool get _isValid {
@@ -78,9 +74,7 @@ class _EditGuestViewState extends State<_EditGuestView> {
         AppPhoneField.valueOf(_contact.text) != null;
     return GuestFormFields.validateName(_name.text) == null &&
         contactOk &&
-        GuestFormFields.maxLength(80)(_relationship.text) == null &&
-        GuestFormFields.maxLength(40)(_table.text) == null &&
-        GuestFormFields.maxLength(40)(_meal.text) == null;
+        GuestFormFields.maxLength(80)(_relationship.text) == null;
   }
 
   Future<void> _save() async {
@@ -133,8 +127,6 @@ class _EditGuestViewState extends State<_EditGuestView> {
                     enabled: !isSaving,
                     showDetails: true,
                     relationship: _relationship,
-                    tableLabel: _table,
-                    meal: _meal,
                     legacyContact: _provider.legacyContact,
                   ),
                   SizedBox(height: AppSpacing.xl.h),
