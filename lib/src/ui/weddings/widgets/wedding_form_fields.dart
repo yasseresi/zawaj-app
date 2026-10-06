@@ -39,13 +39,26 @@ class WeddingFormFields extends StatelessWidget {
           ? 'weddings.description_too_long'.tr()
           : null;
 
+  /// Picker range: last year to five years ahead, widened to include an
+  /// existing [date] so editing an old (or far-future) wedding never opens the
+  /// picker with an out-of-range initial date.
+  static ({DateTime first, DateTime last}) pickerBounds(
+      DateTime now, DateTime? date) {
+    var first = DateTime(now.year - 1);
+    var last = DateTime(now.year + 5);
+    if (date != null && date.isBefore(first)) first = date;
+    if (date != null && date.isAfter(last)) last = date;
+    return (first: first, last: last);
+  }
+
   Future<void> _pickDate(BuildContext context) async {
     final now = DateTime.now();
+    final bounds = pickerBounds(now, date);
     final picked = await showAdaptiveDatePicker(
       context,
       initialDate: date ?? now,
-      firstDate: DateTime(now.year - 1),
-      lastDate: DateTime(now.year + 5),
+      firstDate: bounds.first,
+      lastDate: bounds.last,
     );
     if (picked != null) onDateChanged(picked);
   }
