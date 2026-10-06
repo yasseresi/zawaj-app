@@ -44,7 +44,7 @@ Details, acceptance criteria and files for each task: [plan.md](plan.md). Specs:
 
 ## Phase 4: Account deletion
 - [x] T17 App: `deleteAccount(password)` + session teardown — `account-delete`
-- [ ] T18 App: Danger zone → impact screen → password confirm — `account-delete`
+- [x] T18 App: Danger zone → impact screen → password confirm — `account-delete`
 
 ### Checkpoint 4: Complete
 - [ ] Backend + app suites green, analyze clean

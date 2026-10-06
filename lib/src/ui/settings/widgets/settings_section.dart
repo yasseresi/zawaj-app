@@ -61,10 +61,14 @@ class SettingsRow extends StatelessWidget {
     this.icon,
     this.trailing,
     this.onTap,
+    this.destructive = false,
   });
 
   final String label;
   final String? subtitle;
+
+  /// Error-coloured label, icon and chevron (e.g. delete account).
+  final bool destructive;
   final IconData? icon;
   final Widget? trailing;
   final VoidCallback? onTap;
@@ -84,7 +88,7 @@ class SettingsRow extends StatelessWidget {
               Icon(
                 icon,
                 size: 20.r,
-                color: cs.onSurfaceVariant,
+                color: destructive ? cs.error : cs.onSurfaceVariant,
               ),
               SizedBox(width: 12.w),
             ],
@@ -96,7 +100,9 @@ class SettingsRow extends StatelessWidget {
                     label,
                     style: context.textTheme.bodyMedium?.copyWith(
                       fontSize: 14.sp,
-                      fontWeight: FontWeight.w500,
+                      fontWeight:
+                          destructive ? FontWeight.w600 : FontWeight.w500,
+                      color: destructive ? cs.error : null,
                     ),
                   ),
                   if (subtitle != null) ...[
@@ -118,7 +124,7 @@ class SettingsRow extends StatelessWidget {
               Icon(
                 Icons.chevron_right_rounded,
                 size: 20.r,
-                color: cs.onSurfaceVariant,
+                color: destructive ? cs.error : cs.onSurfaceVariant,
               ),
           ],
         ),

@@ -155,6 +155,18 @@ class _SettingsView extends StatelessWidget {
                 onPressed: () => _showLogoutDialog(context),
               ),
               SizedBox(height: AppSpacing.xl.h),
+              SettingsSection(
+                title: 'settings.danger_zone'.tr(),
+                children: [
+                  SettingsRow(
+                    label: 'settings.delete_account'.tr(),
+                    icon: Icons.delete_forever_outlined,
+                    destructive: true,
+                    onTap: () => context.push(AppRoutes.deleteAccount),
+                  ),
+                ],
+              ),
+              SizedBox(height: AppSpacing.xl.h),
             ],
           ),
         ),

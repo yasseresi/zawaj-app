@@ -14,6 +14,7 @@ import '../ui/home/home_page.dart';
 import '../ui/invites/pending_invites_screen.dart';
 import '../ui/notifications/notifications_screen.dart';
 import '../ui/onboarding/onboarding_page.dart';
+import '../ui/settings/delete_account_screen.dart';
 import '../ui/settings/settings_screen.dart';
 import '../ui/settings/change_password_screen.dart';
 import '../ui/settings/providers/settings_provider.dart';
@@ -54,6 +55,11 @@ final GoRouter appRouter = GoRouter(
       path: AppRoutes.recover,
       name: 'recover',
       builder: (context, state) => const RecoverScreen(),
+    ),
+    GoRoute(
+      path: AppRoutes.deleteAccount,
+      name: 'delete_account',
+      builder: (context, state) => const DeleteAccountScreen(),
     ),
     GoRoute(
       path: AppRoutes.changePassword,

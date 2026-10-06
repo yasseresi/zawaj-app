@@ -6,6 +6,7 @@ abstract final class AppRoutes {
   static const String signup = '/signup';
   static const String recover = '/recover';
   static const String changePassword = '/change-password';
+  static const String deleteAccount = '/settings/delete-account';
 
   static const String home = '/';
   static const String dashboard = '/dashboard';
