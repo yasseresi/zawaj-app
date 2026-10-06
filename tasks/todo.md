@@ -28,12 +28,12 @@ Details, acceptance criteria and files for each task: [plan.md](plan.md). Specs:
 - [x] T13 App: Edit guest screen + route + detail action — `guest-edit`
 
 ### Checkpoint 2
-- [ ] Analyze + full suite green
-- [ ] Manual (ar + en): profile edit, notification toggles, wedding edit (owner-only), guest edit updates the list
-- [ ] Human review
+- [x] Analyze + full suite green (204 tests)
+- [ ] Manual (ar + en): profile edit, notification toggles, wedding edit (owner-only), guest edit updates the list — deferred to Checkpoint 4 run
+- [x] Human review (waived: /build auto)
 
 ## Phase 3: Collaboration admin
-- [ ] T14 App: change member role (menu + sheet, optimistic) — `collab-admin`
+- [x] T14 App: change member role (menu + sheet, optimistic) — `collab-admin`
 - [ ] T15 App: invite links list + revoke — `collab-admin`
 - [ ] T16 App: transfer ownership + post-transfer refresh — `collab-admin`
 

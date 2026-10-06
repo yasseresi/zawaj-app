@@ -6,6 +6,8 @@ import '../../data/models/invite_link_model.dart';
 import '../../imports/core_imports.dart';
 import '../../imports/packages_imports.dart';
 import 'providers/share_provider.dart';
+import 'widgets/member_tile.dart';
+import 'widgets/role_picker_sheet.dart';
 
 class ShareScreen extends StatelessWidget {
   const ShareScreen({super.key, required this.weddingId, this.wedding});
@@ -14,7 +16,8 @@ class ShareScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => ChangeNotifierProvider(
-        create: (_) => ShareProvider(weddingId: weddingId)..load(),
+        create: (_) =>
+            ShareProvider(weddingId: weddingId, wedding: wedding)..load(),
         child: _ShareView(wedding: wedding),
       );
 }
@@ -50,6 +53,29 @@ class _ShareViewState extends State<_ShareView> {
     final p = context.read<ShareProvider>();
     if (p.link == null && await p.createLink(_role) && mounted) {
       context.showSuccessSnackBar('share.link_created'.tr());
+    }
+  }
+
+  Future<void> _changeRole(WeddingMember member) async {
+    final provider = context.read<ShareProvider>();
+    final picked = await showModalBottomSheet<WeddingRole>(
+      context: context,
+      useSafeArea: true,
+      backgroundColor: Colors.transparent,
+      builder: (_) => RolePickerSheet(member: member),
+    );
+    if (picked == null || picked == member.role || !mounted) return;
+    final ok = await provider.setRole(member.userId, picked);
+    if (!mounted) return;
+    if (ok) {
+      context.showSuccessSnackBar('share.role_changed'.tr(namedArgs: {
+        'name': member.label,
+        'role': 'share.role_${picked.name}'.tr(),
+      }));
+    } else {
+      showToast(context,
+          message: provider.errorMessage ?? 'errors.unknown'.tr(),
+          status: 'error');
     }
   }
 
@@ -90,152 +116,95 @@ class _ShareViewState extends State<_ShareView> {
       Text('share.collaborators'.tr(),
           style: context.textTheme.titleMedium
               ?.copyWith(fontWeight: FontWeight.bold)),
-      SizedBox(height: AppSpacing.sm.h),
-      Row(children: [
-        Expanded(
-            child: AppTextField(
-                controller: _username,
-                hint: 'share.username_hint'.tr(),
-                textInputAction: TextInputAction.done,
-                onFieldSubmitted: (_) => _invite())),
-        SizedBox(width: AppSpacing.sm.w),
-        FilledButton(
-            onPressed: p.busy ? null : _invite, child: const Icon(Icons.add)),
-      ]),
+      if (p.isOwner) ...[
+        SizedBox(height: AppSpacing.sm.h),
+        Row(children: [
+          Expanded(
+              child: AppTextField(
+                  controller: _username,
+                  hint: 'share.username_hint'.tr(),
+                  textInputAction: TextInputAction.done,
+                  onFieldSubmitted: (_) => _invite())),
+          SizedBox(width: AppSpacing.sm.w),
+          FilledButton(
+              onPressed: p.busy ? null : _invite, child: const Icon(Icons.add)),
+        ]),
+      ],
       if (p.errorMessage != null)
         Padding(
             padding: EdgeInsets.only(top: 8.h),
             child: Text(p.errorMessage!,
                 style: TextStyle(color: context.colors.error))),
       SizedBox(height: AppSpacing.md.h),
-      ...p.members.map((m) {
-        final isOwner = m.role.isOwner;
-        final cardColor = isOwner ? context.colors.primaryContainer : null;
-        final titleColor = isOwner
-            ? context.colors.onPrimaryContainer
-            : context.colors.onSurface;
-        final subtitleColor = isOwner
-            ? context.colors.onPrimaryContainer.withValues(alpha: 0.78)
-            : context.colors.onSurfaceVariant;
-
-        return AppCard(
-          margin: EdgeInsets.only(bottom: 8.h),
-          color: cardColor,
-          padding: EdgeInsets.symmetric(horizontal: 8.w, vertical: 4.h),
-          child: ListTile(
-            contentPadding: EdgeInsets.zero,
-            dense: true,
-            leading: CircleAvatar(
-              radius: 20.r,
-              backgroundColor: isOwner
-                  ? context.colors.primary
-                  : context.colors.primaryContainer,
-              foregroundColor: isOwner
-                  ? context.colors.onPrimary
-                  : context.colors.onPrimaryContainer,
-              child: Text(m.avatarInitial),
-            ),
-            title: Text(
-              m.label,
-              style: context.textTheme.titleMedium?.copyWith(
-                color: titleColor,
-                fontWeight: FontWeight.w700,
-              ),
-            ),
-            subtitle: Text(
-              '@${m.username}',
-              style:
-                  context.textTheme.bodyMedium?.copyWith(color: subtitleColor),
-            ),
-            trailing: Row(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Container(
-                  padding: EdgeInsets.symmetric(horizontal: 8.w, vertical: 4.h),
-                  decoration: BoxDecoration(
-                    color: isOwner
-                        ? context.colors.primary.withValues(alpha: 0.14)
-                        : context.colors.surfaceContainerHighest,
-                    borderRadius: BorderRadius.circular(999),
-                  ),
-                  child: Text(
-                    'share.role_${m.role.name}'.tr(),
-                    style: context.textTheme.labelSmall?.copyWith(
-                      color: isOwner
-                          ? context.colors.primary
-                          : context.colors.onSurfaceVariant,
-                      fontWeight: FontWeight.w700,
-                    ),
-                  ),
-                ),
-                if (!isOwner)
-                  IconButton(
-                    icon: const Icon(Icons.close),
-                    onPressed: () => _confirmRemove(m),
-                  ),
-              ],
-            ),
-          ),
-        );
-      }),
-      SizedBox(height: AppSpacing.lg.h),
-      Text('share.link_section'.tr(),
-          style: context.textTheme.titleMedium
-              ?.copyWith(fontWeight: FontWeight.bold)),
-      SizedBox(height: AppSpacing.sm.h),
-      Row(children: [
-        Expanded(
-            child: SegmentedButton<bool>(segments: [
-          ButtonSegment(
-              value: false,
-              label: Text('share.link'.tr()),
-              icon: const Icon(Icons.link)),
-          ButtonSegment(
-              value: true,
-              label: Text('share.qr'.tr()),
-              icon: const Icon(Icons.qr_code_2))
-        ], selected: {
-          _qr
-        }, onSelectionChanged: (v) => setState(() => _qr = v.first))),
-      ]),
-      SizedBox(height: AppSpacing.md.h),
-      if (link == null) ...[
-        DropdownButtonFormField<String>(
-            initialValue: _role,
-            items: [
-              DropdownMenuItem(
-                  value: 'editor', child: Text('share.role_editor'.tr())),
-              DropdownMenuItem(
-                  value: 'viewer', child: Text('share.role_viewer'.tr()))
-            ],
-            onChanged: (v) => setState(() => _role = v ?? _role)),
+      for (final m in p.members)
+        MemberTile(
+          member: m,
+          // Owners manage everyone but themselves (the owner row).
+          onChangeRole:
+              (p.isOwner && !m.role.isOwner) ? () => _changeRole(m) : null,
+          onRemove:
+              (p.isOwner && !m.role.isOwner) ? () => _confirmRemove(m) : null,
+        ),
+      if (p.isOwner) ...[
+        SizedBox(height: AppSpacing.lg.h),
+        Text('share.link_section'.tr(),
+            style: context.textTheme.titleMedium
+                ?.copyWith(fontWeight: FontWeight.bold)),
         SizedBox(height: AppSpacing.sm.h),
-        FilledButton.icon(
-            onPressed: p.busy ? null : _createLink,
-            icon: const Icon(Icons.add_link),
-            label: Text('share.create_link'.tr())),
-      ] else if (_qr)
-        Center(child: QrImageView(data: link.appUrl, size: 220.r))
-      else
         Row(children: [
           Expanded(
-              child: Text(link.displayUrl, overflow: TextOverflow.ellipsis)),
-          IconButton(
-              onPressed: () async {
-                await CopyService.instance.copy(link.appUrl);
-                if (context.mounted) {
-                  context.showSuccessSnackBar('share.copied'.tr());
-                }
-              },
-              icon: const Icon(Icons.copy))
+              child: SegmentedButton<bool>(segments: [
+            ButtonSegment(
+                value: false,
+                label: Text('share.link'.tr()),
+                icon: const Icon(Icons.link)),
+            ButtonSegment(
+                value: true,
+                label: Text('share.qr'.tr()),
+                icon: const Icon(Icons.qr_code_2))
+          ], selected: {
+            _qr
+          }, onSelectionChanged: (v) => setState(() => _qr = v.first))),
         ]),
-      if (link != null) ...[
         SizedBox(height: AppSpacing.md.h),
-        OutlinedButton.icon(
-            onPressed: () =>
-                SharePlus.instance.share(ShareParams(text: link.appUrl)),
-            icon: const Icon(Icons.share),
-            label: Text('share.share_link'.tr())),
+        if (link == null) ...[
+          DropdownButtonFormField<String>(
+              initialValue: _role,
+              items: [
+                DropdownMenuItem(
+                    value: 'editor', child: Text('share.role_editor'.tr())),
+                DropdownMenuItem(
+                    value: 'viewer', child: Text('share.role_viewer'.tr()))
+              ],
+              onChanged: (v) => setState(() => _role = v ?? _role)),
+          SizedBox(height: AppSpacing.sm.h),
+          FilledButton.icon(
+              onPressed: p.busy ? null : _createLink,
+              icon: const Icon(Icons.add_link),
+              label: Text('share.create_link'.tr())),
+        ] else if (_qr)
+          Center(child: QrImageView(data: link.appUrl, size: 220.r))
+        else
+          Row(children: [
+            Expanded(
+                child: Text(link.displayUrl, overflow: TextOverflow.ellipsis)),
+            IconButton(
+                onPressed: () async {
+                  await CopyService.instance.copy(link.appUrl);
+                  if (context.mounted) {
+                    context.showSuccessSnackBar('share.copied'.tr());
+                  }
+                },
+                icon: const Icon(Icons.copy))
+          ]),
+        if (link != null) ...[
+          SizedBox(height: AppSpacing.md.h),
+          OutlinedButton.icon(
+              onPressed: () =>
+                  SharePlus.instance.share(ShareParams(text: link.appUrl)),
+              icon: const Icon(Icons.share),
+              label: Text('share.share_link'.tr())),
+        ],
       ],
       SizedBox(height: AppSpacing.lg.h),
       Text('share.export_section'.tr(),

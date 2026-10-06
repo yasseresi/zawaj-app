@@ -4,6 +4,7 @@ import 'package:flutter/foundation.dart';
 import 'package:easy_localization/easy_localization.dart';
 import '../../../data/models/invite_link_model.dart';
 import '../../../data/models/wedding_member_model.dart';
+import '../../../data/models/wedding_model.dart';
 import '../../../data/repositories/invite_repository.dart';
 import '../../../data/repositories/invite_repository_impl.dart';
 import '../../../data/repositories/wedding_repository.dart';
@@ -13,14 +14,20 @@ import '../../../services/export_service.dart';
 import '../../../utils/error_handler.dart';
 import '../../../utils/input_validation.dart';
 
+/// Share screen state: collaborators, invite links and exports. Owner-only
+/// sections (invites, links, member management) key off [isOwner]; the role
+/// comes from the passed [Wedding] or, when deep-linked, `GET /weddings/:id`.
 class ShareProvider extends ChangeNotifier {
   ShareProvider(
       {required this.weddingId,
+      Wedding? wedding,
       WeddingRepository? weddingRepository,
       InviteRepository? inviteRepository})
-      : _weddings = weddingRepository ?? WeddingRepositoryImpl(),
+      : _role = wedding?.role,
+        _weddings = weddingRepository ?? WeddingRepositoryImpl(),
         _invites = inviteRepository ?? InviteRepositoryImpl();
   final String weddingId;
+  WeddingRole? _role;
   final WeddingRepository _weddings;
   final InviteRepository _invites;
   AppStatus status = AppStatus.initial;
@@ -29,6 +36,9 @@ class ShareProvider extends ChangeNotifier {
   String? errorMessage;
   bool busy = false;
   ExportFormat? exporting;
+
+  WeddingRole? get role => _role;
+  bool get isOwner => _role == WeddingRole.owner;
 
   InviteLink? get link {
     for (final candidate in links) {
@@ -41,14 +51,43 @@ class ShareProvider extends ChangeNotifier {
     status = AppStatus.loading;
     errorMessage = null;
     notifyListeners();
-    final results = await Future.wait(
-        [_weddings.members(weddingId), _weddings.listInviteLinks(weddingId)]);
-    final memberResult = results[0] as dynamic;
-    final linkResult = results[1] as dynamic;
-    memberResult.match((f) => errorMessage = f.message, (v) => members = v);
-    linkResult.match((f) => errorMessage ??= f.message, (v) => links = v);
+    if (_role == null) {
+      final wedding = await _weddings.get(weddingId);
+      wedding.match((f) => errorMessage = f.message, (w) => _role = w.role);
+    }
+    final memberResult = await _weddings.members(weddingId);
+    memberResult.match((f) => errorMessage ??= f.message, (v) => members = v);
+    // Invite links are owner-only server-side; don't request them otherwise.
+    if (isOwner) {
+      final linkResult = await _weddings.listInviteLinks(weddingId);
+      linkResult.match((f) => errorMessage ??= f.message, (v) => links = v);
+    } else {
+      links = const [];
+    }
     status = errorMessage == null ? AppStatus.success : AppStatus.failure;
     notifyListeners();
+  }
+
+  /// Change a collaborator's role (owner). Optimistic: the member updates at
+  /// once and reverts on failure with [errorMessage] set.
+  Future<bool> setRole(String userId, WeddingRole role) async {
+    final index = members.indexWhere((m) => m.userId == userId);
+    if (index < 0) return false;
+    final previous = members[index];
+    if (previous.role == role) return true;
+
+    errorMessage = null;
+    members = [...members]..[index] = previous.copyWith(role: role);
+    notifyListeners();
+
+    final result = await _weddings.setMemberRole(weddingId, userId, role.name);
+    return result.match((f) {
+      final i = members.indexWhere((m) => m.userId == userId);
+      if (i >= 0) members = [...members]..[i] = previous;
+      errorMessage = AppErrorHandler.userMessage(f);
+      notifyListeners();
+      return false;
+    }, (_) => true);
   }
 
   Future<bool> invite(String username, String role) async {

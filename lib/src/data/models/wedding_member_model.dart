@@ -28,6 +28,14 @@ class WeddingMember extends Equatable {
     return source.isEmpty ? '' : source.substring(0, 1);
   }
 
+  WeddingMember copyWith({WeddingRole? role}) => WeddingMember(
+        userId: userId,
+        username: username,
+        displayName: displayName,
+        role: role ?? this.role,
+        joinedAt: joinedAt,
+      );
+
   factory WeddingMember.fromJson(Map<String, dynamic> json) {
     return WeddingMember(
       userId: (json['user_id'] ?? '').toString(),
