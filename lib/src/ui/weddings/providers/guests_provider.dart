@@ -101,6 +101,43 @@ class GuestsProvider extends ChangeNotifier {
     );
   }
 
+  /// Apply an edited guest (from the edit screen) without refetching: swap the
+  /// row, move the wedding-wide counts if its status changed, and drop it from
+  /// the page when it no longer matches the active filter tab. No-op for
+  /// guests not on the current page.
+  void replace(Guest updated) {
+    final index = _guests.indexWhere((g) => g.id == updated.id);
+    if (index < 0) return;
+    final previous = _guests[index].status;
+    if (previous != updated.status) {
+      final moved = _countsWithout(previous);
+      _counts = _countsWith(moved, updated.status);
+    }
+    final stillMatches =
+        _filter == GuestFilter.all || _filter.wire == updated.status.name;
+    _guests = [
+      for (final (i, g) in _guests.indexed)
+        if (i != index)
+          g
+        else if (stillMatches)
+          updated,
+    ];
+    notifyListeners();
+  }
+
+  /// [counts] with one more guest of [status] (and the `all` total).
+  static GuestCounts _countsWith(GuestCounts counts, RsvpStatus status) {
+    final all = counts.all + 1;
+    return switch (status) {
+      RsvpStatus.confirmed =>
+        counts.copyWith(all: all, confirmed: counts.confirmed + 1),
+      RsvpStatus.pending =>
+        counts.copyWith(all: all, pending: counts.pending + 1),
+      RsvpStatus.declined =>
+        counts.copyWith(all: all, declined: counts.declined + 1),
+    };
+  }
+
   /// The counts with one guest of [status] removed (and the `all` total).
   GuestCounts _countsWithout(RsvpStatus status) {
     switch (status) {

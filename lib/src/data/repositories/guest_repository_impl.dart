@@ -58,4 +58,28 @@ class GuestRepositoryImpl implements GuestRepository {
   @override
   FutureEitherVoid delete(String weddingId, String guestId) =>
       _service.delete(weddingId, guestId);
+
+  @override
+  FutureEither<Guest> update(
+    String weddingId,
+    String guestId, {
+    String? fullName,
+    String? contact,
+    String? relationship,
+    String? status,
+    int? companions,
+    String? tableLabel,
+    String? meal,
+  }) =>
+      _service.update(
+        weddingId,
+        guestId,
+        fullName: fullName,
+        contact: contact,
+        relationship: relationship,
+        status: status,
+        companions: companions,
+        tableLabel: tableLabel,
+        meal: meal,
+      );
 }

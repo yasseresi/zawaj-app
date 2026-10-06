@@ -9,6 +9,20 @@ import 'package:zawaj_app/src/utils/failure.dart';
 import 'package:zawaj_app/src/utils/typedefs.dart';
 
 class _FakeGuestRepository implements GuestRepository {
+  @override
+  FutureEither<Guest> update(
+    String weddingId,
+    String guestId, {
+    String? fullName,
+    String? contact,
+    String? relationship,
+    String? status,
+    int? companions,
+    String? tableLabel,
+    String? meal,
+  }) async =>
+      throw UnimplementedError();
+
   Either<Failure, Guest>? createResult;
   ({
     String weddingId,
