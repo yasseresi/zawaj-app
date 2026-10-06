@@ -146,11 +146,17 @@ class _WeddingTile extends StatelessWidget {
     );
   }
 
-  VoidCallback _open(BuildContext context) => () => context.pushNamed(
-        'wedding',
-        pathParameters: {'id': wedding.id},
-        extra: wedding,
-      );
+  /// Open the wedding; on return, re-sync just that row so edits, a transfer,
+  /// or losing access (404 → row dropped) show without a full reload.
+  VoidCallback _open(BuildContext context) => () async {
+        final provider = context.read<WeddingsProvider>();
+        await context.pushNamed(
+          'wedding',
+          pathParameters: {'id': wedding.id},
+          extra: wedding,
+        );
+        await provider.refresh(wedding.id);
+      };
 
   /// Owner-only: the backend delete is gated on the owner role, so hide the
   /// affordance for shared weddings entirely.

@@ -104,7 +104,9 @@
     "delete_confirm_action": "Delete",
     "cancel": "Cancel",
     "deleted_toast": "List deleted successfully",
-    "delete_error": "Couldn't delete the list"
+    "delete_error": "Couldn't delete the list",
+    "not_found_title": "Wedding not available",
+    "not_found_subtitle": "It was deleted, or you no longer have access to it."
   },
   "guests": {
     "loading": "Loading guests…",

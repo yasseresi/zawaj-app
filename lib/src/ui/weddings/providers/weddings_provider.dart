@@ -123,19 +123,7 @@ class WeddingsProvider extends ChangeNotifier {
   /// has no role or guest count, so only the editable fields are taken.
   void applyUpdate(Wedding updated) {
     _weddings = [
-      for (final w in _weddings)
-        w.id == updated.id
-            ? Wedding(
-                id: w.id,
-                name: updated.name,
-                eventDate: updated.eventDate,
-                description: updated.description,
-                ownerId: w.ownerId,
-                role: w.role,
-                guestCount: w.guestCount,
-                createdAt: w.createdAt,
-              )
-            : w
+      for (final w in _weddings) w.id == updated.id ? w.withEdits(updated) : w
     ];
     notifyListeners();
   }

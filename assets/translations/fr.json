@@ -104,7 +104,9 @@
     "delete_confirm_action": "Supprimer",
     "cancel": "Annuler",
     "deleted_toast": "Liste supprimée avec succès",
-    "delete_error": "Impossible de supprimer la liste"
+    "delete_error": "Impossible de supprimer la liste",
+    "not_found_title": "Mariage indisponible",
+    "not_found_subtitle": "Il a été supprimé ou vous n'y avez plus accès."
   },
   "guests": {
     "loading": "Chargement des invités…",

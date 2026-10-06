@@ -107,7 +107,9 @@
     "delete_confirm_action": "حذف",
     "cancel": "إلغاء",
     "deleted_toast": "تم حذف القائمة بنجاح",
-    "delete_error": "تعذّر حذف القائمة"
+    "delete_error": "تعذّر حذف القائمة",
+    "not_found_title": "العرس غير متاح",
+    "not_found_subtitle": "ربما حُذف أو لم يعد لديك صلاحية الوصول إليه."
   },
   "guests": {
     "loading": "جارٍ تحميل الضيوف…",

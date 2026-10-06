@@ -80,6 +80,20 @@ class Wedding extends Equatable {
         createdAt: createdAt,
       );
 
+  /// Take the editable fields (name, date, description) from [edited] — a
+  /// `PATCH /weddings/:id` result, which has no role or guest count — and keep
+  /// everything else from this cached copy.
+  Wedding withEdits(Wedding edited) => Wedding(
+        id: id,
+        name: edited.name,
+        eventDate: edited.eventDate,
+        description: edited.description,
+        ownerId: ownerId,
+        role: role,
+        guestCount: guestCount,
+        createdAt: createdAt,
+      );
+
   static DateTime? _date(dynamic v) {
     if (v == null) return null;
     return DateTime.tryParse(v.toString());
