@@ -163,7 +163,8 @@ class _GuestListViewState extends State<_GuestListView> {
                   child: ListTile(
                     contentPadding: EdgeInsets.zero,
                     leading: const Icon(Icons.edit_outlined),
-                    title: Text('weddings.edit'.tr()),
+                    title: Text('weddings.edit'.tr(),
+                        style: TextStyle(color: context.colors.onSurface)),
                   ),
                 ),
               ],

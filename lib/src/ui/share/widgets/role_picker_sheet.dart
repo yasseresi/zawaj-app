@@ -25,29 +25,35 @@ class RolePickerSheet extends StatelessWidget {
       clipBehavior: Clip.antiAlias,
       child: Padding(
         padding: EdgeInsets.symmetric(vertical: AppSpacing.md.h),
-        child: RadioGroup<WeddingRole>(
-          groupValue: member.role,
-          onChanged: (role) => Navigator.of(context).pop(role),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: [
-              Padding(
-                padding: EdgeInsets.symmetric(horizontal: AppSpacing.lg.w),
-                child: Text(
-                  'share.change_role_title'.tr(namedArgs: {'name': member.label}),
-                  style: tt.titleMedium?.copyWith(fontWeight: FontWeight.bold),
+        child: ListTileTheme(
+          textColor: cs.onSurface,
+          child: RadioGroup<WeddingRole>(
+            groupValue: member.role,
+            onChanged: (role) => Navigator.of(context).pop(role),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                Padding(
+                  padding: EdgeInsets.symmetric(horizontal: AppSpacing.lg.w),
+                  child: Text(
+                    'share.change_role_title'
+                        .tr(namedArgs: {'name': member.label}),
+                    style:
+                        tt.titleMedium?.copyWith(fontWeight: FontWeight.bold),
+                  ),
                 ),
-              ),
-              SizedBox(height: AppSpacing.sm.h),
-              for (final (role, description) in options)
-                RadioListTile<WeddingRole>(
-                  value: role,
-                  title: Text('share.role_${role.name}'.tr()),
-                  subtitle: Text(description,
-                      style: tt.bodySmall?.copyWith(color: cs.onSurfaceVariant)),
-                ),
-            ],
+                SizedBox(height: AppSpacing.sm.h),
+                for (final (role, description) in options)
+                  RadioListTile<WeddingRole>(
+                    value: role,
+                    title: Text('share.role_${role.name}'.tr()),
+                    subtitle: Text(description,
+                        style:
+                            tt.bodySmall?.copyWith(color: cs.onSurfaceVariant)),
+                  ),
+              ],
+            ),
           ),
         ),
       ),

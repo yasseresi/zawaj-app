@@ -25,14 +25,14 @@ class MemberTile extends StatelessWidget {
       onChangeRole != null || onMakeOwner != null || onRemove != null;
 
   PopupMenuItem<_MemberAction> _item(
-          _MemberAction value, IconData icon, String label,
+          _MemberAction value, IconData icon, String label, Color onSurface,
           {Color? color}) =>
       PopupMenuItem(
         value: value,
         child: ListTile(
           contentPadding: EdgeInsets.zero,
           leading: Icon(icon, color: color),
-          title: Text(label, style: TextStyle(color: color)),
+          title: Text(label, style: TextStyle(color: color ?? onSurface)),
         ),
       );
 
@@ -98,14 +98,20 @@ class MemberTile extends StatelessWidget {
                 },
                 itemBuilder: (context) => [
                   if (onChangeRole != null)
-                    _item(_MemberAction.changeRole,
-                        Icons.manage_accounts_outlined, 'share.change_role'.tr()),
+                    _item(
+                        _MemberAction.changeRole,
+                        Icons.manage_accounts_outlined,
+                        'share.change_role'.tr(),
+                        cs.onSurface),
                   if (onMakeOwner != null)
-                    _item(_MemberAction.makeOwner,
-                        Icons.workspace_premium_outlined, 'share.make_owner'.tr()),
+                    _item(
+                        _MemberAction.makeOwner,
+                        Icons.workspace_premium_outlined,
+                        'share.make_owner'.tr(),
+                        cs.onSurface),
                   if (onRemove != null)
                     _item(_MemberAction.remove, Icons.person_remove_outlined,
-                        'share.remove_confirm'.tr(),
+                        'share.remove_confirm'.tr(), cs.onSurface,
                         color: cs.error),
                 ],
               ),

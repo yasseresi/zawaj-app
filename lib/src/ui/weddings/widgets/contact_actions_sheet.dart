@@ -41,33 +41,40 @@ class ContactActionsSheet extends StatelessWidget {
       color: cs.surface,
       borderRadius: AppBorders.bottomSheet,
       clipBehavior: Clip.antiAlias,
-      child: Padding(
-        padding: EdgeInsets.symmetric(vertical: AppSpacing.md.h),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Directionality(
-              textDirection: TextDirection.ltr,
-              child: Text(formatPhone(phone),
-                  style: tt.titleMedium?.copyWith(fontWeight: FontWeight.bold)),
-            ),
-            SizedBox(height: AppSpacing.sm.h),
-            ListTile(
-              leading: Icon(Icons.call_outlined, color: cs.primary),
-              title: Text('guests.contact_call'.tr()),
-              onTap: () => _launch(context, telUri(phone)),
-            ),
-            ListTile(
-              leading: Icon(Icons.chat_outlined, color: cs.primary),
-              title: Text('guests.contact_whatsapp'.tr()),
-              onTap: () => _launch(context, whatsappUri(phone)),
-            ),
-            ListTile(
-              leading: Icon(Icons.copy_rounded, color: cs.primary),
-              title: Text('guests.contact_copy'.tr()),
-              onTap: () => _copy(context),
-            ),
-          ],
+      // Explicit colours: the theme's ListTile title style carries none, which
+      // renders washed-out text inside sheets.
+      child: ListTileTheme(
+        textColor: cs.onSurface,
+        iconColor: cs.primary,
+        child: Padding(
+          padding: EdgeInsets.symmetric(vertical: AppSpacing.md.h),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Directionality(
+                textDirection: TextDirection.ltr,
+                child: Text(formatPhone(phone),
+                    style:
+                        tt.titleMedium?.copyWith(fontWeight: FontWeight.bold)),
+              ),
+              SizedBox(height: AppSpacing.sm.h),
+              ListTile(
+                leading: Icon(Icons.call_outlined, color: cs.primary),
+                title: Text('guests.contact_call'.tr()),
+                onTap: () => _launch(context, telUri(phone)),
+              ),
+              ListTile(
+                leading: Icon(Icons.chat_outlined, color: cs.primary),
+                title: Text('guests.contact_whatsapp'.tr()),
+                onTap: () => _launch(context, whatsappUri(phone)),
+              ),
+              ListTile(
+                leading: Icon(Icons.copy_rounded, color: cs.primary),
+                title: Text('guests.contact_copy'.tr()),
+                onTap: () => _copy(context),
+              ),
+            ],
+          ),
         ),
       ),
     );
