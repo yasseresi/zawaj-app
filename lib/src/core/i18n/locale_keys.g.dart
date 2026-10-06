@@ -183,6 +183,9 @@ abstract class  LocaleKeys {
   static const guests_meal_field_label = 'guests.meal_field_label';
   static const guests_meal_hint = 'guests.meal_hint';
   static const guests_field_too_long = 'guests.field_too_long';
+  static const guests_edit_action = 'guests.edit_action';
+  static const guests_edit_title = 'guests.edit_title';
+  static const guests_updated_toast = 'guests.updated_toast';
   static const guests = 'guests';
   static const actions_cancel = 'actions.cancel';
   static const actions_done = 'actions.done';

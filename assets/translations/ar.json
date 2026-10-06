@@ -191,7 +191,10 @@
     "table_hint": "مثال: 5",
     "meal_field_label": "الوجبة",
     "meal_hint": "مثال: نباتية",
-    "field_too_long": "يجب ألا يتجاوز {max} حرفًا"
+    "field_too_long": "يجب ألا يتجاوز {max} حرفًا",
+    "edit_action": "تعديل الضيف",
+    "edit_title": "تعديل الضيف",
+    "updated_toast": "تم تحديث الضيف"
   },
   "actions": {
     "cancel": "إلغاء",

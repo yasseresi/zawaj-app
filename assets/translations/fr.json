@@ -188,7 +188,10 @@
     "table_hint": "ex. 5",
     "meal_field_label": "Repas",
     "meal_hint": "ex. Végétarien",
-    "field_too_long": "{max} caractères maximum"
+    "field_too_long": "{max} caractères maximum",
+    "edit_action": "Modifier l'invité",
+    "edit_title": "Modifier l'invité",
+    "updated_toast": "Invité mis à jour"
   },
   "actions": {
     "cancel": "Annuler",

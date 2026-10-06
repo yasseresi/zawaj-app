@@ -2,6 +2,7 @@ import 'package:flutter/widgets.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 
+import '../data/models/guest_model.dart';
 import '../data/models/wedding_model.dart';
 import '../ui/activity/activity_log_screen.dart';
 import '../ui/analytics/analytics_screen.dart';
@@ -20,6 +21,7 @@ import '../ui/share/share_screen.dart';
 import '../ui/share/invite_preview_screen.dart';
 import '../ui/shell/main_navigation_shell.dart';
 import '../ui/weddings/create_wedding_screen.dart';
+import '../ui/weddings/edit_guest_screen.dart';
 import '../ui/weddings/edit_wedding_screen.dart';
 import '../ui/weddings/guest_detail_screen.dart';
 import '../ui/weddings/guest_list_screen.dart';
@@ -140,8 +142,21 @@ final GoRouter appRouter = GoRouter(
           guestId: state.pathParameters['gid'] ?? '',
           initial: args.initial,
           canEdit: args.canEdit,
+          onGuestUpdated: args.onGuestUpdated,
         );
       },
+    ),
+    GoRoute(
+      path: AppRoutes.editGuest,
+      name: 'edit_guest',
+      // Needs the guest from the detail screen; a cold deep link goes there.
+      redirect: (context, state) => state.extra is Guest
+          ? null
+          : '/weddings/${state.pathParameters['id']}/guests/${state.pathParameters['gid']}',
+      builder: (context, state) => EditGuestScreen(
+        weddingId: state.pathParameters['id'] ?? '',
+        guest: state.extra! as Guest,
+      ),
     ),
     GoRoute(
       path: AppRoutes.activity,

@@ -188,7 +188,10 @@
     "table_hint": "e.g. 5",
     "meal_field_label": "Meal",
     "meal_hint": "e.g. Vegetarian",
-    "field_too_long": "Must be at most {max} characters"
+    "field_too_long": "Must be at most {max} characters",
+    "edit_action": "Edit guest",
+    "edit_title": "Edit guest",
+    "updated_toast": "Guest updated"
   },
   "actions": {
     "cancel": "Cancel",

@@ -13,9 +13,14 @@ import 'package:zawaj_app/src/ui/weddings/widgets/edit_status_sheet.dart';
 /// Navigation payload for the guest-detail route: the tapped guest (for an
 /// instant header) plus whether the caller may edit it.
 class GuestDetailArgs {
-  const GuestDetailArgs({this.initial, this.canEdit = false});
+  const GuestDetailArgs(
+      {this.initial, this.canEdit = false, this.onGuestUpdated});
   final Guest? initial;
   final bool canEdit;
+
+  /// Called after a full edit saves, so the opener (guest list) can swap the
+  /// row in place instead of refetching.
+  final ValueChanged<Guest>? onGuestUpdated;
 }
 
 /// Screen 7 (guest detail) wired to `GET /weddings/:id/guests/:gid`. Shows the
@@ -29,6 +34,7 @@ class GuestDetailScreen extends StatelessWidget {
     required this.guestId,
     this.initial,
     this.canEdit = false,
+    this.onGuestUpdated,
     this.repository,
   });
 
@@ -36,6 +42,7 @@ class GuestDetailScreen extends StatelessWidget {
   final String guestId;
   final Guest? initial;
   final bool canEdit;
+  final ValueChanged<Guest>? onGuestUpdated;
   final GuestRepository? repository;
 
   @override
@@ -46,16 +53,37 @@ class GuestDetailScreen extends StatelessWidget {
         guestId: guestId,
         repository: repository,
       )..load(),
-      child: _GuestDetailView(initial: initial, canEdit: canEdit),
+      child: _GuestDetailView(
+          weddingId: weddingId,
+          initial: initial,
+          canEdit: canEdit,
+          onGuestUpdated: onGuestUpdated),
     );
   }
 }
 
 class _GuestDetailView extends StatelessWidget {
-  const _GuestDetailView({this.initial, this.canEdit = false});
+  const _GuestDetailView({
+    required this.weddingId,
+    this.initial,
+    this.canEdit = false,
+    this.onGuestUpdated,
+  });
 
+  final String weddingId;
   final Guest? initial;
   final bool canEdit;
+  final ValueChanged<Guest>? onGuestUpdated;
+
+  Future<void> _editGuest(BuildContext context, Guest guest) async {
+    final provider = context.read<GuestDetailProvider>();
+    final updated = await context.push<Guest>(
+        '/weddings/$weddingId/guests/${guest.id}/edit',
+        extra: guest);
+    if (updated == null) return;
+    onGuestUpdated?.call(updated);
+    await provider.load(); // header + history ("guest updated")
+  }
 
   Future<void> _editStatus(BuildContext context, RsvpStatus current) async {
     final provider = context.read<GuestDetailProvider>();
@@ -108,9 +136,14 @@ class _GuestDetailView extends StatelessWidget {
                   onPressed: () => _addNote(context),
                 ),
                 IconButton(
-                  icon: const Icon(Icons.edit_outlined),
+                  icon: const Icon(Icons.how_to_reg_outlined),
                   tooltip: 'guests.edit_status_title'.tr(),
                   onPressed: () => _editStatus(context, guest.status),
+                ),
+                IconButton(
+                  icon: const Icon(Icons.edit_outlined),
+                  tooltip: 'guests.edit_action'.tr(),
+                  onPressed: () => _editGuest(context, guest),
                 ),
               ]
             : null,

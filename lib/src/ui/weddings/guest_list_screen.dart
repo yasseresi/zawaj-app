@@ -368,7 +368,11 @@ class _GuestTile extends StatelessWidget {
     final updated = await context.pushNamed<Object?>(
       'guest_detail',
       pathParameters: {'id': weddingId, 'gid': guest.id},
-      extra: GuestDetailArgs(initial: guest, canEdit: canEdit),
+      extra: GuestDetailArgs(
+        initial: guest,
+        canEdit: canEdit,
+        onGuestUpdated: context.read<GuestsProvider>().replace,
+      ),
     );
     if (updated == true && context.mounted) {
       await context.read<GuestsProvider>().load();
