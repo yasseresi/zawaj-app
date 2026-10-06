@@ -21,8 +21,10 @@ class InviteLinkTile extends StatelessWidget {
         contentPadding: EdgeInsets.zero,
         dense: true,
         leading: Icon(Icons.link, color: cs.primary),
-        title: Text('share.link_grants'
-            .tr(namedArgs: {'role': 'share.role_${link.role}'.tr()})),
+        title: Text(
+            'share.link_grants'
+                .tr(namedArgs: {'role': 'share.role_${link.role}'.tr()}),
+            style: TextStyle(color: cs.onSurface)),
         subtitle: created == null
             ? null
             : Text('share.link_created_on'
