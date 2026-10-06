@@ -26,17 +26,20 @@ class _FakeWeddingRepository implements WeddingRepository {
 }
 
 class _EmptyGuestRepository implements GuestRepository {
+  _EmptyGuestRepository([this.items = const []]);
+  final List<Guest> items;
+
   @override
   FutureEither<GuestListResult> list(String weddingId,
           {String? status, String? query}) async =>
-      const Right(GuestListResult(items: []));
+      Right(GuestListResult(items: items));
 
   @override
   dynamic noSuchMethod(Invocation invocation) => throw UnimplementedError();
 }
 
 Future<void> _pump(WidgetTester tester, WeddingRepository repo,
-    {Wedding? initial}) async {
+    {Wedding? initial, List<Guest> guests = const []}) async {
   final router = GoRouter(routes: [
     GoRoute(
       path: '/',
@@ -44,7 +47,7 @@ Future<void> _pump(WidgetTester tester, WeddingRepository repo,
         weddingId: 'w1',
         wedding: initial,
         weddingRepository: repo,
-        guestRepository: _EmptyGuestRepository(),
+        guestRepository: _EmptyGuestRepository(guests),
       ),
     ),
   ]);
@@ -143,5 +146,20 @@ void main() {
         initial: shared);
 
     expect(find.byTooltip('More actions'), findsNothing);
+  });
+
+  testWidgets('list rows group phone contacts; other contacts stay as-is',
+      (tester) async {
+    const w = Wedding(
+        id: 'w1', name: 'Leila & Omar', ownerId: 'u1', role: WeddingRole.owner);
+    await _pump(tester, _FakeWeddingRepository(const Right(w)),
+        initial: w,
+        guests: const [
+          Guest(id: 'g1', fullName: 'Amina', contact: '0672859965'),
+          Guest(id: 'g2', fullName: 'Ali', contact: 'ali@example.dz'),
+        ]);
+
+    expect(find.text('0672 85 99 65'), findsOneWidget);
+    expect(find.text('ali@example.dz'), findsOneWidget);
   });
 }

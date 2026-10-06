@@ -9,6 +9,7 @@ import 'package:zawaj_app/src/ui/weddings/add_guest_screen.dart';
 import 'package:zawaj_app/src/ui/weddings/guest_detail_screen.dart';
 import 'package:zawaj_app/src/ui/weddings/providers/guests_provider.dart';
 import 'package:zawaj_app/src/ui/weddings/providers/wedding_provider.dart';
+import 'package:zawaj_app/src/utils/phone.dart';
 
 /// Screen 5 (guest list) wired to `GET /weddings/:id/guests`. Header shows the
 /// wedding name + "N guests · date", a search box and four RSVP filter tabs with
@@ -442,7 +443,14 @@ class _GuestTile extends StatelessWidget {
                 if (guest.contact.isNotEmpty) ...[
                   SizedBox(height: 2.h),
                   Text(
-                    guest.contact,
+                    // Phones grouped like guest detail; other contacts as-is.
+                    switch (normalizePhone(guest.contact)) {
+                      final phone? => formatPhone(phone),
+                      null => guest.contact,
+                    },
+                    textDirection: normalizePhone(guest.contact) != null
+                        ? TextDirection.ltr
+                        : null,
                     style: tt.bodySmall?.copyWith(color: cs.onSurfaceVariant),
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
