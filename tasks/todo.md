@@ -1,31 +1,54 @@
-# Task List: Zawaj App Prototype Completion
+# Todo: Close API Gaps
 
-## Stream 1: Analytics Screen (Screen 8)
-- [ ] Implement `AnalyticsProvider` and state models (`lib/src/ui/analytics/providers/analytics_provider.dart`) [Priority: High]
-- [ ] Implement custom Donut Chart & Legend widgets (`lib/src/ui/analytics/widgets/donut_chart_widget.dart`) [Priority: High]
-- [ ] Implement RSVP Timeline Chart widget (`lib/src/ui/analytics/widgets/timeline_chart_widget.dart`) [Priority: Medium]
-- [ ] Implement `AnalyticsScreen` view matching prototype dark mode (`lib/src/ui/analytics/analytics_screen.dart`) [Priority: High]
-- [ ] Write unit & widget tests for `AnalyticsScreen` [Priority: High]
+Details, acceptance criteria and files for each task: [plan.md](plan.md). Specs: [SPEC-map.md](../SPEC-map.md).
 
-## Stream 2: Activity Log Screen (Screen 9)
-- [ ] Implement `ActivityLogProvider` (`lib/src/ui/activity/providers/activity_log_provider.dart`) [Priority: High]
-- [ ] Implement `ActivityItemTile` & `DayGroup` widgets (`lib/src/ui/activity/widgets/activity_item_tile.dart`) [Priority: High]
-- [ ] Implement `ActivityLogScreen` view (`lib/src/ui/activity/activity_log_screen.dart`) [Priority: High]
-- [ ] Write unit & widget tests for `ActivityLogScreen` [Priority: High]
+## Phase 1: Foundation
+- [ ] T1 Backend: user `phone` (migration 000009, DTO, normaliser, drop `email` from response) — `phone-contact`
+- [ ] T2 Backend: `DELETE /me` requires password + shared lockout — `account-delete`
+- [ ] T3 App: `phone.dart` utils (normalize/format/tel/whatsapp) + tests — `phone-contact`
+- [ ] T4 App: `AppPhoneField` shared widget + strings + widget test — `phone-contact`
+- [ ] T5 App: guest contact Call/WhatsApp/Copy sheet — `phone-contact`
 
-## Stream 3: Pending Invites Screen (Screen 10)
-- [ ] Implement `PendingInvitesProvider` (`lib/src/ui/invites/providers/pending_invites_provider.dart`) [Priority: High]
-- [ ] Implement `InviteCard` widget with Accept/Decline actions (`lib/src/ui/invites/widgets/invite_card.dart`) [Priority: High]
-- [ ] Implement `PendingInvitesScreen` view with decline dialog & toasts (`lib/src/ui/invites/pending_invites_screen.dart`) [Priority: High]
-- [ ] Write unit & widget tests for `PendingInvitesScreen` [Priority: High]
+### Checkpoint 1
+- [ ] Backend `make test` + integration tests green
+- [ ] App `flutter analyze` clean, `flutter test` green
+- [ ] Manual: `PATCH /me` phone against the local API
+- [ ] Human review
 
-## Stream 4: Settings & Profile Screen (Screen 11)
-- [ ] Implement `SettingsProvider` supporting Theme & Locale changes (`lib/src/ui/settings/providers/settings_provider.dart`) [Priority: High]
-- [ ] Implement `ProfileCard` & `SettingsSection` widgets (`lib/src/ui/settings/widgets/profile_card.dart`) [Priority: High]
-- [ ] Implement `SettingsScreen` view (`lib/src/ui/settings/settings_screen.dart`) [Priority: High]
-- [ ] Write unit & widget tests for `SettingsScreen` [Priority: High]
+## Phase 2: Core edits
+- [ ] T7 App: `AppUser.phone` + `updateProfile`/`updateSettings` data layer — `account-profile`
+- [ ] T6 App: Edit profile sheet + ProfileCard phone (remove coming-soon) — `account-profile`
+- [ ] T8 App: Notification preference switches (optimistic) — `account-profile`
+- [ ] T9 App: wedding `get`/`update` data + `WeddingsProvider.refresh` — `wedding-manage`
+- [ ] T10 App: cold-load `/weddings/:id` fallback — `wedding-manage` ⚠ router WIP
+- [ ] T11a App: extract `WeddingForm` (create unchanged) — `wedding-manage`
+- [ ] T11b App: Edit wedding screen + route + owner overflow item — `wedding-manage`
+- [ ] T12a App: guest `update` data + `GuestsProvider.replace` — `guest-edit`
+- [ ] T12b App: extract `GuestForm` (+ `AppPhoneField` for contact) — `guest-edit`
+- [ ] T13 App: Edit guest screen + route + detail action — `guest-edit`
 
-## Stream 5: App Navigation Shell & Integration
-- [ ] Implement `MainNavigationShell` with bottom navigation bar (`lib/src/ui/shell/main_navigation_shell.dart`) [Priority: High]
-- [ ] Update `AppRouter` and `AppRoutes` to mount shell routes (`lib/src/routing/app_router.dart`) [Priority: High]
-- [ ] Run full test suite & static analysis verification (`flutter analyze && flutter test`) [Priority: High]
+### Checkpoint 2
+- [ ] Analyze + full suite green
+- [ ] Manual (ar + en): profile edit, notification toggles, wedding edit (owner-only), guest edit updates the list
+- [ ] Human review
+
+## Phase 3: Collaboration admin
+- [ ] T14 App: change member role (menu + sheet, optimistic) — `collab-admin`
+- [ ] T15 App: invite links list + revoke — `collab-admin`
+- [ ] T16 App: transfer ownership + post-transfer refresh — `collab-admin`
+
+### Checkpoint 3
+- [ ] Tests green
+- [ ] Manual with 2 accounts: role change, revoked link fails, former owner sees editor UI
+- [ ] Human review
+
+## Phase 4: Account deletion
+- [ ] T17 App: `deleteAccount(password)` + session teardown — `account-delete`
+- [ ] T18 App: Danger zone → impact screen → password confirm — `account-delete`
+
+### Checkpoint 4: Complete
+- [ ] Backend + app suites green, analyze clean
+- [ ] All SPEC success criteria ticked
+- [ ] Manual: delete an account after a transfer; the collaborator keeps the wedding
+- [ ] `docs/UNIMPLEMENTED_ENDPOINTS.md` updated; `graphify update .` in both repos
+- [ ] Ready for `/review`

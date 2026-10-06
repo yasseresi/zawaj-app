@@ -25,5 +25,5 @@ Conventions: [SPEC-common.md](SPEC-common.md) · Map: [SPEC-map.md](SPEC-map.md)
 - [ ] Changing only the date sends `{event_date:"YYYY-MM-DD"}`.
 - [ ] Unit tests: `WeddingsProvider.refresh` (replace / insert / 404 remove), edit provider diff and dirty tracking. Widget test: Save gating and the discard confirm.
 
-## Open Questions
-1. Clearing a date or description: the backend DTO uses `omitempty` pointers, so sending `""` for `event_date` fails the `datetime` validator. Default: in the app, date and description can be changed but not cleared. Check `WeddingService.Update` before deciding whether a backend tweak is worth it (ask first).
+## Resolved
+- Clearing fields (checked `WeddingService.Update` on 2026-10-06): sending `description: ""` clears the description. `event_date` cannot be cleared, because an empty string fails `datetime`. The app lets the user change the date but not clear it (no date-clear control). No backend change.
