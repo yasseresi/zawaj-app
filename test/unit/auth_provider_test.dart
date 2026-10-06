@@ -43,6 +43,14 @@ class _FakeAuthRepository implements AuthRepository {
 
   @override
   FutureEither<AppUser> me() async => throw UnimplementedError();
+
+  @override
+  FutureEither<AppUser> updateProfile({String? displayName, String? phone}) async =>
+      throw UnimplementedError();
+
+  @override
+  FutureEither<AppUser> updateSettings({bool? notifPush, bool? notifRsvp}) async =>
+      throw UnimplementedError();
 }
 
 const _user = AppUser(id: '1', username: 'leila', displayName: 'Leila');

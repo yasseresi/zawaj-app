@@ -93,10 +93,14 @@ class AuthService {
         parse: (d) => AppUser.fromJson((d as Map).cast<String, dynamic>()),
       );
 
-  /// `PATCH /me` — update display name.
-  FutureEither<AppUser> updateProfile({required String displayName}) => _api.patch<AppUser>(
+  /// `PATCH /me` — update display name and/or phone. Only non-null fields are
+  /// sent; `phone: ''` clears the phone.
+  FutureEither<AppUser> updateProfile({String? displayName, String? phone}) => _api.patch<AppUser>(
         '/me',
-        body: {'display_name': displayName},
+        body: {
+          if (displayName != null) 'display_name': displayName,
+          if (phone != null) 'phone': phone,
+        },
         parse: (d) => AppUser.fromJson((d as Map).cast<String, dynamic>()),
       );
 
@@ -108,8 +112,8 @@ class AuthService {
         parse: parseVoid,
       );
 
-  /// `PATCH /me/settings` — update preferences (email/dark_mode/notif_*); returns
-  /// the full user model.
+  /// `PATCH /me/settings` — update preferences (`notif_push`, `notif_rsvp`, …);
+  /// returns the updated user.
   FutureEither<AppUser> updateSettings(Map<String, dynamic> patch) => _api.patch<AppUser>(
         '/me/settings',
         body: patch,

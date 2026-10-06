@@ -31,4 +31,10 @@ abstract interface class AuthRepository {
   /// Fetch the authenticated user (`GET /me`) — used to bootstrap the session
   /// from a persisted token pair.
   FutureEither<AppUser> me();
+
+  /// `PATCH /me` with only the given fields; `phone: ''` clears the phone.
+  FutureEither<AppUser> updateProfile({String? displayName, String? phone});
+
+  /// `PATCH /me/settings` with only the given notification preferences.
+  FutureEither<AppUser> updateSettings({bool? notifPush, bool? notifRsvp});
 }

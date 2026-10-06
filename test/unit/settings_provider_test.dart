@@ -6,6 +6,7 @@ import 'package:zawaj_app/src/data/repositories/auth_repository.dart';
 import 'package:zawaj_app/src/shared/providers/theme_provider.dart';
 import 'package:zawaj_app/src/ui/auth/providers/session_provider.dart';
 import 'package:zawaj_app/src/ui/settings/providers/settings_provider.dart';
+import 'package:zawaj_app/src/utils/failure.dart';
 import 'package:zawaj_app/src/utils/typedefs.dart';
 
 class _FakeAuthRepository implements AuthRepository {
@@ -52,6 +53,24 @@ class _FakeAuthRepository implements AuthRepository {
 
   @override
   FutureEither<AppUser> me() async => throw UnimplementedError();
+
+  /// Recorded calls + canned results for profile/settings writes.
+  final profileCalls = <({String? displayName, String? phone})>[];
+  final settingsCalls = <({bool? notifPush, bool? notifRsvp})>[];
+  Either<Failure, AppUser>? profileResult;
+  Either<Failure, AppUser>? settingsResult;
+
+  @override
+  FutureEither<AppUser> updateProfile({String? displayName, String? phone}) async {
+    profileCalls.add((displayName: displayName, phone: phone));
+    return profileResult!;
+  }
+
+  @override
+  FutureEither<AppUser> updateSettings({bool? notifPush, bool? notifRsvp}) async {
+    settingsCalls.add((notifPush: notifPush, notifRsvp: notifRsvp));
+    return settingsResult!;
+  }
 }
 
 void main() {

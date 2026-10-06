@@ -10,13 +10,13 @@ Details, acceptance criteria and files for each task: [plan.md](plan.md). Specs:
 - [x] T5 App: guest contact Call/WhatsApp/Copy sheet — `phone-contact`
 
 ### Checkpoint 1
-- [ ] Backend `make test` + integration tests green
-- [ ] App `flutter analyze` clean, `flutter test` green
-- [ ] Manual: `PATCH /me` phone against the local API
+- [x] Backend `make test` + integration tests green
+- [x] App `flutter analyze` clean, `flutter test` green
+- [x] Manual: `PATCH /me` phone against the local API (covered by backend TestProfilePhone, real router + Postgres)
 - [ ] Human review
 
 ## Phase 2: Core edits
-- [ ] T7 App: `AppUser.phone` + `updateProfile`/`updateSettings` data layer — `account-profile`
+- [x] T7 App: `AppUser.phone` + `updateProfile`/`updateSettings` data layer — `account-profile`
 - [ ] T6 App: Edit profile sheet + ProfileCard phone (remove coming-soon) — `account-profile`
 - [ ] T8 App: Notification preference switches (optimistic) — `account-profile`
 - [ ] T9 App: wedding `get`/`update` data + `WeddingsProvider.refresh` — `wedding-manage`
