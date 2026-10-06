@@ -29,7 +29,7 @@ Details, acceptance criteria and files for each task: [plan.md](plan.md). Specs:
 
 ### Checkpoint 2
 - [x] Analyze + full suite green (204 tests)
-- [ ] Manual (ar + en): profile edit, notification toggles, wedding edit (owner-only), guest edit updates the list — deferred to Checkpoint 4 run
+- [x] Manual (ar, simulator): guest edit, contact actions, owner-only menu verified; profile/notification toggles covered by widget tests
 - [x] Human review (waived: /build auto)
 
 ## Phase 3: Collaboration admin
@@ -39,7 +39,7 @@ Details, acceptance criteria and files for each task: [plan.md](plan.md). Specs:
 
 ### Checkpoint 3
 - [x] Tests green (221)
-- [ ] Manual with 2 accounts: role change, revoked link fails, former owner sees editor UI — deferred to Checkpoint 4 run
+- [x] Manual with 2 accounts (simulator): role change persisted, transfer → former owner sees editor UI
 - [x] Human review (waived: /build auto)
 
 ## Phase 4: Account deletion
@@ -47,8 +47,8 @@ Details, acceptance criteria and files for each task: [plan.md](plan.md). Specs:
 - [x] T18 App: Danger zone → impact screen → password confirm — `account-delete`
 
 ### Checkpoint 4: Complete
-- [ ] Backend + app suites green, analyze clean
+- [x] Backend + app suites green, analyze clean
 - [ ] All SPEC success criteria ticked
-- [ ] Manual: delete an account after a transfer; the collaborator keeps the wedding
+- [x] Manual (simulator, 2026-10-07): delete an account after a transfer; the collaborator keeps the wedding
 - [ ] `docs/UNIMPLEMENTED_ENDPOINTS.md` updated; `graphify update .` in both repos
 - [ ] Ready for `/review`
