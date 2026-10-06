@@ -1,6 +1,7 @@
 import '../../../data/models/user_model.dart';
 import '../../../imports/core_imports.dart';
 import '../../../imports/packages_imports.dart';
+import '../../../utils/phone.dart';
 
 class ProfileCard extends StatelessWidget {
   const ProfileCard({
@@ -104,6 +105,17 @@ class ProfileCard extends StatelessWidget {
                     color: cs.onSurfaceVariant,
                   ),
                 ),
+                if (user?.phone != null) ...[
+                  SizedBox(height: 2.h),
+                  Text(
+                    formatPhone(user!.phone!),
+                    textDirection: TextDirection.ltr,
+                    style: context.textTheme.bodySmall?.copyWith(
+                      fontSize: 13.sp,
+                      color: cs.onSurfaceVariant,
+                    ),
+                  ),
+                ],
                 if (isPremium) ...[
                   SizedBox(height: 8.h),
                   Row(

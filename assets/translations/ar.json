@@ -182,7 +182,12 @@
   "actions": {
     "cancel": "إلغاء",
     "done": "تم",
-    "retry": "إعادة المحاولة"
+    "retry": "إعادة المحاولة",
+    "save": "حفظ",
+    "discard": "تجاهل",
+    "keep_editing": "متابعة التعديل",
+    "discard_title": "تجاهل التغييرات؟",
+    "discard_message": "ستفقد التغييرات غير المحفوظة."
   },
   "settings": {
     "title": "الإعدادات",
@@ -205,7 +210,10 @@
     "coming_soon": "ستتوفر هذه الميزة قريباً.",
     "collaboration_section": "التعاون",
     "pending_invites": "الدعوات المعلقة",
-    "notifications": "الإشعارات"
+    "notifications": "الإشعارات",
+    "display_name_too_long": "يجب ألا يتجاوز الاسم 80 حرفًا",
+    "phone_helper": "اختياري. رقم للتواصل معك، ولا يُستخدم لتسجيل الدخول.",
+    "profile_saved": "تم تحديث الملف الشخصي"
   },
   "errors": {
     "no_connection": "لا يوجد اتصال بالإنترنت. تحقّق من اتصالك وحاول مجدداً.",

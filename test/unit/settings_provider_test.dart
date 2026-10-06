@@ -186,5 +186,56 @@ void main() {
       expect(themeProvider.mode, ThemeMode.dark);
       expect(providerWithTheme.isDarkMode, isTrue);
     });
+
+    group('updateProfile', () {
+      const current = AppUser(id: 'u1', username: 'sarah', displayName: 'Sarah', phone: '0672859965');
+
+      setUp(() => session.setAuthenticated(current));
+
+      test('sends only the changed display name and updates the session', () async {
+        repo.profileResult = Right(current.copyWith(displayName: 'Sara'));
+
+        final ok = await provider.updateProfile(displayName: ' Sara ', phone: '0672 85 99 65');
+
+        expect(ok, isTrue);
+        expect(repo.profileCalls.single, (displayName: 'Sara', phone: null));
+        expect(session.user!.displayName, 'Sara');
+      });
+
+      test('sends an empty phone to clear it', () async {
+        repo.profileResult = const Right(AppUser(id: 'u1', username: 'sarah', displayName: 'Sarah'));
+
+        await provider.updateProfile(displayName: 'Sarah', phone: '');
+
+        expect(repo.profileCalls.single, (displayName: null, phone: ''));
+        expect(session.user!.phone, isNull);
+      });
+
+      test('normalizes a changed phone before sending', () async {
+        repo.profileResult = const Right(current);
+
+        await provider.updateProfile(displayName: 'Sarah', phone: '+213 551 23 45 67');
+
+        expect(repo.profileCalls.single, (displayName: null, phone: '0551234567'));
+      });
+
+      test('makes no request when nothing changed', () async {
+        final ok = await provider.updateProfile(displayName: 'Sarah', phone: '0672859965');
+
+        expect(ok, isTrue);
+        expect(repo.profileCalls, isEmpty);
+      });
+
+      test('keeps the session and exposes an error on failure', () async {
+        repo.profileResult = const Left(ServerFailure('boom'));
+
+        final ok = await provider.updateProfile(displayName: 'Other', phone: '0672859965');
+
+        expect(ok, isFalse);
+        expect(provider.profileErrorMessage, isNotNull);
+        expect(provider.isSavingProfile, isFalse);
+        expect(session.user, current);
+      });
+    });
   });
 }

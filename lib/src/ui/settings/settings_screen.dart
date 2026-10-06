@@ -3,6 +3,7 @@ import '../../imports/packages_imports.dart';
 import '../../shared/providers/theme_provider.dart';
 import '../auth/providers/session_provider.dart';
 import 'providers/settings_provider.dart';
+import 'widgets/edit_profile_sheet.dart';
 import 'widgets/profile_card.dart';
 import 'widgets/settings_section.dart';
 
@@ -52,7 +53,7 @@ class _SettingsView extends StatelessWidget {
                   SettingsRow(
                     label: 'settings.edit_profile'.tr(),
                     icon: Icons.person_outline_rounded,
-                    onTap: () => _showComingSoonToast(context),
+                    onTap: () => _showEditProfile(context),
                   ),
                   SettingsRow(
                     label: 'settings.change_password'.tr(),
@@ -141,8 +142,32 @@ class _SettingsView extends StatelessWidget {
     };
   }
 
-  void _showComingSoonToast(BuildContext context) {
-    context.showSnackBar('settings.coming_soon'.tr());
+  Future<void> _showEditProfile(BuildContext context) async {
+    final user = context.read<SessionProvider>().user;
+    if (user == null) return;
+    final settings = context.read<SettingsProvider>();
+    final saved = await showModalBottomSheet<bool>(
+      context: context,
+      isScrollControlled: true,
+      useSafeArea: true,
+      backgroundColor: Colors.transparent,
+      builder: (_) => EditProfileSheet(
+        user: user,
+        onSave: (name, phone) async {
+          final ok =
+              await settings.updateProfile(displayName: name, phone: phone);
+          if (!ok) {
+            showGlobalToast(
+                message: settings.profileErrorMessage ?? 'errors.unknown'.tr(),
+                status: 'error');
+          }
+          return ok;
+        },
+      ),
+    );
+    if (saved ?? false) {
+      showGlobalToast(message: 'settings.profile_saved'.tr());
+    }
   }
 
   void _showLanguagePicker(BuildContext context) {

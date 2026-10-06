@@ -179,7 +179,12 @@
   "actions": {
     "cancel": "Annuler",
     "done": "Terminé",
-    "retry": "Réessayer"
+    "retry": "Réessayer",
+    "save": "Enregistrer",
+    "discard": "Abandonner",
+    "keep_editing": "Continuer",
+    "discard_title": "Abandonner les modifications ?",
+    "discard_message": "Vos modifications non enregistrées seront perdues."
   },
   "settings": {
     "title": "Paramètres",
@@ -202,7 +207,10 @@
     "coming_soon": "Cette fonctionnalité sera bientôt disponible.",
     "collaboration_section": "Collaboration",
     "pending_invites": "Invitations en attente",
-    "notifications": "Notifications"
+    "notifications": "Notifications",
+    "display_name_too_long": "Le nom ne doit pas dépasser 80 caractères",
+    "phone_helper": "Facultatif. Votre numéro de contact, jamais utilisé pour la connexion.",
+    "profile_saved": "Profil mis à jour"
   },
   "errors": {
     "no_connection": "Pas de connexion Internet. Vérifiez votre connexion et réessayez.",

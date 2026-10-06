@@ -5,6 +5,7 @@ import '../../../data/repositories/auth_repository_impl.dart';
 import '../../../shared/enums/app_status.dart';
 import '../../../shared/providers/theme_provider.dart';
 import '../../../utils/error_handler.dart';
+import '../../../utils/phone.dart';
 import '../../auth/providers/session_provider.dart';
 
 class SettingsProvider extends ChangeNotifier {
@@ -27,6 +28,8 @@ class SettingsProvider extends ChangeNotifier {
   bool _isLoggingOut = false;
   AppStatus _passwordStatus = AppStatus.initial;
   String? _passwordErrorMessage;
+  bool _isSavingProfile = false;
+  String? _profileErrorMessage;
 
   Locale get locale => _locale;
 
@@ -39,6 +42,8 @@ class SettingsProvider extends ChangeNotifier {
   bool get isLoggingOut => _isLoggingOut;
   bool get isChangingPassword => _passwordStatus.isLoading;
   String? get passwordErrorMessage => _passwordErrorMessage;
+  bool get isSavingProfile => _isSavingProfile;
+  String? get profileErrorMessage => _profileErrorMessage;
 
   void setLocale(Locale locale) {
     if (_locale == locale) return;
@@ -88,6 +93,45 @@ class SettingsProvider extends ChangeNotifier {
       },
       (_) {
         _passwordStatus = AppStatus.success;
+        notifyListeners();
+        return true;
+      },
+    );
+  }
+
+  /// `PATCH /me` with only the fields that differ from the session user.
+  /// [phone] is raw input: normalized to national format, `''` clears it.
+  /// Returns true on success (or when nothing changed); on failure the session
+  /// is untouched and [profileErrorMessage] carries the reason.
+  Future<bool> updateProfile(
+      {required String displayName, required String phone}) async {
+    final current = _session.user;
+    if (current == null) return false;
+
+    final name = displayName.trim();
+    final normalizedPhone = phone.trim().isEmpty ? '' : normalizePhone(phone);
+    if (normalizedPhone == null) return false; // the form validates first
+    final nameChanged = name != current.displayName;
+    final phoneChanged = normalizedPhone != (current.phone ?? '');
+    if (!nameChanged && !phoneChanged) return true;
+
+    _isSavingProfile = true;
+    _profileErrorMessage = null;
+    notifyListeners();
+
+    final result = await _authRepository.updateProfile(
+      displayName: nameChanged ? name : null,
+      phone: phoneChanged ? normalizedPhone : null,
+    );
+    _isSavingProfile = false;
+    return result.match(
+      (failure) {
+        _profileErrorMessage = AppErrorHandler.userMessage(failure);
+        notifyListeners();
+        return false;
+      },
+      (user) {
+        _session.updateUser(user);
         notifyListeners();
         return true;
       },

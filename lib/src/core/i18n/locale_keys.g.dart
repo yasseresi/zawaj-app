@@ -173,6 +173,11 @@ abstract class  LocaleKeys {
   static const actions_cancel = 'actions.cancel';
   static const actions_done = 'actions.done';
   static const actions_retry = 'actions.retry';
+  static const actions_save = 'actions.save';
+  static const actions_discard = 'actions.discard';
+  static const actions_keep_editing = 'actions.keep_editing';
+  static const actions_discard_title = 'actions.discard_title';
+  static const actions_discard_message = 'actions.discard_message';
   static const actions = 'actions';
   static const settings_title = 'settings.title';
   static const settings_account_section = 'settings.account_section';
@@ -195,6 +200,9 @@ abstract class  LocaleKeys {
   static const settings_collaboration_section = 'settings.collaboration_section';
   static const settings_pending_invites = 'settings.pending_invites';
   static const settings_notifications = 'settings.notifications';
+  static const settings_display_name_too_long = 'settings.display_name_too_long';
+  static const settings_phone_helper = 'settings.phone_helper';
+  static const settings_profile_saved = 'settings.profile_saved';
   static const settings = 'settings';
   static const errors_no_connection = 'errors.no_connection';
   static const errors_timeout = 'errors.timeout';

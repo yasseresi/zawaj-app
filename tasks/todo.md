@@ -17,7 +17,7 @@ Details, acceptance criteria and files for each task: [plan.md](plan.md). Specs:
 
 ## Phase 2: Core edits
 - [x] T7 App: `AppUser.phone` + `updateProfile`/`updateSettings` data layer — `account-profile`
-- [ ] T6 App: Edit profile sheet + ProfileCard phone (remove coming-soon) — `account-profile`
+- [x] T6 App: Edit profile sheet + ProfileCard phone (remove coming-soon) — `account-profile`
 - [ ] T8 App: Notification preference switches (optimistic) — `account-profile`
 - [ ] T9 App: wedding `get`/`update` data + `WeddingsProvider.refresh` — `wedding-manage`
 - [ ] T10 App: cold-load `/weddings/:id` fallback — `wedding-manage` ⚠ router WIP

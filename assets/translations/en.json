@@ -179,7 +179,12 @@
   "actions": {
     "cancel": "Cancel",
     "done": "Done",
-    "retry": "Try again"
+    "retry": "Try again",
+    "save": "Save",
+    "discard": "Discard",
+    "keep_editing": "Keep editing",
+    "discard_title": "Discard changes?",
+    "discard_message": "Your unsaved changes will be lost."
   },
   "settings": {
     "title": "Settings",
@@ -202,7 +207,10 @@
     "coming_soon": "This feature will be available soon.",
     "collaboration_section": "Collaboration",
     "pending_invites": "Pending invitations",
-    "notifications": "Notifications"
+    "notifications": "Notifications",
+    "display_name_too_long": "Name must be at most 80 characters",
+    "phone_helper": "Optional. Your contact number, never used to sign in.",
+    "profile_saved": "Profile updated"
   },
   "errors": {
     "no_connection": "No internet connection. Check your connection and try again.",
