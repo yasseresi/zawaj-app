@@ -19,7 +19,7 @@ Details, acceptance criteria and files for each task: [plan.md](plan.md). Specs:
 - [x] T7 App: `AppUser.phone` + `updateProfile`/`updateSettings` data layer — `account-profile`
 - [x] T6 App: Edit profile sheet + ProfileCard phone (remove coming-soon) — `account-profile`
 - [x] T8 App: Notification preference switches (optimistic) — `account-profile`
-- [ ] T9 App: wedding `get`/`update` data + `WeddingsProvider.refresh` — `wedding-manage`
+- [x] T9 App: wedding `get`/`update` data + `WeddingsProvider.refresh` — `wedding-manage`
 - [ ] T10 App: cold-load `/weddings/:id` fallback — `wedding-manage` ⚠ router WIP
 - [ ] T11a App: extract `WeddingForm` (create unchanged) — `wedding-manage`
 - [ ] T11b App: Edit wedding screen + route + owner overflow item — `wedding-manage`

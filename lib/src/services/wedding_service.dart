@@ -37,6 +37,38 @@ class WeddingService {
         parse: (d) => Wedding.fromJson((d as Map).cast<String, dynamic>()),
       );
 
+  /// `GET /weddings/:id` → `{wedding, my_role}` (viewer+). The response has no
+  /// guest count, so the returned [Wedding.guestCount] is 0.
+  FutureEither<Wedding> get(String id) => _api.get<Wedding>(
+        '/weddings/$id',
+        parse: (d) {
+          final map = (d as Map).cast<String, dynamic>();
+          return Wedding.fromJson({
+            ...((map['wedding'] as Map?)?.cast<String, dynamic>() ?? const {}),
+            'my_role': map['my_role'],
+          });
+        },
+      );
+
+  /// `PATCH /weddings/:id` (owner) with only the given fields → the bare
+  /// wedding. The response carries no `my_role`/guest count; merge it into the
+  /// cached item (see `WeddingsProvider.applyUpdate`).
+  FutureEither<Wedding> update(
+    String id, {
+    String? name,
+    String? eventDate,
+    String? description,
+  }) =>
+      _api.patch<Wedding>(
+        '/weddings/$id',
+        body: {
+          if (name != null) 'name': name,
+          if (eventDate != null) 'event_date': eventDate,
+          if (description != null) 'description': description,
+        },
+        parse: (d) => Wedding.fromJson((d as Map).cast<String, dynamic>()),
+      );
+
   /// `DELETE /weddings/:id` → 200 `{deleted:true}`. Owner-only (enforced
   /// server-side via RequireRole). Body is discarded.
   FutureEither<void> delete(String id) => _api.delete<void>(

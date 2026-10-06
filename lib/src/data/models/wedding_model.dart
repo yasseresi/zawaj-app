@@ -62,6 +62,24 @@ class Wedding extends Equatable {
     );
   }
 
+  Wedding copyWith({
+    String? name,
+    DateTime? eventDate,
+    String? description,
+    WeddingRole? role,
+    int? guestCount,
+  }) =>
+      Wedding(
+        id: id,
+        name: name ?? this.name,
+        eventDate: eventDate ?? this.eventDate,
+        description: description ?? this.description,
+        ownerId: ownerId,
+        role: role ?? this.role,
+        guestCount: guestCount ?? this.guestCount,
+        createdAt: createdAt,
+      );
+
   static DateTime? _date(dynamic v) {
     if (v == null) return null;
     return DateTime.tryParse(v.toString());

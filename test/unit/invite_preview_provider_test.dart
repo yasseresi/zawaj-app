@@ -9,6 +9,14 @@ import 'package:zawaj_app/src/utils/failure.dart';
 import 'package:zawaj_app/src/utils/typedefs.dart';
 
 class _FakeWeddingRepository implements WeddingRepository {
+  @override
+  FutureEither<Wedding> get(String id) async => throw UnimplementedError();
+
+  @override
+  FutureEither<Wedding> update(String id,
+          {String? name, String? eventDate, String? description}) async =>
+      throw UnimplementedError();
+
   Either<Failure, InvitePreview> previewResult = const Right(
     InvitePreview(
         weddingId: 'w1', weddingName: 'Leila & Karim', role: 'editor'),

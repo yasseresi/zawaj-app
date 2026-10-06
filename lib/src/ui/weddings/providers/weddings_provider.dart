@@ -5,6 +5,8 @@ import '../../../data/repositories/wedding_repository.dart';
 import '../../../data/repositories/wedding_repository_impl.dart';
 import '../../../shared/enums/app_status.dart';
 import '../../../services/storage_service.dart';
+import '../../../utils/failure.dart';
+import '../../../utils/typedefs.dart';
 
 /// Holds the "my weddings" list state for the home screen. Screens bind via
 /// `context.watch` and render off [status] (loading → skeleton, success+empty →
@@ -28,6 +30,13 @@ class WeddingsProvider extends ChangeNotifier {
   /// True only once a load has succeeded with no weddings — distinguishes the
   /// genuine empty state from the initial/loading states.
   bool get isEmpty => _status.isSuccess && _weddings.isEmpty;
+
+  Wedding? weddingById(String id) {
+    for (final w in _weddings) {
+      if (w.id == id) return w;
+    }
+    return null;
+  }
 
   /// Fetch the caller's weddings. Idempotent; safe to call for pull-to-refresh.
   Future<void> load() async {
@@ -81,5 +90,53 @@ class WeddingsProvider extends ChangeNotifier {
         return true;
       },
     );
+  }
+
+  /// Re-fetch one wedding (`GET /weddings/:id`) and sync it into the list:
+  /// replaces the cached item (keeping its guest count, which the endpoint
+  /// doesn't return) or inserts it at the top. A 404 — deleted, or access
+  /// revoked — drops it. Other failures leave the list untouched.
+  FutureEither<Wedding> refresh(String id) async {
+    final result = await _repository.get(id);
+    result.match(
+      (failure) {
+        if (failure is NotFoundFailure) {
+          _weddings = _weddings.where((w) => w.id != id).toList();
+          notifyListeners();
+        }
+      },
+      (fresh) {
+        final cached = weddingById(id);
+        _weddings = cached == null
+            ? [fresh, ..._weddings]
+            : [
+                for (final w in _weddings)
+                  w.id == id ? fresh.copyWith(guestCount: cached.guestCount) : w
+              ];
+        notifyListeners();
+      },
+    );
+    return result;
+  }
+
+  /// Merge a `PATCH /weddings/:id` result into the cached item. The response
+  /// has no role or guest count, so only the editable fields are taken.
+  void applyUpdate(Wedding updated) {
+    _weddings = [
+      for (final w in _weddings)
+        w.id == updated.id
+            ? Wedding(
+                id: w.id,
+                name: updated.name,
+                eventDate: updated.eventDate,
+                description: updated.description,
+                ownerId: w.ownerId,
+                role: w.role,
+                guestCount: w.guestCount,
+                createdAt: w.createdAt,
+              )
+            : w
+    ];
+    notifyListeners();
   }
 }

@@ -18,6 +18,14 @@ abstract interface class WeddingRepository {
     String? description,
   });
 
+  /// `GET /weddings/:id` — one wedding with the caller's role (no guest count).
+  FutureEither<Wedding> get(String id);
+
+  /// `PATCH /weddings/:id` — owner edits; only non-null fields are sent.
+  /// [eventDate] is `YYYY-MM-DD`; `description: ''` clears the description.
+  FutureEither<Wedding> update(String id,
+      {String? name, String? eventDate, String? description});
+
   /// `DELETE /weddings/:id` — permanently delete a wedding. Owner-only.
   FutureEither<void> delete(String id);
 

@@ -26,6 +26,15 @@ class WeddingRepositoryImpl implements WeddingRepository {
           name: name, eventDate: eventDate, description: description);
 
   @override
+  FutureEither<Wedding> get(String id) => _service.get(id);
+
+  @override
+  FutureEither<Wedding> update(String id,
+          {String? name, String? eventDate, String? description}) =>
+      _service.update(id,
+          name: name, eventDate: eventDate, description: description);
+
+  @override
   FutureEither<void> delete(String id) => _service.delete(id);
 
   @override
