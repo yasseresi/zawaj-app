@@ -58,4 +58,4 @@ Details, acceptance criteria and files for each task: [plan.md](plan.md). Specs:
 - [x] B2 App: notification toggle rollback/merge touches only its own field
 - [x] B3 Backend: UserRepo.Update must never re-insert a deleted user (no GORM Save upsert) (backend 6cdf344)
 - [ ] B4 Backend+App: PATCH /me/password honours lockout; app skips refresh-retry on it
-- [ ] B5 Backend: atomic failed-attempt increment (parallel guesses can't bypass lockout)
+- [x] B5 Backend: atomic failed-attempt increment (parallel guesses can't bypass lockout) (backend 8c2178f)
