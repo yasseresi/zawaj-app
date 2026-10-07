@@ -153,8 +153,10 @@ class SettingsProvider extends ChangeNotifier {
     if (_isSavingNotifPush) return false;
     _isSavingNotifPush = true;
     final ok = await _savePreference(
-      (u) => u.copyWith(notifPush: value),
-      () => _authRepository.updateSettings(notifPush: value),
+      value: value,
+      read: (u) => u.notifPush,
+      write: (u, v) => u.copyWith(notifPush: v),
+      request: () => _authRepository.updateSettings(notifPush: value),
     );
     _isSavingNotifPush = false;
     notifyListeners();
@@ -167,33 +169,44 @@ class SettingsProvider extends ChangeNotifier {
     if (_isSavingNotifRsvp) return false;
     _isSavingNotifRsvp = true;
     final ok = await _savePreference(
-      (u) => u.copyWith(notifRsvp: value),
-      () => _authRepository.updateSettings(notifRsvp: value),
+      value: value,
+      read: (u) => u.notifRsvp,
+      write: (u, v) => u.copyWith(notifRsvp: v),
+      request: () => _authRepository.updateSettings(notifRsvp: value),
     );
     _isSavingNotifRsvp = false;
     notifyListeners();
     return ok;
   }
 
-  Future<bool> _savePreference(
-    AppUser Function(AppUser) apply,
-    FutureEither<AppUser> Function() request,
-  ) async {
-    final previous = _session.user;
-    if (previous == null) return false;
+  /// Applies one preference optimistically. The rollback (failure) and the
+  /// server value (success) are written to that field only, on the session
+  /// user as it is *now*, so an overlapping toggle or profile edit is never
+  /// reverted by a stale snapshot or reply.
+  Future<bool> _savePreference({
+    required bool value,
+    required bool Function(AppUser) read,
+    required AppUser Function(AppUser, bool) write,
+    required FutureEither<AppUser> Function() request,
+  }) async {
+    final before = _session.user;
+    if (before == null) return false;
+    final previous = read(before);
     _preferencesErrorMessage = null;
-    _session.updateUser(apply(previous));
+    _session.updateUser(write(before, value));
     notifyListeners();
 
     final result = await request();
+    final current = _session.user;
+    if (current == null) return false; // signed out meanwhile
     return result.match(
       (failure) {
-        _session.updateUser(previous);
+        _session.updateUser(write(current, previous));
         _preferencesErrorMessage = AppErrorHandler.userMessage(failure);
         return false;
       },
       (user) {
-        _session.updateUser(user);
+        _session.updateUser(write(current, read(user)));
         return true;
       },
     );
