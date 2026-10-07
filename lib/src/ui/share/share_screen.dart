@@ -126,8 +126,28 @@ class _ShareViewState extends State<_ShareView> {
       cancelLabel: 'actions.cancel'.tr(),
       isDestructive: true,
     );
-    if ((confirmed ?? false) && mounted) {
-      await context.read<ShareProvider>().removeMember(member.userId);
+    if (!(confirmed ?? false) || !mounted) return;
+    final provider = context.read<ShareProvider>();
+    if (!await provider.removeMember(member.userId) || !mounted) return;
+    // Removal doesn't invalidate links: offer to close the way back in.
+    final active = provider.activeLinks.length;
+    if (active == 0) return;
+    final revoke = await showAdaptiveConfirmDialog(
+      context,
+      title: 'share.revoke_after_remove_title'.tr(),
+      message: 'share.revoke_after_remove_message'
+          .tr(namedArgs: {'name': member.label, 'count': '$active'}),
+      confirmLabel: 'share.revoke_all_confirm'.tr(),
+      cancelLabel: 'share.keep_links'.tr(),
+      isDestructive: true,
+    );
+    if (!(revoke ?? false) || !mounted) return;
+    if (await provider.revokeAllLinks()) {
+      if (mounted) context.showSuccessSnackBar('share.links_revoked'.tr());
+    } else if (mounted) {
+      showToast(context,
+          message: provider.errorMessage ?? 'errors.unknown'.tr(),
+          status: 'error');
     }
   }
 

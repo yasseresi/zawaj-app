@@ -61,5 +61,5 @@ Details, acceptance criteria and files for each task: [plan.md](plan.md). Specs:
 - [x] B5 Backend: atomic failed-attempt increment (parallel guesses can't bypass lockout) (backend 8c2178f)
 - [x] B6 Backend: user writes are column-scoped (a stale/overlapping write can't revert password, profile or prefs) (backend 7bbfd6f)
 - [x] B7 Backend: accepting an invite link never changes an existing membership (no re-escalation after demote/remove) (backend df8a7d9)
-  - Open (needs product decision): a *removed* member has no membership, so an old still-active link re-admits them. Options: owner revokes links on removal; or record removals and refuse links created before the removal (new migration).
+  - [x] B7a App: removed member could rejoin via an active link → after removal, offer to revoke all active links (option A, chosen 2026-10-07)
 - [ ] R1 App: wedding header keeps the last known guest total across reloads/failures

@@ -172,6 +172,28 @@ class ShareProvider extends ChangeNotifier {
     return ok;
   }
 
+  /// Revoke every active invite link (owner), e.g. after removing a member who
+  /// could otherwise rejoin through one. Tries them all; links that failed stay
+  /// listed and [errorMessage] is set. Returns true when all were revoked.
+  Future<bool> revokeAllLinks() async {
+    busy = true;
+    errorMessage = null;
+    notifyListeners();
+    final failed = <String>{};
+    for (final l in activeLinks) {
+      final result = await _weddings.revokeInviteLink(weddingId, l.id);
+      result.match((f) {
+        if (f is NotFoundFailure) return; // already gone
+        failed.add(l.id);
+        errorMessage ??= AppErrorHandler.userMessage(f);
+      }, (_) {});
+    }
+    links = links.where((l) => l.revoked || failed.contains(l.id)).toList();
+    busy = false;
+    notifyListeners();
+    return failed.isEmpty;
+  }
+
   Future<bool> removeMember(String userId) async {
     busy = true;
     notifyListeners();
