@@ -76,5 +76,5 @@ Details, acceptance criteria and files for each task: [plan.md](plan.md). Specs:
 - [x] J3 Backend: drop D3 auto-revoke on removal/demotion (links stay active); update tests
 - [x] J4 App: data layer — acceptInviteLink returns member|pending; join-request list/approve/decline in WeddingService/Repository
 - [x] J5 App: invite preview "Request sent" state; share screen Join requests section (approve sheet w/ role, decline confirm, optimistic + rollback); revert remove-confirm copy
-- [ ] J6 App: notification taps for join_requested (→ share) / join_approved (→ wedding); strings ar/en/fr; simulator check
+- [x] J6 App: notification taps for join_requested (→ share) / join_approved (→ wedding) / join_declined (no nav); API smoke on a fresh SQL-migrated DB passed 17/17. Simulator walkthrough NOT done (needs app pointed at a server with this backend)
 

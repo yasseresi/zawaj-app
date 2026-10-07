@@ -5,7 +5,8 @@ import 'package:equatable/equatable.dart';
 /// `{ id, user_id, wedding_id, type, title, body, data, read_at, created_at }`.
 ///
 /// Common [type] values: `invite_received`, `guest_added`,
-/// `guest_status_changed`.
+/// `guest_status_changed`, `join_requested` (owner), `join_approved` /
+/// `join_declined` (requester).
 class AppNotification extends Equatable {
   const AppNotification({
     required this.id,
