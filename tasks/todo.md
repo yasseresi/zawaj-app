@@ -69,3 +69,12 @@ Details, acceptance criteria and files for each task: [plan.md](plan.md). Specs:
 - [x] D1 Backend: owner re-invite records its role as the new ceiling (was cleared → viewer re-invite could leave + rejoin as editor) (backend 905b3ab)
 - [x] D2 Backend: owner removal withdraws pending username invites (stale invite blocked re-invite with 409) (backend 3fcc2c4)
 - [x] D3 Backend+App: option (b) — memberships record via_link_id; owner removal / demotion below it revokes that link (second-account reuse); app re-fetches links, remove copy updated (backend 71e4ecd)
+
+## Join approval (SPEC-join-approval.md) — pending approval
+- [ ] J1 Backend: migration 000012 join_requests + model + repo; link accept → 202 pending request (member → 200, removed → 403); owner notified (join_requested)
+- [ ] J2 Backend: owner list / approve (role ≤ requested; membership + ceiling + via_link_id; join_approved) / decline (join_declined); cascades on wedding/account delete; Swagger + ADR
+- [ ] J3 Backend: drop D3 auto-revoke on removal/demotion (links stay active); update tests
+- [ ] J4 App: data layer — acceptInviteLink returns member|pending; join-request list/approve/decline in WeddingService/Repository
+- [ ] J5 App: invite preview "Request sent" state; share screen Join requests section (approve sheet w/ role, decline confirm, optimistic + rollback); revert remove-confirm copy
+- [ ] J6 App: notification taps for join_requested (→ share) / join_approved (→ wedding); strings ar/en/fr; simulator check
+
