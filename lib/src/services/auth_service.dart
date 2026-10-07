@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:fpdart/fpdart.dart';
 
 import '../data/models/user_model.dart';
@@ -14,11 +15,17 @@ import '../utils/utils.dart';
 /// Backend contract: username + password + one-time recovery code; JWT access
 /// (15m) + refresh (30d) with rotation.
 class AuthService {
-  AuthService._();
+  AuthService._({ApiClient? api, TokenStorage? tokens})
+      : _api = api ?? ApiClient.instance,
+        _tokens = tokens ?? TokenStorage.instance;
   static final AuthService instance = AuthService._();
 
-  final ApiClient _api = ApiClient.instance;
-  final TokenStorage _tokens = TokenStorage.instance;
+  @visibleForTesting
+  factory AuthService.test({required ApiClient api, TokenStorage? tokens}) =>
+      AuthService._(api: api, tokens: tokens);
+
+  final ApiClient _api;
+  final TokenStorage _tokens;
 
   /// `POST /auth/register` → user + tokens + one-time recovery code (201).
   FutureEither<AuthResult> register({
@@ -81,7 +88,8 @@ class AuthService {
   FutureEitherVoid logout() async {
     final refresh = await _tokens.refreshToken;
     if (refresh != null && refresh.isNotEmpty) {
-      await _api.post<void>('/auth/logout', body: {'refresh': refresh}, parse: parseVoid);
+      await _api.post<void>('/auth/logout',
+          body: {'refresh': refresh}, parse: parseVoid);
     }
     await _tokens.clear();
     return const Right<Failure, void>(null);
@@ -95,7 +103,8 @@ class AuthService {
 
   /// `PATCH /me` — update display name and/or phone. Only non-null fields are
   /// sent; `phone: ''` clears the phone.
-  FutureEither<AppUser> updateProfile({String? displayName, String? phone}) => _api.patch<AppUser>(
+  FutureEither<AppUser> updateProfile({String? displayName, String? phone}) =>
+      _api.patch<AppUser>(
         '/me',
         body: {
           if (displayName != null) 'display_name': displayName,
@@ -105,16 +114,25 @@ class AuthService {
       );
 
   /// `PATCH /me/password` — kills all sessions; caller must re-authenticate.
-  FutureEitherVoid changePassword({required String oldPassword, required String newPassword}) =>
-      _api.patch<void>(
-        '/me/password',
-        body: {'old_password': oldPassword, 'new_password': newPassword},
-        parse: parseVoid,
-      );
+  /// `PATCH /me/password`. 401 = wrong current password, 423 = locked. Same
+  /// pre-flight + no-retry contract as [deleteAccount], so a wrong password
+  /// counts once toward the lockout.
+  FutureEitherVoid changePassword(
+      {required String oldPassword, required String newPassword}) async {
+    final fresh = await getMe();
+    if (fresh.isLeft()) return fresh.map((_) {});
+    return _api.patch<void>(
+      '/me/password',
+      body: {'old_password': oldPassword, 'new_password': newPassword},
+      skipAuthRefresh: true,
+      parse: parseVoid,
+    );
+  }
 
   /// `PATCH /me/settings` — update preferences (`notif_push`, `notif_rsvp`, …);
   /// returns the updated user.
-  FutureEither<AppUser> updateSettings(Map<String, dynamic> patch) => _api.patch<AppUser>(
+  FutureEither<AppUser> updateSettings(Map<String, dynamic> patch) =>
+      _api.patch<AppUser>(
         '/me/settings',
         body: patch,
         parse: (d) => AppUser.fromJson((d as Map).cast<String, dynamic>()),

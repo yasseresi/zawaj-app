@@ -40,13 +40,21 @@ class ApiClient {
         parse,
       );
 
+  /// [skipAuthRefresh]: as for [delete].
   FutureEither<T> patch<T>(
     String path, {
     Object? body,
     Map<String, dynamic>? query,
+    bool skipAuthRefresh = false,
     required T Function(dynamic data) parse,
   }) =>
-      _send(() => _dio.patch(path, data: body, queryParameters: query), parse);
+      _send(
+        () => _dio.patch(path,
+            data: body,
+            queryParameters: query,
+            options: _noRetry(skipAuthRefresh)),
+        parse,
+      );
 
   /// [skipAuthRefresh]: don't refresh-and-retry on 401 — for endpoints where
   /// 401 means "wrong password", not an expired session.
@@ -61,9 +69,7 @@ class ApiClient {
         () => _dio.delete(path,
             data: body,
             queryParameters: query,
-            options: skipAuthRefresh
-                ? Options(extra: {'skipAuthRefresh': true})
-                : null),
+            options: _noRetry(skipAuthRefresh)),
         parse,
       );
 
@@ -81,9 +87,13 @@ class ApiClient {
         // Envelope-aware: pull `data` when the body is our standard envelope,
         // otherwise pass the raw body through (defensive against non-enveloped
         // or empty 204-style responses).
-        final payload = (body is Map && body.containsKey('data')) ? body['data'] : body;
+        final payload =
+            (body is Map && body.containsKey('data')) ? body['data'] : body;
         return parse(payload);
       }, requiresNetwork: true);
+
+  Options? _noRetry(bool skipAuthRefresh) =>
+      skipAuthRefresh ? Options(extra: {'skipAuthRefresh': true}) : null;
 
   Options? _opts(Map<String, dynamic>? headers) =>
       headers == null ? null : Options(headers: headers);
