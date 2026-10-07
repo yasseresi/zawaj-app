@@ -49,14 +49,10 @@ class _FakeWeddingRepository implements WeddingRepository {
             ]
           : const [_owner, _omar]);
 
-  List<InviteLink> linkList = const [
-    InviteLink(id: 'l1', token: 't', role: 'viewer')
-  ];
-
   @override
   FutureEither<List<InviteLink>> listInviteLinks(String id) async {
     linkCalls++;
-    return Right(linkList);
+    return const Right([InviteLink(id: 'l1', token: 't', role: 'viewer')]);
   }
 
   @override
@@ -81,14 +77,10 @@ class _FakeWeddingRepository implements WeddingRepository {
   Either<Failure, void> revokeResult = const Right(null);
   final revoked = <String>[];
 
-  final failRevokeIds = <String>{};
-
   @override
   FutureEither<void> revokeInviteLink(String id, String linkId) async {
     revoked.add(linkId);
-    return failRevokeIds.contains(linkId)
-        ? const Left(ServerFailure('boom'))
-        : revokeResult;
+    return revokeResult;
   }
 
   @override
@@ -215,67 +207,6 @@ void main() {
 
       expect(await p.revokeLink('l1'), isFalse);
       expect(p.activeLinks, hasLength(1));
-      expect(p.errorMessage, isNotNull);
-    });
-  });
-
-  // Removing a member doesn't stop them rejoining through a still-active
-  // link, so the screen offers to revoke every active link afterwards.
-  group('revokeAllLinks', () {
-    const two = [
-      InviteLink(id: 'l1', token: 't1', role: 'editor'),
-      InviteLink(id: 'l2', token: 't2', role: 'viewer'),
-    ];
-
-    test('revokes every active link', () async {
-      final repo = _FakeWeddingRepository()..linkList = two;
-      final p = _provider(repo, wedding: _wedding(WeddingRole.owner));
-      await p.load();
-
-      expect(await p.revokeAllLinks(), isTrue);
-
-      expect(repo.revoked, ['l1', 'l2']);
-      expect(p.activeLinks, isEmpty);
-      expect(p.busy, isFalse);
-    });
-
-    test('an already-revoked link (404) counts as revoked', () async {
-      final repo = _FakeWeddingRepository()
-        ..linkList = two
-        ..revokeResult = const Left(NotFoundFailure('gone'));
-      final p = _provider(repo, wedding: _wedding(WeddingRole.owner));
-      await p.load();
-
-      expect(await p.revokeAllLinks(), isTrue);
-      expect(p.activeLinks, isEmpty);
-      expect(p.errorMessage, isNull);
-    });
-
-    // After a demotion to viewer, only links that would let them rejoin as
-    // editor matter; viewer links stay usable for everyone else.
-    test('with a role, revokes only the links granting it', () async {
-      final repo = _FakeWeddingRepository()..linkList = two;
-      final p = _provider(repo, wedding: _wedding(WeddingRole.owner));
-      await p.load();
-      expect(p.activeLinksGranting('editor').map((l) => l.id), ['l1']);
-
-      expect(await p.revokeAllLinks(role: 'editor'), isTrue);
-
-      expect(repo.revoked, ['l1']);
-      expect(p.activeLinks.map((l) => l.id), ['l2']);
-    });
-
-    test('keeps the links that failed and exposes the error', () async {
-      final repo = _FakeWeddingRepository()
-        ..linkList = two
-        ..failRevokeIds.add('l1');
-      final p = _provider(repo, wedding: _wedding(WeddingRole.owner));
-      await p.load();
-
-      expect(await p.revokeAllLinks(), isFalse);
-
-      expect(repo.revoked, ['l1', 'l2']); // still tries the rest
-      expect(p.activeLinks.map((l) => l.id), ['l1']);
       expect(p.errorMessage, isNotNull);
     });
   });

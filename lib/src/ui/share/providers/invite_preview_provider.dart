@@ -4,6 +4,7 @@ import '../../../data/models/invite_link_model.dart';
 import '../../../data/repositories/wedding_repository.dart';
 import '../../../data/repositories/wedding_repository_impl.dart';
 import '../../../shared/enums/app_status.dart';
+import '../../../utils/error_handler.dart';
 
 class InvitePreviewProvider extends ChangeNotifier {
   InvitePreviewProvider({
@@ -50,7 +51,7 @@ class InvitePreviewProvider extends ChangeNotifier {
     final result = await _repository.acceptInviteLink(token);
     final success = result.match(
       (failure) {
-        errorMessage = failure.message;
+        errorMessage = AppErrorHandler.userMessage(failure);
         return false;
       },
       (value) {

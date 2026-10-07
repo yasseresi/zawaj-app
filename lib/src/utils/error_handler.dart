@@ -49,6 +49,9 @@ class AppErrorHandler {
             failure.message.toLowerCase().contains('username'))) {
       return _tr('auth.username_taken');
     }
+    if (failure.code == 'removed_from_wedding') {
+      return _tr('invites.removed_from_wedding');
+    }
     if (failure is LockedFailure) return _tr('errors.locked');
     if (failure is RateLimitFailure) return _tr('errors.rate_limited');
     if (failure is ValidationFailure) return _tr('errors.validation');
@@ -111,6 +114,8 @@ class AppErrorHandler {
         return AuthFailure(message, error: e);
       case 'forbidden':
         return ForbiddenFailure(message, error: e);
+      case 'removed_from_wedding':
+        return ForbiddenFailure(message, code: code, error: e);
       case 'not_found':
         return NotFoundFailure(message, error: e);
       case 'conflict':

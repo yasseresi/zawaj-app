@@ -172,38 +172,6 @@ class ShareProvider extends ChangeNotifier {
     return ok;
   }
 
-  /// Active links that grant [role] (`'editor'` / `'viewer'`).
-  List<InviteLink> activeLinksGranting(String role) =>
-      activeLinks.where((l) => l.role == role).toList(growable: false);
-
-  /// Revoke every active invite link (owner), or only those granting [role].
-  /// Used after removing a member (all links) or demoting one (links above
-  /// the new role), since links would otherwise let them back in. Tries them
-  /// all; links that failed stay listed and [errorMessage] is set. Returns true
-  /// when all were revoked.
-  Future<bool> revokeAllLinks({String? role}) async {
-    busy = true;
-    errorMessage = null;
-    notifyListeners();
-    final failed = <String>{};
-    final targets = role == null ? activeLinks : activeLinksGranting(role);
-    final targetIds = {for (final l in targets) l.id};
-    for (final l in targets) {
-      final result = await _weddings.revokeInviteLink(weddingId, l.id);
-      result.match((f) {
-        if (f is NotFoundFailure) return; // already gone
-        failed.add(l.id);
-        errorMessage ??= AppErrorHandler.userMessage(f);
-      }, (_) {});
-    }
-    links = links
-        .where((l) => !targetIds.contains(l.id) || failed.contains(l.id))
-        .toList();
-    busy = false;
-    notifyListeners();
-    return failed.isEmpty;
-  }
-
   Future<bool> removeMember(String userId) async {
     busy = true;
     notifyListeners();

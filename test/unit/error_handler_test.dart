@@ -20,6 +20,23 @@ DioException _dioWith(
 
 void main() {
   group('AppErrorHandler.toFailure — envelope mapping', () {
+    test('removed_from_wedding -> ForbiddenFailure with a localized message',
+        () {
+      final f = AppErrorHandler.toFailure(_dioWith(
+        status: 403,
+        data: {
+          'data': null,
+          'error': {
+            'code': 'removed_from_wedding',
+            'message': 'you were removed from this wedding'
+          },
+        },
+      ));
+      expect(f, isA<ForbiddenFailure>());
+      expect(f.code, 'removed_from_wedding');
+      expect(AppErrorHandler.userMessage(f), 'invites.removed_from_wedding');
+    });
+
     test('validation_error -> ValidationFailure with server message', () {
       final f = AppErrorHandler.toFailure(_dioWith(
         status: 400,

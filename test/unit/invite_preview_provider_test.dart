@@ -82,6 +82,19 @@ void main() {
     expect(provider.accepted?.weddingId, 'w1');
   });
 
+  test('a removed user accepting a link sees why they were refused', () async {
+    final provider = InvitePreviewProvider(
+      token: 'TOKEN',
+      repository: _FakeWeddingRepository()
+        ..acceptResult = const Left(ForbiddenFailure('removed',
+            code: 'removed_from_wedding')),
+    );
+    await provider.load();
+
+    expect(await provider.accept(), isFalse);
+    expect(provider.errorMessage, 'invites.removed_from_wedding');
+  });
+
   test('surfaces preview failures', () async {
     final provider = InvitePreviewProvider(
       token: 'TOKEN',

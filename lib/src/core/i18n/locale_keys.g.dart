@@ -288,6 +288,7 @@ abstract class  LocaleKeys {
   static const activity_time_at = 'activity.time_at';
   static const activity_filter_coming_soon = 'activity.filter_coming_soon';
   static const activity = 'activity';
+  static const invites_removed_from_wedding = 'invites.removed_from_wedding';
   static const invites_title = 'invites.title';
   static const invites_empty_title = 'invites.empty_title';
   static const invites_empty_subtitle = 'invites.empty_subtitle';
@@ -354,13 +355,6 @@ abstract class  LocaleKeys {
   static const share_transfer_message = 'share.transfer_message';
   static const share_transfer_confirm = 'share.transfer_confirm';
   static const share_transferred = 'share.transferred';
-  static const share_revoke_after_remove_title = 'share.revoke_after_remove_title';
-  static const share_revoke_after_remove_message = 'share.revoke_after_remove_message';
-  static const share_revoke_all_confirm = 'share.revoke_all_confirm';
-  static const share_keep_links = 'share.keep_links';
-  static const share_links_revoked = 'share.links_revoked';
-  static const share_revoke_after_demote_title = 'share.revoke_after_demote_title';
-  static const share_revoke_after_demote_message = 'share.revoke_after_demote_message';
   static const share = 'share';
   static const phone_label = 'phone.label';
   static const phone_hint = 'phone.hint';

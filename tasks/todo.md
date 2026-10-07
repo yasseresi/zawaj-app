@@ -61,6 +61,8 @@ Details, acceptance criteria and files for each task: [plan.md](plan.md). Specs:
 - [x] B5 Backend: atomic failed-attempt increment (parallel guesses can't bypass lockout) (backend 8c2178f)
 - [x] B6 Backend: user writes are column-scoped (a stale/overlapping write can't revert password, profile or prefs) (backend 7bbfd6f)
 - [x] B7 Backend: accepting an invite link never changes an existing membership (no re-escalation after demote/remove) (backend df8a7d9)
-  - [x] B7a App: removed member could rejoin via an active link → after removal, offer to revoke all active links (option A, chosen 2026-10-07)
+  - [x] ~~B7a App: revoke-links prompt after removal~~ (superseded by C1/C2: server-enforced)
 - [x] R1 App: wedding header keeps the last known guest total across reloads/failures
-- [x] B8 App: demote editor→viewer offers to revoke active editor links (closes demote → leave → rejoin; backend guard test d633247)
+- [x] ~~B8 App: revoke-editor-links prompt after demotion~~ (superseded by C1/C2; backend guard test d633247 kept)
+- [x] C1 Backend: membership ceilings — links capped at the owner's last role decision; owner-removed users refused (403 removed_from_wedding); owner username invite after the decision supersedes it (backend 2f65a81)
+- [x] C2 App: drop the revoke-links prompts; localized message for removed_from_wedding on link/invite accept
