@@ -66,3 +66,6 @@ Details, acceptance criteria and files for each task: [plan.md](plan.md). Specs:
 - [x] ~~B8 App: revoke-editor-links prompt after demotion~~ (superseded by C1/C2; backend guard test d633247 kept)
 - [x] C1 Backend: membership ceilings — links capped at the owner's last role decision; owner-removed users refused (403 removed_from_wedding); owner username invite after the decision supersedes it (backend 2f65a81)
 - [x] C2 App: drop the revoke-links prompts; localized message for removed_from_wedding on link/invite accept
+- [x] D1 Backend: owner re-invite records its role as the new ceiling (was cleared → viewer re-invite could leave + rejoin as editor) (backend 905b3ab)
+- [x] D2 Backend: owner removal withdraws pending username invites (stale invite blocked re-invite with 409) (backend 3fcc2c4)
+- [x] D3 Backend+App: option (b) — memberships record via_link_id; owner removal / demotion below it revokes that link (second-account reuse); app re-fetches links, remove copy updated (backend 71e4ecd)

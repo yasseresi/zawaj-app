@@ -82,13 +82,25 @@ class ShareProvider extends ChangeNotifier {
     notifyListeners();
 
     final result = await _weddings.setMemberRole(weddingId, userId, role.name);
-    return result.match((f) {
+    final ok = result.match((f) {
       final i = members.indexWhere((m) => m.userId == userId);
       if (i >= 0) members = [...members]..[i] = previous;
       errorMessage = AppErrorHandler.userMessage(f);
       notifyListeners();
       return false;
     }, (_) => true);
+    // A demotion to viewer revokes the editor link they joined with.
+    if (ok && role == WeddingRole.viewer) await _reloadLinks();
+    return ok;
+  }
+
+  /// Re-fetch active links after the server may have revoked one (owner
+  /// removal or demotion revokes the link that member joined with).
+  Future<void> _reloadLinks() async {
+    if (!isOwner) return;
+    final result = await _weddings.listInviteLinks(weddingId);
+    result.match((_) {}, (v) => links = v);
+    notifyListeners();
   }
 
   Future<bool> invite(String username, String role) async {
@@ -183,6 +195,7 @@ class ShareProvider extends ChangeNotifier {
       members = members.where((m) => m.userId != userId).toList();
       return true;
     });
+    if (ok) await _reloadLinks();
     busy = false;
     notifyListeners();
     return ok;

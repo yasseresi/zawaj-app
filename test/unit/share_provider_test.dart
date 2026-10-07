@@ -49,10 +49,14 @@ class _FakeWeddingRepository implements WeddingRepository {
             ]
           : const [_owner, _omar]);
 
+  List<InviteLink> linkList = const [
+    InviteLink(id: 'l1', token: 't', role: 'viewer')
+  ];
+
   @override
   FutureEither<List<InviteLink>> listInviteLinks(String id) async {
     linkCalls++;
-    return const Right([InviteLink(id: 'l1', token: 't', role: 'viewer')]);
+    return Right(linkList);
   }
 
   @override
@@ -60,6 +64,7 @@ class _FakeWeddingRepository implements WeddingRepository {
       String id, String userId, String role) async {
     roleCalls.add((userId, role));
     await setRoleGate?.future;
+    if (setRoleResult.isRight()) _serverRevoke();
     return setRoleResult;
   }
 
@@ -81,6 +86,21 @@ class _FakeWeddingRepository implements WeddingRepository {
   FutureEither<void> revokeInviteLink(String id, String linkId) async {
     revoked.add(linkId);
     return revokeResult;
+  }
+
+  /// Server-side, removal/demotion may revoke the link the member joined
+  /// with; this simulates that so the provider must re-fetch the links.
+  String? revokesOnMemberChange;
+
+  @override
+  FutureEither<void> removeMember(String id, String userId) async {
+    _serverRevoke();
+    return const Right(null);
+  }
+
+  void _serverRevoke() {
+    final id = revokesOnMemberChange;
+    if (id != null) linkList = linkList.where((l) => l.id != id).toList();
   }
 
   @override
@@ -208,6 +228,53 @@ void main() {
       expect(await p.revokeLink('l1'), isFalse);
       expect(p.activeLinks, hasLength(1));
       expect(p.errorMessage, isNotNull);
+    });
+  });
+
+  // The server revokes the link a member joined with when the owner removes
+  // them or demotes them below it; the active links list must reflect that.
+  group('links refresh after member changes', () {
+    const twoLinks = [
+      InviteLink(id: 'l1', token: 't1', role: 'editor'),
+      InviteLink(id: 'l2', token: 't2', role: 'viewer'),
+    ];
+
+    test('removing a member re-fetches the links', () async {
+      final repo = _FakeWeddingRepository()
+        ..linkList = twoLinks
+        ..revokesOnMemberChange = 'l1';
+      final p = _provider(repo, wedding: _wedding(WeddingRole.owner));
+      await p.load();
+
+      expect(await p.removeMember('u2'), isTrue);
+
+      expect(p.activeLinks.map((l) => l.id), ['l2']);
+      expect(p.members.map((m) => m.userId), ['u1']);
+    });
+
+    test('demoting to viewer re-fetches the links', () async {
+      final repo = _FakeWeddingRepository()
+        ..linkList = twoLinks
+        ..revokesOnMemberChange = 'l1';
+      final p = _provider(repo, wedding: _wedding(WeddingRole.owner));
+      await p.load();
+      final before = repo.linkCalls;
+
+      expect(await p.setRole('u2', WeddingRole.viewer), isTrue);
+
+      expect(repo.linkCalls, before + 1);
+      expect(p.activeLinks.map((l) => l.id), ['l2']);
+    });
+
+    test('promoting does not re-fetch the links', () async {
+      final repo = _FakeWeddingRepository();
+      final p = _provider(repo, wedding: _wedding(WeddingRole.owner));
+      await p.load();
+      await p.setRole('u2', WeddingRole.viewer);
+      final before = repo.linkCalls;
+
+      expect(await p.setRole('u2', WeddingRole.editor), isTrue);
+      expect(repo.linkCalls, before);
     });
   });
 
