@@ -59,3 +59,6 @@ Details, acceptance criteria and files for each task: [plan.md](plan.md). Specs:
 - [x] B3 Backend: UserRepo.Update must never re-insert a deleted user (no GORM Save upsert) (backend 6cdf344)
 - [x] B4 Backend+App: PATCH /me/password honours lockout; app skips refresh-retry on it (backend 50921dc)
 - [x] B5 Backend: atomic failed-attempt increment (parallel guesses can't bypass lockout) (backend 8c2178f)
+- [x] B6 Backend: user writes are column-scoped (a stale/overlapping write can't revert password, profile or prefs) (backend 7bbfd6f)
+- [ ] B7 Backend: accepting an invite link never changes an existing membership (no re-escalation after demote/remove)
+- [ ] R1 App: wedding header keeps the last known guest total across reloads/failures
