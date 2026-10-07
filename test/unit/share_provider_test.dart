@@ -239,6 +239,32 @@ void main() {
       expect(p.busy, isFalse);
     });
 
+    test('an already-revoked link (404) counts as revoked', () async {
+      final repo = _FakeWeddingRepository()
+        ..linkList = two
+        ..revokeResult = const Left(NotFoundFailure('gone'));
+      final p = _provider(repo, wedding: _wedding(WeddingRole.owner));
+      await p.load();
+
+      expect(await p.revokeAllLinks(), isTrue);
+      expect(p.activeLinks, isEmpty);
+      expect(p.errorMessage, isNull);
+    });
+
+    // After a demotion to viewer, only links that would let them rejoin as
+    // editor matter; viewer links stay usable for everyone else.
+    test('with a role, revokes only the links granting it', () async {
+      final repo = _FakeWeddingRepository()..linkList = two;
+      final p = _provider(repo, wedding: _wedding(WeddingRole.owner));
+      await p.load();
+      expect(p.activeLinksGranting('editor').map((l) => l.id), ['l1']);
+
+      expect(await p.revokeAllLinks(role: 'editor'), isTrue);
+
+      expect(repo.revoked, ['l1']);
+      expect(p.activeLinks.map((l) => l.id), ['l2']);
+    });
+
     test('keeps the links that failed and exposes the error', () async {
       final repo = _FakeWeddingRepository()
         ..linkList = two

@@ -73,6 +73,16 @@ class _ShareViewState extends State<_ShareView> {
         'name': member.label,
         'role': 'share.role_${picked.name}'.tr(),
       }));
+      // Demoted to viewer: they could leave and rejoin through an editor link.
+      if (member.role == WeddingRole.editor && picked == WeddingRole.viewer) {
+        await _offerRevoke(
+          provider,
+          role: 'editor',
+          title: 'share.revoke_after_demote_title'.tr(),
+          message: (count) => 'share.revoke_after_demote_message'
+              .tr(namedArgs: {'name': member.label, 'count': '$count'}),
+        );
+      }
     } else {
       showToast(context,
           message: provider.errorMessage ?? 'errors.unknown'.tr(),
@@ -130,19 +140,38 @@ class _ShareViewState extends State<_ShareView> {
     final provider = context.read<ShareProvider>();
     if (!await provider.removeMember(member.userId) || !mounted) return;
     // Removal doesn't invalidate links: offer to close the way back in.
-    final active = provider.activeLinks.length;
-    if (active == 0) return;
+    await _offerRevoke(
+      provider,
+      title: 'share.revoke_after_remove_title'.tr(),
+      message: (count) => 'share.revoke_after_remove_message'
+          .tr(namedArgs: {'name': member.label, 'count': '$count'}),
+    );
+  }
+
+  /// Asks whether to revoke the active links (all, or only those granting
+  /// [role]) that would let a removed/demoted member back in at their old
+  /// level. Does nothing when there are none.
+  Future<void> _offerRevoke(
+    ShareProvider provider, {
+    String? role,
+    required String title,
+    required String Function(int count) message,
+  }) async {
+    final count = (role == null
+            ? provider.activeLinks
+            : provider.activeLinksGranting(role))
+        .length;
+    if (count == 0 || !mounted) return;
     final revoke = await showAdaptiveConfirmDialog(
       context,
-      title: 'share.revoke_after_remove_title'.tr(),
-      message: 'share.revoke_after_remove_message'
-          .tr(namedArgs: {'name': member.label, 'count': '$active'}),
+      title: title,
+      message: message(count),
       confirmLabel: 'share.revoke_all_confirm'.tr(),
       cancelLabel: 'share.keep_links'.tr(),
       isDestructive: true,
     );
     if (!(revoke ?? false) || !mounted) return;
-    if (await provider.revokeAllLinks()) {
+    if (await provider.revokeAllLinks(role: role)) {
       if (mounted) context.showSuccessSnackBar('share.links_revoked'.tr());
     } else if (mounted) {
       showToast(context,

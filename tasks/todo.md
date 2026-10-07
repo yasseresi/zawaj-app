@@ -63,3 +63,4 @@ Details, acceptance criteria and files for each task: [plan.md](plan.md). Specs:
 - [x] B7 Backend: accepting an invite link never changes an existing membership (no re-escalation after demote/remove) (backend df8a7d9)
   - [x] B7a App: removed member could rejoin via an active link → after removal, offer to revoke all active links (option A, chosen 2026-10-07)
 - [x] R1 App: wedding header keeps the last known guest total across reloads/failures
+- [x] B8 App: demote editor→viewer offers to revoke active editor links (closes demote → leave → rejoin; backend guard test d633247)

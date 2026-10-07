@@ -359,6 +359,8 @@ abstract class  LocaleKeys {
   static const share_revoke_all_confirm = 'share.revoke_all_confirm';
   static const share_keep_links = 'share.keep_links';
   static const share_links_revoked = 'share.links_revoked';
+  static const share_revoke_after_demote_title = 'share.revoke_after_demote_title';
+  static const share_revoke_after_demote_message = 'share.revoke_after_demote_message';
   static const share = 'share';
   static const phone_label = 'phone.label';
   static const phone_hint = 'phone.hint';
