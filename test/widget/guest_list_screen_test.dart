@@ -26,15 +26,24 @@ class _FakeWeddingRepository implements WeddingRepository {
 }
 
 class _EmptyGuestRepository implements GuestRepository {
-  _EmptyGuestRepository([this.items = const [], this.counts]);
+  _EmptyGuestRepository(
+      [this.items = const [], this.counts, this.failReloads = false]);
   final List<Guest> items;
   final GuestCounts? counts;
 
+  /// Only the first list() succeeds; later reloads fail (offline).
+  final bool failReloads;
+  int _calls = 0;
+
   @override
   FutureEither<GuestListResult> list(String weddingId,
-          {String? status, String? query}) async =>
-      Right(GuestListResult(
-          items: items, counts: counts ?? GuestCounts(all: items.length)));
+      {String? status, String? query}) async {
+    if (failReloads && _calls++ > 0) {
+      return const Left(NetworkFailure('offline'));
+    }
+    return Right(GuestListResult(
+        items: items, counts: counts ?? GuestCounts(all: items.length)));
+  }
 
   @override
   dynamic noSuchMethod(Invocation invocation) => throw UnimplementedError();
@@ -43,7 +52,8 @@ class _EmptyGuestRepository implements GuestRepository {
 Future<void> _pump(WidgetTester tester, WeddingRepository repo,
     {Wedding? initial,
     List<Guest> guests = const [],
-    GuestCounts? counts}) async {
+    GuestCounts? counts,
+    bool failReloads = false}) async {
   final router = GoRouter(routes: [
     GoRoute(
       path: '/',
@@ -51,7 +61,7 @@ Future<void> _pump(WidgetTester tester, WeddingRepository repo,
         weddingId: 'w1',
         wedding: initial,
         weddingRepository: repo,
-        guestRepository: _EmptyGuestRepository(guests, counts),
+        guestRepository: _EmptyGuestRepository(guests, counts, failReloads),
       ),
     ),
   ]);
@@ -182,5 +192,26 @@ void main() {
 
     expect(find.textContaining('3 guests'), findsOneWidget);
     expect(find.text('No guests'), findsNothing); // header's zero form
+  });
+
+  testWidgets('header keeps the guest total when a reload fails',
+      (tester) async {
+    await _pump(
+        tester,
+        _FakeWeddingRepository(const Right(Wedding(
+            id: 'w1',
+            name: 'Leila & Omar',
+            ownerId: 'u1',
+            role: WeddingRole.owner))),
+        counts: const GuestCounts(all: 3, pending: 3),
+        failReloads: true);
+    expect(find.textContaining('3 guests'), findsOneWidget);
+
+    await tester.tap(find.textContaining('Pending').first);
+    await tester.runAsync(() => Future<void>.delayed(Duration.zero));
+    await tester.pumpAndSettle();
+
+    expect(find.textContaining('3 guests'), findsOneWidget);
+    expect(find.text('No guests'), findsNothing);
   });
 }

@@ -62,4 +62,4 @@ Details, acceptance criteria and files for each task: [plan.md](plan.md). Specs:
 - [x] B6 Backend: user writes are column-scoped (a stale/overlapping write can't revert password, profile or prefs) (backend 7bbfd6f)
 - [x] B7 Backend: accepting an invite link never changes an existing membership (no re-escalation after demote/remove) (backend df8a7d9)
   - [x] B7a App: removed member could rejoin via an active link → after removal, offer to revoke all active links (option A, chosen 2026-10-07)
-- [ ] R1 App: wedding header keeps the last known guest total across reloads/failures
+- [x] R1 App: wedding header keeps the last known guest total across reloads/failures

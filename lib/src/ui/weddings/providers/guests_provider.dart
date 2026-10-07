@@ -40,6 +40,13 @@ class GuestsProvider extends ChangeNotifier {
   AppStatus get status => _status;
   List<Guest> get guests => _guests;
   GuestCounts get counts => _counts;
+
+  /// The wedding-wide counts once any load has succeeded, else null. Unlike
+  /// [counts] gated on [status], it survives later reloads (tab switch,
+  /// search, pull-to-refresh) and their failures, so totals shown outside the
+  /// list don't flash back to a placeholder.
+  GuestCounts? get knownCounts => _hasLoaded ? _counts : null;
+  bool _hasLoaded = false;
   GuestFilter get filter => _filter;
   String get searchQuery => _searchQuery;
   String? get errorMessage => _errorMessage;
@@ -69,6 +76,7 @@ class GuestsProvider extends ChangeNotifier {
       (data) {
         _guests = data.items;
         _counts = data.counts;
+        _hasLoaded = true;
         _status = AppStatus.success;
         notifyListeners();
       },

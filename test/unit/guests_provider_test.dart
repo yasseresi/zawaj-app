@@ -137,6 +137,29 @@ void main() {
       expect(repo.lastArgs?.query, 'Hind');
     });
 
+    group('knownCounts', () {
+      test('is null until the first successful load', () async {
+        expect(provider.knownCounts, isNull);
+        repo.result = const Left(NetworkFailure('offline'));
+        await provider.load();
+        expect(provider.knownCounts, isNull);
+      });
+
+      test('keeps the last total while a reload is pending or fails', () async {
+        repo.result = const Right(_result);
+        await provider.load();
+
+        repo.result = const Left(NetworkFailure('offline'));
+        final reload = provider.setFilter(GuestFilter.confirmed);
+        expect(provider.status, AppStatus.loading);
+        expect(provider.knownCounts?.all, 2); // mid-reload
+        await reload;
+
+        expect(provider.status, AppStatus.failure);
+        expect(provider.knownCounts?.all, 2); // after a failed reload
+      });
+    });
+
     test('failure sets the error message and status', () async {
       repo.result = const Left(NetworkFailure('offline'));
 

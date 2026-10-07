@@ -206,9 +206,9 @@ class _GuestListViewState extends State<_GuestListView> {
     final cs = context.colors;
     final tt = context.textTheme;
     // GET /weddings/:id has no guest count, so once the guest list has loaded
-    // its wedding-wide total is the source of truth (also after adds/deletes).
-    final total = context
-        .select((GuestsProvider p) => p.status.isSuccess ? p.counts.all : null);
+    // its wedding-wide total is the source of truth (also after adds/deletes,
+    // and across later reloads or their failures).
+    final total = context.select((GuestsProvider p) => p.knownCounts?.all);
     final count = 'weddings.guests_count'.plural(total ?? w.guestCount);
     final text = w.eventDate == null
         ? count
