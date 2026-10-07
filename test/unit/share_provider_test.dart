@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:fpdart/fpdart.dart';
 import 'package:zawaj_app/src/data/models/invite_link_model.dart';
+import 'package:zawaj_app/src/data/models/join_request_model.dart';
 import 'package:zawaj_app/src/data/models/wedding_member_model.dart';
 import 'package:zawaj_app/src/data/models/wedding_model.dart';
 import 'package:zawaj_app/src/data/repositories/invite_repository.dart';
@@ -23,6 +24,13 @@ const _omar = WeddingMember(
     displayName: 'Omar',
     role: WeddingRole.editor);
 
+const _request = JoinRequest(
+    id: 'r1',
+    userId: 'u3',
+    username: 'lina',
+    displayName: 'Lina',
+    role: WeddingRole.editor);
+
 Wedding _wedding(WeddingRole role) =>
     Wedding(id: 'w1', name: 'L&O', ownerId: 'u1', role: role);
 
@@ -41,7 +49,12 @@ class _FakeWeddingRepository implements WeddingRepository {
   }
 
   @override
-  FutureEither<List<WeddingMember>> members(String id) async =>
+  FutureEither<List<WeddingMember>> members(String id) async {
+    memberCalls++;
+    return _members();
+  }
+
+  Either<Failure, List<WeddingMember>> _members() =>
       Right(transferred
           ? [
               _owner.copyWith(role: WeddingRole.editor),
@@ -64,7 +77,6 @@ class _FakeWeddingRepository implements WeddingRepository {
       String id, String userId, String role) async {
     roleCalls.add((userId, role));
     await setRoleGate?.future;
-    if (setRoleResult.isRight()) _serverRevoke();
     return setRoleResult;
   }
 
@@ -88,19 +100,37 @@ class _FakeWeddingRepository implements WeddingRepository {
     return revokeResult;
   }
 
-  /// Server-side, removal/demotion may revoke the link the member joined
-  /// with; this simulates that so the provider must re-fetch the links.
-  String? revokesOnMemberChange;
+  @override
+  FutureEither<void> removeMember(String id, String userId) async =>
+      const Right(null);
+
+  // Join requests (owner review).
+  List<JoinRequest> requestList = const [_request];
+  int requestCalls = 0;
+  int memberCalls = 0;
+  Either<Failure, void> approveResult = const Right(null);
+  Either<Failure, void> declineResult = const Right(null);
+  final approvals = <(String, WeddingRole?)>[];
+  final declines = <String>[];
 
   @override
-  FutureEither<void> removeMember(String id, String userId) async {
-    _serverRevoke();
-    return const Right(null);
+  FutureEither<List<JoinRequest>> listJoinRequests(String weddingId) async {
+    requestCalls++;
+    return Right(requestList);
   }
 
-  void _serverRevoke() {
-    final id = revokesOnMemberChange;
-    if (id != null) linkList = linkList.where((l) => l.id != id).toList();
+  @override
+  FutureEither<void> approveJoinRequest(String weddingId, String requestId,
+      {WeddingRole? role}) async {
+    approvals.add((requestId, role));
+    return approveResult;
+  }
+
+  @override
+  FutureEither<void> declineJoinRequest(
+      String weddingId, String requestId) async {
+    declines.add(requestId);
+    return declineResult;
   }
 
   @override
@@ -231,50 +261,90 @@ void main() {
     });
   });
 
-  // The server revokes the link a member joined with when the owner removes
-  // them or demotes them below it; the active links list must reflect that.
-  group('links refresh after member changes', () {
-    const twoLinks = [
-      InviteLink(id: 'l1', token: 't1', role: 'editor'),
-      InviteLink(id: 'l2', token: 't2', role: 'viewer'),
-    ];
-
-    test('removing a member re-fetches the links', () async {
-      final repo = _FakeWeddingRepository()
-        ..linkList = twoLinks
-        ..revokesOnMemberChange = 'l1';
-      final p = _provider(repo, wedding: _wedding(WeddingRole.owner));
+  group('join requests', () {
+    test('owners load pending requests; editors never ask', () async {
+      final owner = _FakeWeddingRepository();
+      final p = _provider(owner, wedding: _wedding(WeddingRole.owner));
       await p.load();
+      expect(p.joinRequests, [_request]);
 
-      expect(await p.removeMember('u2'), isTrue);
-
-      expect(p.activeLinks.map((l) => l.id), ['l2']);
-      expect(p.members.map((m) => m.userId), ['u1']);
+      final editor = _FakeWeddingRepository();
+      await _provider(editor, wedding: _wedding(WeddingRole.editor)).load();
+      expect(editor.requestCalls, 0);
     });
 
-    test('demoting to viewer re-fetches the links', () async {
-      final repo = _FakeWeddingRepository()
-        ..linkList = twoLinks
-        ..revokesOnMemberChange = 'l1';
-      final p = _provider(repo, wedding: _wedding(WeddingRole.owner));
-      await p.load();
-      final before = repo.linkCalls;
-
-      expect(await p.setRole('u2', WeddingRole.viewer), isTrue);
-
-      expect(repo.linkCalls, before + 1);
-      expect(p.activeLinks.map((l) => l.id), ['l2']);
-    });
-
-    test('promoting does not re-fetch the links', () async {
+    test('approve removes the row at once and reloads members', () async {
       final repo = _FakeWeddingRepository();
       final p = _provider(repo, wedding: _wedding(WeddingRole.owner));
       await p.load();
-      await p.setRole('u2', WeddingRole.viewer);
-      final before = repo.linkCalls;
+      final membersBefore = repo.memberCalls;
 
-      expect(await p.setRole('u2', WeddingRole.editor), isTrue);
-      expect(repo.linkCalls, before);
+      expect(await p.approveRequest(_request, role: WeddingRole.viewer), isTrue);
+
+      expect(repo.approvals.single, ('r1', WeddingRole.viewer));
+      expect(p.joinRequests, isEmpty);
+      expect(repo.memberCalls, membersBefore + 1);
+    });
+
+    test('approving at the requested role sends no role', () async {
+      final repo = _FakeWeddingRepository();
+      final p = _provider(repo, wedding: _wedding(WeddingRole.owner));
+      await p.load();
+
+      await p.approveRequest(_request, role: WeddingRole.editor);
+      expect(repo.approvals.single, ('r1', null));
+    });
+
+    test('a failed approval puts the row back and exposes the error', () async {
+      final repo = _FakeWeddingRepository()
+        ..approveResult = const Left(ServerFailure('boom'));
+      final p = _provider(repo, wedding: _wedding(WeddingRole.owner));
+      await p.load();
+
+      expect(await p.approveRequest(_request), isFalse);
+      expect(p.joinRequests, [_request]);
+      expect(p.errorMessage, isNotNull);
+    });
+
+    test('a request already decided elsewhere (404) refreshes the list',
+        () async {
+      final repo = _FakeWeddingRepository()
+        ..approveResult = const Left(NotFoundFailure('gone'));
+      final p = _provider(repo, wedding: _wedding(WeddingRole.owner));
+      await p.load();
+      repo.requestList = const [];
+
+      expect(await p.approveRequest(_request), isFalse);
+      expect(p.joinRequests, isEmpty);
+      expect(p.errorMessage, 'share.request_already_handled');
+    });
+
+    test('decline removes the row; failure puts it back', () async {
+      final repo = _FakeWeddingRepository();
+      final p = _provider(repo, wedding: _wedding(WeddingRole.owner));
+      await p.load();
+      expect(await p.declineRequest(_request), isTrue);
+      expect(repo.declines.single, 'r1');
+      expect(p.joinRequests, isEmpty);
+
+      final failing = _FakeWeddingRepository()
+        ..declineResult = const Left(ServerFailure('boom'));
+      final q = _provider(failing, wedding: _wedding(WeddingRole.owner));
+      await q.load();
+      expect(await q.declineRequest(_request), isFalse);
+      expect(q.joinRequests, [_request]);
+    });
+
+    test('ignores a second decision while one is in flight', () async {
+      final repo = _FakeWeddingRepository();
+      final p = _provider(repo, wedding: _wedding(WeddingRole.owner));
+      await p.load();
+
+      final first = p.approveRequest(_request);
+      expect(p.isDeciding('r1'), isTrue);
+      expect(await p.declineRequest(_request), isFalse);
+      await first;
+      expect(repo.declines, isEmpty);
     });
   });
 

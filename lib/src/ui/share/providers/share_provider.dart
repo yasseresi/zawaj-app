@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:flutter/foundation.dart';
 import 'package:easy_localization/easy_localization.dart';
 import '../../../data/models/invite_link_model.dart';
+import '../../../data/models/join_request_model.dart';
 import '../../../data/models/wedding_member_model.dart';
 import '../../../data/models/wedding_model.dart';
 import '../../../data/repositories/invite_repository.dart';
@@ -14,10 +15,12 @@ import '../../../services/export_service.dart';
 import '../../../utils/error_handler.dart';
 import '../../../utils/failure.dart';
 import '../../../utils/input_validation.dart';
+import '../../../utils/typedefs.dart';
 
-/// Share screen state: collaborators, invite links and exports. Owner-only
-/// sections (invites, links, member management) key off [isOwner]; the role
-/// comes from the passed [Wedding] or, when deep-linked, `GET /weddings/:id`.
+/// Share screen state: collaborators, join requests, invite links and exports.
+/// Owner-only sections (invites, join requests, links, member management) key
+/// off [isOwner]; the role comes from the passed [Wedding] or, when
+/// deep-linked, `GET /weddings/:id`.
 class ShareProvider extends ChangeNotifier {
   ShareProvider(
       {required this.weddingId,
@@ -34,6 +37,11 @@ class ShareProvider extends ChangeNotifier {
   AppStatus status = AppStatus.initial;
   List<WeddingMember> members = const [];
   List<InviteLink> links = const [];
+
+  /// Pending requests to join through an invite link (owner only), oldest
+  /// first.
+  List<JoinRequest> joinRequests = const [];
+  final Set<String> _deciding = {};
   String? errorMessage;
   bool busy = false;
   ExportFormat? exporting;
@@ -58,12 +66,19 @@ class ShareProvider extends ChangeNotifier {
     }
     final memberResult = await _weddings.members(weddingId);
     memberResult.match((f) => errorMessage ??= f.message, (v) => members = v);
-    // Invite links are owner-only server-side; don't request them otherwise.
+    // Invite links and join requests are owner-only server-side; don't
+    // request them otherwise.
     if (isOwner) {
-      final linkResult = await _weddings.listInviteLinks(weddingId);
+      final (linkResult, requestResult) = await (
+        _weddings.listInviteLinks(weddingId),
+        _weddings.listJoinRequests(weddingId),
+      ).wait;
       linkResult.match((f) => errorMessage ??= f.message, (v) => links = v);
+      requestResult.match(
+          (f) => errorMessage ??= f.message, (v) => joinRequests = v);
     } else {
       links = const [];
+      joinRequests = const [];
     }
     status = errorMessage == null ? AppStatus.success : AppStatus.failure;
     notifyListeners();
@@ -82,25 +97,79 @@ class ShareProvider extends ChangeNotifier {
     notifyListeners();
 
     final result = await _weddings.setMemberRole(weddingId, userId, role.name);
-    final ok = result.match((f) {
+    return result.match((f) {
       final i = members.indexWhere((m) => m.userId == userId);
       if (i >= 0) members = [...members]..[i] = previous;
       errorMessage = AppErrorHandler.userMessage(f);
       notifyListeners();
       return false;
     }, (_) => true);
-    // A demotion to viewer revokes the editor link they joined with.
-    if (ok && role == WeddingRole.viewer) await _reloadLinks();
+  }
+
+  /// Whether a decision on request [id] is in flight (its buttons disable).
+  bool isDeciding(String id) => _deciding.contains(id);
+
+  /// Approve a join request (owner), optionally at a lower [role] than
+  /// requested. The row leaves the list at once; on success members reload so
+  /// the newcomer appears.
+  Future<bool> approveRequest(JoinRequest request, {WeddingRole? role}) =>
+      _decide(
+        request,
+        () => _weddings.approveJoinRequest(weddingId, request.id,
+            role: role == null || role == request.role ? null : role),
+        onSuccess: _reloadMembers,
+      );
+
+  /// Decline a join request (owner). The row leaves the list at once.
+  Future<bool> declineRequest(JoinRequest request) => _decide(
+        request,
+        () => _weddings.declineJoinRequest(weddingId, request.id),
+      );
+
+  /// Optimistic decision shared by approve/decline. Failure puts the row back
+  /// (if no refresh replaced the list meanwhile) and sets [errorMessage]; a 404
+  /// means another device already decided, so the list is refreshed instead.
+  Future<bool> _decide(
+    JoinRequest request,
+    FutureEither<void> Function() call, {
+    Future<void> Function()? onSuccess,
+  }) async {
+    if (!_deciding.add(request.id)) return false;
+    final index = joinRequests.indexWhere((r) => r.id == request.id);
+    errorMessage = null;
+    joinRequests = joinRequests.where((r) => r.id != request.id).toList();
+    notifyListeners();
+
+    final result = await call();
+    final ok = await result.match((f) async {
+      if (f is NotFoundFailure) {
+        errorMessage = 'share.request_already_handled'.tr();
+        await _reloadRequests();
+      } else {
+        errorMessage = AppErrorHandler.userMessage(f);
+        if (!joinRequests.any((r) => r.id == request.id)) {
+          final at = index < 0 ? 0 : index.clamp(0, joinRequests.length);
+          joinRequests = [...joinRequests]..insert(at, request);
+        }
+      }
+      return false;
+    }, (_) async {
+      await onSuccess?.call();
+      return true;
+    });
+    _deciding.remove(request.id);
+    notifyListeners();
     return ok;
   }
 
-  /// Re-fetch active links after the server may have revoked one (owner
-  /// removal or demotion revokes the link that member joined with).
-  Future<void> _reloadLinks() async {
-    if (!isOwner) return;
-    final result = await _weddings.listInviteLinks(weddingId);
-    result.match((_) {}, (v) => links = v);
-    notifyListeners();
+  Future<void> _reloadMembers() async {
+    final result = await _weddings.members(weddingId);
+    result.match((_) {}, (v) => members = v);
+  }
+
+  Future<void> _reloadRequests() async {
+    final result = await _weddings.listJoinRequests(weddingId);
+    result.match((_) {}, (v) => joinRequests = v);
   }
 
   Future<bool> invite(String username, String role) async {
@@ -195,7 +264,6 @@ class ShareProvider extends ChangeNotifier {
       members = members.where((m) => m.userId != userId).toList();
       return true;
     });
-    if (ok) await _reloadLinks();
     busy = false;
     notifyListeners();
     return ok;

@@ -55,7 +55,7 @@ void main() {
       builder: (context) => TextButton(
         onPressed: () async => picked = await showModalBottomSheet<WeddingRole>(
           context: context,
-          builder: (_) => const RolePickerSheet(member: _omar),
+          builder: (_) => RolePickerSheet(title: 'title', selected: _omar.role),
         ),
         child: const Text('open'),
       ),
@@ -73,7 +73,8 @@ void main() {
     expect(picked, WeddingRole.viewer);
   });
 
-  testWidgets('make owner appears only when provided and fires', (tester) async {
+  testWidgets('make owner appears only when provided and fires',
+      (tester) async {
     var transfers = 0;
     await tester.pumpWidget(_host(MemberTile(
       member: _omar,
@@ -86,5 +87,25 @@ void main() {
     await tester.pumpAndSettle();
 
     expect(transfers, 1);
+  });
+
+  testWidgets('role picker can be limited to some roles', (tester) async {
+    await tester.pumpWidget(_host(Builder(
+      builder: (context) => TextButton(
+        onPressed: () => showModalBottomSheet<WeddingRole>(
+          context: context,
+          builder: (_) => const RolePickerSheet(
+              title: 'title',
+              selected: WeddingRole.viewer,
+              roles: [WeddingRole.viewer]),
+        ),
+        child: const Text('open'),
+      ),
+    )));
+    await tester.tap(find.text('open'));
+    await tester.pumpAndSettle();
+
+    expect(find.byType(RadioListTile<WeddingRole>), findsOneWidget);
+    expect(find.text('share.role_editor'), findsNothing);
   });
 }

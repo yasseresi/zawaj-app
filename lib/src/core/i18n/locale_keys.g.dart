@@ -288,6 +288,7 @@ abstract class  LocaleKeys {
   static const activity_time_at = 'activity.time_at';
   static const activity_filter_coming_soon = 'activity.filter_coming_soon';
   static const activity = 'activity';
+  static const invites_join_declined_recently = 'invites.join_declined_recently';
   static const invites_removed_from_wedding = 'invites.removed_from_wedding';
   static const invites_title = 'invites.title';
   static const invites_empty_title = 'invites.empty_title';
@@ -308,6 +309,19 @@ abstract class  LocaleKeys {
   static const notifications_empty_title = 'notifications.empty_title';
   static const notifications_empty_subtitle = 'notifications.empty_subtitle';
   static const notifications = 'notifications';
+  static const share_request_to_join = 'share.request_to_join';
+  static const share_request_sent_message = 'share.request_sent_message';
+  static const share_request_sent_title = 'share.request_sent_title';
+  static const share_request_already_handled = 'share.request_already_handled';
+  static const share_request_declined = 'share.request_declined';
+  static const share_request_approved = 'share.request_approved';
+  static const share_decline_message = 'share.decline_message';
+  static const share_decline_title = 'share.decline_title';
+  static const share_approve_title = 'share.approve_title';
+  static const share_decline = 'share.decline';
+  static const share_approve = 'share.approve';
+  static const share_join_request_subtitle = 'share.join_request_subtitle';
+  static const share_join_requests = 'share.join_requests';
   static const share_title = 'share.title';
   static const share_collaborators = 'share.collaborators';
   static const share_username_hint = 'share.username_hint';

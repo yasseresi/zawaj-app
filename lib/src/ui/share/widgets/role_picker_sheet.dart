@@ -1,23 +1,32 @@
-import '../../../data/models/wedding_member_model.dart';
 import '../../../data/models/wedding_model.dart';
 import '../../../imports/core_imports.dart';
 import '../../../imports/packages_imports.dart';
 
-/// Pick a collaborator role (editor / viewer), each with what it allows.
-/// Pops the chosen [WeddingRole], or null when dismissed.
+/// Pick a collaborator role, each with what it allows. Used to change a
+/// member's role and to approve a join request (where [roles] is limited to
+/// what the invite link grants). Pops the chosen [WeddingRole], or null when
+/// dismissed.
 class RolePickerSheet extends StatelessWidget {
-  const RolePickerSheet({super.key, required this.member});
+  const RolePickerSheet({
+    super.key,
+    required this.title,
+    required this.selected,
+    this.roles = const [WeddingRole.editor, WeddingRole.viewer],
+  });
 
-  final WeddingMember member;
+  final String title;
+  final WeddingRole selected;
+  final List<WeddingRole> roles;
+
+  static const _descriptions = {
+    WeddingRole.editor: 'share.role_editor_desc',
+    WeddingRole.viewer: 'share.role_viewer_desc',
+  };
 
   @override
   Widget build(BuildContext context) {
     final cs = context.colors;
     final tt = context.textTheme;
-    final options = [
-      (WeddingRole.editor, 'share.role_editor_desc'.tr()),
-      (WeddingRole.viewer, 'share.role_viewer_desc'.tr()),
-    ];
 
     return Material(
       color: cs.surface,
@@ -28,7 +37,7 @@ class RolePickerSheet extends StatelessWidget {
         child: ListTileTheme(
           textColor: cs.onSurface,
           child: RadioGroup<WeddingRole>(
-            groupValue: member.role,
+            groupValue: selected,
             onChanged: (role) => Navigator.of(context).pop(role),
             child: Column(
               mainAxisSize: MainAxisSize.min,
@@ -37,18 +46,17 @@ class RolePickerSheet extends StatelessWidget {
                 Padding(
                   padding: EdgeInsets.symmetric(horizontal: AppSpacing.lg.w),
                   child: Text(
-                    'share.change_role_title'
-                        .tr(namedArgs: {'name': member.label}),
+                    title,
                     style:
                         tt.titleMedium?.copyWith(fontWeight: FontWeight.bold),
                   ),
                 ),
                 SizedBox(height: AppSpacing.sm.h),
-                for (final (role, description) in options)
+                for (final role in roles)
                   RadioListTile<WeddingRole>(
                     value: role,
                     title: Text('share.role_${role.name}'.tr()),
-                    subtitle: Text(description,
+                    subtitle: Text((_descriptions[role] ?? '').tr(),
                         style:
                             tt.bodySmall?.copyWith(color: cs.onSurfaceVariant)),
                   ),

@@ -52,6 +52,9 @@ class AppErrorHandler {
     if (failure.code == 'removed_from_wedding') {
       return _tr('invites.removed_from_wedding');
     }
+    if (failure.code == 'join_request_declined') {
+      return _tr('invites.join_declined_recently');
+    }
     if (failure is LockedFailure) return _tr('errors.locked');
     if (failure is RateLimitFailure) return _tr('errors.rate_limited');
     if (failure is ValidationFailure) return _tr('errors.validation');
@@ -116,6 +119,8 @@ class AppErrorHandler {
         return ForbiddenFailure(message, error: e);
       case 'removed_from_wedding':
         return ForbiddenFailure(message, code: code, error: e);
+      case 'join_request_declined':
+        return ConflictFailure(message, code: code, error: e);
       case 'not_found':
         return NotFoundFailure(message, error: e);
       case 'conflict':

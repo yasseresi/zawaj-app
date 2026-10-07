@@ -18,6 +18,7 @@ class InvitePreviewProvider extends ChangeNotifier {
 
   AppStatus status = AppStatus.initial;
   InvitePreview? preview;
+
   /// Outcome of accepting: a pending join request, or (already a member) the
   /// wedding to open.
   JoinResult? accepted;

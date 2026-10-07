@@ -20,6 +20,20 @@ DioException _dioWith(
 
 void main() {
   group('AppErrorHandler.toFailure — envelope mapping', () {
+    test('join_request_declined -> ConflictFailure with a localized message',
+        () {
+      final f = AppErrorHandler.toFailure(_dioWith(
+        status: 409,
+        data: {
+          'data': null,
+          'error': {'code': 'join_request_declined', 'message': 'declined'},
+        },
+      ));
+      expect(f, isA<ConflictFailure>());
+      expect(f.code, 'join_request_declined');
+      expect(AppErrorHandler.userMessage(f), 'invites.join_declined_recently');
+    });
+
     test('removed_from_wedding -> ForbiddenFailure with a localized message',
         () {
       final f = AppErrorHandler.toFailure(_dioWith(

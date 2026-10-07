@@ -3,10 +3,12 @@ import 'package:share_plus/share_plus.dart';
 import '../../data/models/wedding_model.dart';
 import '../../data/models/wedding_member_model.dart';
 import '../../data/models/invite_link_model.dart';
+import '../../data/models/join_request_model.dart';
 import '../../imports/core_imports.dart';
 import '../../imports/packages_imports.dart';
 import 'providers/share_provider.dart';
 import 'widgets/invite_link_tile.dart';
+import 'widgets/join_request_tile.dart';
 import 'widgets/member_tile.dart';
 import 'widgets/role_picker_sheet.dart';
 
@@ -63,7 +65,10 @@ class _ShareViewState extends State<_ShareView> {
       context: context,
       useSafeArea: true,
       backgroundColor: Colors.transparent,
-      builder: (_) => RolePickerSheet(member: member),
+      builder: (_) => RolePickerSheet(
+        title: 'share.change_role_title'.tr(namedArgs: {'name': member.label}),
+        selected: member.role,
+      ),
     );
     if (picked == null || picked == member.role || !mounted) return;
     final ok = await provider.setRole(member.userId, picked);
@@ -117,6 +122,60 @@ class _ShareViewState extends State<_ShareView> {
     }
   }
 
+  /// Approve a join request. When the link grants editor, the owner picks
+  /// editor or viewer first; a viewer request is approved as is.
+  Future<void> _approve(JoinRequest request) async {
+    final provider = context.read<ShareProvider>();
+    var role = request.role;
+    if (role == WeddingRole.editor) {
+      final picked = await showModalBottomSheet<WeddingRole>(
+        context: context,
+        useSafeArea: true,
+        backgroundColor: Colors.transparent,
+        builder: (_) => RolePickerSheet(
+          title: 'share.approve_title'.tr(namedArgs: {'name': request.label}),
+          selected: request.role,
+        ),
+      );
+      if (picked == null || !mounted) return;
+      role = picked;
+    }
+    final ok = await provider.approveRequest(request, role: role);
+    if (!mounted) return;
+    if (ok) {
+      context.showSuccessSnackBar('share.request_approved'.tr(namedArgs: {
+        'name': request.label,
+        'role': 'share.role_${role.name}'.tr(),
+      }));
+    } else {
+      showToast(context,
+          message: provider.errorMessage ?? 'errors.unknown'.tr(),
+          status: 'error');
+    }
+  }
+
+  Future<void> _decline(JoinRequest request) async {
+    final provider = context.read<ShareProvider>();
+    final confirmed = await showAdaptiveConfirmDialog(
+      context,
+      title: 'share.decline_title'.tr(namedArgs: {'name': request.label}),
+      message: 'share.decline_message'.tr(),
+      confirmLabel: 'share.decline'.tr(),
+      cancelLabel: 'actions.cancel'.tr(),
+      isDestructive: true,
+    );
+    if (!(confirmed ?? false) || !mounted) return;
+    final ok = await provider.declineRequest(request);
+    if (!mounted) return;
+    if (ok) {
+      context.showSuccessSnackBar('share.request_declined'.tr());
+    } else {
+      showToast(context,
+          message: provider.errorMessage ?? 'errors.unknown'.tr(),
+          status: 'error');
+    }
+  }
+
   Future<void> _confirmRemove(WeddingMember member) async {
     final confirmed = await showAdaptiveConfirmDialog(
       context,
@@ -151,6 +210,23 @@ class _ShareViewState extends State<_ShareView> {
 
   Widget _content(BuildContext context, ShareProvider p, InviteLink? link) {
     return ListView(padding: EdgeInsets.all(AppSpacing.lg.w), children: [
+      if (p.isOwner && p.joinRequests.isNotEmpty) ...[
+        Text(
+            'share.join_requests'
+                .tr(namedArgs: {'count': '${p.joinRequests.length}'}),
+            style: context.textTheme.titleMedium
+                ?.copyWith(fontWeight: FontWeight.bold)),
+        SizedBox(height: AppSpacing.sm.h),
+        for (final r in p.joinRequests)
+          JoinRequestTile(
+            key: ValueKey('join-${r.id}'),
+            request: r,
+            deciding: p.isDeciding(r.id),
+            onApprove: () => _approve(r),
+            onDecline: () => _decline(r),
+          ),
+        SizedBox(height: AppSpacing.lg.h),
+      ],
       Text('share.collaborators'.tr(),
           style: context.textTheme.titleMedium
               ?.copyWith(fontWeight: FontWeight.bold)),

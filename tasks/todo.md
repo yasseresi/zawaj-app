@@ -75,6 +75,6 @@ Details, acceptance criteria and files for each task: [plan.md](plan.md). Specs:
 - [x] J2 Backend: owner list / approve (role ≤ requested; membership + ceiling + via_link_id; join_approved) / decline (join_declined); cascades on wedding/account delete; Swagger + ADR
 - [x] J3 Backend: drop D3 auto-revoke on removal/demotion (links stay active); update tests
 - [x] J4 App: data layer — acceptInviteLink returns member|pending; join-request list/approve/decline in WeddingService/Repository
-- [ ] J5 App: invite preview "Request sent" state; share screen Join requests section (approve sheet w/ role, decline confirm, optimistic + rollback); revert remove-confirm copy
+- [x] J5 App: invite preview "Request sent" state; share screen Join requests section (approve sheet w/ role, decline confirm, optimistic + rollback); revert remove-confirm copy
 - [ ] J6 App: notification taps for join_requested (→ share) / join_approved (→ wedding); strings ar/en/fr; simulator check
 
