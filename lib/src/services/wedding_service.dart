@@ -1,5 +1,8 @@
-import '../data/models/wedding_member_model.dart';
+import 'package:flutter/foundation.dart';
+
 import '../data/models/invite_link_model.dart';
+import '../data/models/join_request_model.dart';
+import '../data/models/wedding_member_model.dart';
 import '../data/models/wedding_model.dart';
 import '../data/services/api_client.dart';
 import '../utils/typedefs.dart';
@@ -10,10 +13,14 @@ import '../utils/typedefs.dart';
 /// Backend contract: `GET /weddings` returns `{ "items": [ WeddingListItem ] }`
 /// under the standard `{data,error}` envelope (unwrapped by [ApiClient]).
 class WeddingService {
-  WeddingService._();
+  WeddingService._({ApiClient? api}) : _api = api ?? ApiClient.instance;
   static final WeddingService instance = WeddingService._();
 
-  final ApiClient _api = ApiClient.instance;
+  @visibleForTesting
+  factory WeddingService.test({required ApiClient api}) =>
+      WeddingService._(api: api);
+
+  final ApiClient _api;
 
   FutureEither<List<Wedding>> list() => _api.get<List<Wedding>>(
         '/weddings',
@@ -141,10 +148,36 @@ class WeddingService {
           parse: (d) =>
               InvitePreview.fromJson((d as Map).cast<String, dynamic>()));
 
-  FutureEither<InvitePreview> acceptInviteLink(String token) =>
-      _api.post<InvitePreview>('/invite/$token/accept',
+  /// `POST /invite/:token/accept` → a pending join request the owner must
+  /// approve, or the caller's role if they're already a member. Errors:
+  /// `removed_from_wedding` (403), `join_request_declined` (409, cooldown).
+  FutureEither<JoinResult> acceptInviteLink(String token) =>
+      _api.post<JoinResult>('/invite/$token/accept',
           parse: (d) =>
-              InvitePreview.fromJson((d as Map).cast<String, dynamic>()));
+              JoinResult.fromJson((d as Map).cast<String, dynamic>()));
+
+  /// `GET /weddings/:id/join-requests` (owner) → pending requests, oldest first.
+  FutureEither<List<JoinRequest>> listJoinRequests(String weddingId) =>
+      _api.get<List<JoinRequest>>('/weddings/$weddingId/join-requests',
+          parse: (d) {
+        final items = (d is Map ? d['items'] : d) as List? ?? const [];
+        return [
+          for (final e in items)
+            if (e is Map) JoinRequest.fromJson(e.cast<String, dynamic>()),
+        ];
+      });
+
+  /// `POST /weddings/:id/join-requests/:rid/approve` (owner). [role] may lower
+  /// the requested role (never raise it); omitted keeps it.
+  FutureEither<void> approveJoinRequest(String weddingId, String requestId,
+          {WeddingRole? role}) =>
+      _api.post<void>('/weddings/$weddingId/join-requests/$requestId/approve',
+          body: role == null ? null : {'role': role.name}, parse: parseVoid);
+
+  /// `POST /weddings/:id/join-requests/:rid/decline` (owner).
+  FutureEither<void> declineJoinRequest(String weddingId, String requestId) =>
+      _api.post<void>('/weddings/$weddingId/join-requests/$requestId/decline',
+          parse: parseVoid);
 
   static List<WeddingMember> _parseMembers(dynamic data) {
     final items = (data is Map ? data['items'] : data) as List? ?? const [];

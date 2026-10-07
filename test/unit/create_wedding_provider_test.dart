@@ -2,6 +2,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:fpdart/fpdart.dart';
 import 'package:zawaj_app/src/data/models/wedding_member_model.dart';
 import 'package:zawaj_app/src/data/models/invite_link_model.dart';
+import 'package:zawaj_app/src/data/models/join_request_model.dart';
 import 'package:zawaj_app/src/data/models/wedding_model.dart';
 import 'package:zawaj_app/src/data/repositories/wedding_repository.dart';
 import 'package:zawaj_app/src/shared/enums/app_status.dart';
@@ -35,7 +36,17 @@ class _FakeWeddingRepository implements WeddingRepository {
   FutureEither<InvitePreview> previewInvite(String token) =>
       throw UnimplementedError();
   @override
-  FutureEither<InvitePreview> acceptInviteLink(String token) =>
+  FutureEither<JoinResult> acceptInviteLink(String token) =>
+      throw UnimplementedError();
+  @override
+  FutureEither<List<JoinRequest>> listJoinRequests(String weddingId) =>
+      throw UnimplementedError();
+  @override
+  FutureEither<void> approveJoinRequest(String weddingId, String requestId,
+          {WeddingRole? role}) =>
+      throw UnimplementedError();
+  @override
+  FutureEither<void> declineJoinRequest(String weddingId, String requestId) =>
       throw UnimplementedError();
   Either<Failure, Wedding>? createResult;
   ({String name, String? eventDate, String? description})? lastArgs;

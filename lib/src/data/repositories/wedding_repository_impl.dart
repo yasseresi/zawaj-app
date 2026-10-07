@@ -2,6 +2,7 @@ import '../../services/wedding_service.dart';
 import '../../utils/typedefs.dart';
 import '../models/wedding_member_model.dart';
 import '../models/invite_link_model.dart';
+import '../models/join_request_model.dart';
 import '../models/wedding_model.dart';
 import 'wedding_repository.dart';
 
@@ -67,6 +68,19 @@ class WeddingRepositoryImpl implements WeddingRepository {
       _service.previewInvite(token);
 
   @override
-  FutureEither<InvitePreview> acceptInviteLink(String token) =>
+  FutureEither<JoinResult> acceptInviteLink(String token) =>
       _service.acceptInviteLink(token);
+
+  @override
+  FutureEither<List<JoinRequest>> listJoinRequests(String weddingId) =>
+      _service.listJoinRequests(weddingId);
+
+  @override
+  FutureEither<void> approveJoinRequest(String weddingId, String requestId,
+          {WeddingRole? role}) =>
+      _service.approveJoinRequest(weddingId, requestId, role: role);
+
+  @override
+  FutureEither<void> declineJoinRequest(String weddingId, String requestId) =>
+      _service.declineJoinRequest(weddingId, requestId);
 }

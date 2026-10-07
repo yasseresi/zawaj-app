@@ -1,6 +1,7 @@
 import 'package:flutter/foundation.dart';
 
 import '../../../data/models/invite_link_model.dart';
+import '../../../data/models/join_request_model.dart';
 import '../../../data/repositories/wedding_repository.dart';
 import '../../../data/repositories/wedding_repository_impl.dart';
 import '../../../shared/enums/app_status.dart';
@@ -17,7 +18,9 @@ class InvitePreviewProvider extends ChangeNotifier {
 
   AppStatus status = AppStatus.initial;
   InvitePreview? preview;
-  InvitePreview? accepted;
+  /// Outcome of accepting: a pending join request, or (already a member) the
+  /// wedding to open.
+  JoinResult? accepted;
   String? errorMessage;
   bool isAccepting = false;
 

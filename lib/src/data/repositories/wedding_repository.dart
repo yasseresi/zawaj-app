@@ -1,5 +1,6 @@
 import '../models/wedding_member_model.dart';
 import '../models/invite_link_model.dart';
+import '../models/join_request_model.dart';
 import '../models/wedding_model.dart';
 import '../../utils/typedefs.dart';
 
@@ -45,5 +46,9 @@ abstract interface class WeddingRepository {
   FutureEither<List<InviteLink>> listInviteLinks(String id);
   FutureEither<void> revokeInviteLink(String id, String linkId);
   FutureEither<InvitePreview> previewInvite(String token);
-  FutureEither<InvitePreview> acceptInviteLink(String token);
+  FutureEither<JoinResult> acceptInviteLink(String token);
+  FutureEither<List<JoinRequest>> listJoinRequests(String weddingId);
+  FutureEither<void> approveJoinRequest(String weddingId, String requestId,
+      {WeddingRole? role});
+  FutureEither<void> declineJoinRequest(String weddingId, String requestId);
 }
