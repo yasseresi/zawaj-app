@@ -26,20 +26,24 @@ class _FakeWeddingRepository implements WeddingRepository {
 }
 
 class _EmptyGuestRepository implements GuestRepository {
-  _EmptyGuestRepository([this.items = const []]);
+  _EmptyGuestRepository([this.items = const [], this.counts]);
   final List<Guest> items;
+  final GuestCounts? counts;
 
   @override
   FutureEither<GuestListResult> list(String weddingId,
           {String? status, String? query}) async =>
-      Right(GuestListResult(items: items));
+      Right(GuestListResult(
+          items: items, counts: counts ?? GuestCounts(all: items.length)));
 
   @override
   dynamic noSuchMethod(Invocation invocation) => throw UnimplementedError();
 }
 
 Future<void> _pump(WidgetTester tester, WeddingRepository repo,
-    {Wedding? initial, List<Guest> guests = const []}) async {
+    {Wedding? initial,
+    List<Guest> guests = const [],
+    GuestCounts? counts}) async {
   final router = GoRouter(routes: [
     GoRoute(
       path: '/',
@@ -47,7 +51,7 @@ Future<void> _pump(WidgetTester tester, WeddingRepository repo,
         weddingId: 'w1',
         wedding: initial,
         weddingRepository: repo,
-        guestRepository: _EmptyGuestRepository(guests),
+        guestRepository: _EmptyGuestRepository(guests, counts),
       ),
     ),
   ]);
@@ -161,5 +165,22 @@ void main() {
 
     expect(find.text('0672 85 99 65'), findsOneWidget);
     expect(find.text('ali@example.dz'), findsOneWidget);
+  });
+
+  testWidgets('header shows the real guest total on a cold load',
+      (tester) async {
+    // GET /weddings/:id carries no guest count (parses as 0); the header must
+    // use the guest list's wedding-wide total instead of "No guests".
+    await _pump(
+        tester,
+        _FakeWeddingRepository(const Right(Wedding(
+            id: 'w1',
+            name: 'Leila & Omar',
+            ownerId: 'u1',
+            role: WeddingRole.owner))),
+        counts: const GuestCounts(all: 3, pending: 3));
+
+    expect(find.textContaining('3 guests'), findsOneWidget);
+    expect(find.text('No guests'), findsNothing); // header's zero form
   });
 }

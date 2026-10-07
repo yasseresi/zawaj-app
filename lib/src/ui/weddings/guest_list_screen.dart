@@ -205,7 +205,11 @@ class _GuestListViewState extends State<_GuestListView> {
   Widget _headerSubtitle(BuildContext context, Wedding w) {
     final cs = context.colors;
     final tt = context.textTheme;
-    final count = 'weddings.guests_count'.plural(w.guestCount);
+    // GET /weddings/:id has no guest count, so once the guest list has loaded
+    // its wedding-wide total is the source of truth (also after adds/deletes).
+    final total = context
+        .select((GuestsProvider p) => p.status.isSuccess ? p.counts.all : null);
+    final count = 'weddings.guests_count'.plural(total ?? w.guestCount);
     final text = w.eventDate == null
         ? count
         : 'guests.count_date'.tr(namedArgs: {

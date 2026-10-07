@@ -158,8 +158,13 @@ void main() {
 
   group('single-wedding sync', () {
     const cached = Wedding(
-        id: 'w1', name: 'Old', ownerId: 'u1', role: WeddingRole.owner, guestCount: 12);
-    const other = Wedding(id: 'w2', name: 'Other', ownerId: 'u2', role: WeddingRole.viewer);
+        id: 'w1',
+        name: 'Old',
+        ownerId: 'u1',
+        role: WeddingRole.owner,
+        guestCount: 12);
+    const other = Wedding(
+        id: 'w2', name: 'Other', ownerId: 'u2', role: WeddingRole.viewer);
 
     Future<WeddingsProvider> loaded(_FakeWeddingRepository repo) async {
       repo.result = const Right([cached, other]);
@@ -168,56 +173,8 @@ void main() {
       return p;
     }
 
-    test('refresh replaces the cached item but keeps its guest count', () async {
-      final repo = _FakeWeddingRepository();
-      final p = await loaded(repo);
-      repo.getResult = const Right(Wedding(
-          id: 'w1', name: 'New', ownerId: 'u1', role: WeddingRole.editor));
-
-      final result = await p.refresh('w1');
-
-      expect(result.isRight(), isTrue);
-      final w = p.weddingById('w1')!;
-      expect(w.name, 'New');
-      expect(w.role, WeddingRole.editor);
-      expect(w.guestCount, 12);
-      expect(p.weddings.map((e) => e.id), ['w1', 'w2']);
-    });
-
-    test('refresh inserts a wedding missing from the list', () async {
-      final repo = _FakeWeddingRepository();
-      final p = await loaded(repo);
-      repo.getResult = const Right(Wedding(
-          id: 'w9', name: 'Shared', ownerId: 'u3', role: WeddingRole.editor));
-
-      await p.refresh('w9');
-
-      expect(p.weddingById('w9')?.name, 'Shared');
-      expect(p.weddings.first.id, 'w9');
-    });
-
-    test('refresh drops the wedding on 404 (deleted or access revoked)', () async {
-      final repo = _FakeWeddingRepository();
-      final p = await loaded(repo);
-      repo.getResult = const Left(NotFoundFailure('gone'));
-
-      final result = await p.refresh('w1');
-
-      expect(result.isLeft(), isTrue);
-      expect(p.weddingById('w1'), isNull);
-    });
-
-    test('refresh keeps the cached item on other failures', () async {
-      final repo = _FakeWeddingRepository();
-      final p = await loaded(repo);
-      repo.getResult = const Left(ServerFailure('boom'));
-
-      await p.refresh('w1');
-
-      expect(p.weddingById('w1'), cached);
-    });
-
-    test('applyUpdate merges edited fields and keeps role and guest count', () async {
+    test('applyUpdate merges edited fields and keeps role and guest count',
+        () async {
       final repo = _FakeWeddingRepository();
       final p = await loaded(repo);
 
@@ -236,6 +193,20 @@ void main() {
       expect(w.description, 'Hall B');
       expect(w.role, WeddingRole.owner);
       expect(w.guestCount, 12);
+    });
+
+    test('silent reload keeps the list visible and picks up new counts',
+        () async {
+      final repo = _FakeWeddingRepository();
+      final p = await loaded(repo);
+      repo.result = Right([cached.copyWith(guestCount: 15), other]);
+
+      final statuses = <AppStatus>[];
+      p.addListener(() => statuses.add(p.status));
+      await p.load(silent: true);
+
+      expect(statuses, isNot(contains(AppStatus.loading)));
+      expect(p.weddingById('w1')!.guestCount, 15);
     });
   });
 }

@@ -146,8 +146,8 @@ class _WeddingTile extends StatelessWidget {
     );
   }
 
-  /// Open the wedding; on return, re-sync just that row so edits, a transfer,
-  /// or losing access (404 → row dropped) show without a full reload.
+  /// Open the wedding; on return, silently re-sync the list so edits, guest
+  /// counts, a transfer, or lost access show without a loading flash.
   VoidCallback _open(BuildContext context) => () async {
         final provider = context.read<WeddingsProvider>();
         await context.pushNamed(
@@ -155,7 +155,7 @@ class _WeddingTile extends StatelessWidget {
           pathParameters: {'id': wedding.id},
           extra: wedding,
         );
-        await provider.refresh(wedding.id);
+        await provider.load(silent: true);
       };
 
   /// Owner-only: the backend delete is gated on the owner role, so hide the

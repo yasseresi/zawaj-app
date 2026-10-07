@@ -52,3 +52,10 @@ Details, acceptance criteria and files for each task: [plan.md](plan.md). Specs:
 - [x] Manual (simulator, 2026-10-07): delete an account after a transfer; the collaborator keeps the wedding
 - [ ] `docs/UNIMPLEMENTED_ENDPOINTS.md` updated; `graphify update .` in both repos
 - [ ] Ready for `/review`
+
+## Ship blockers (from /ship 2026-10-07)
+- [x] B1 App: wedding header + home card show real guest count after cold load / return
+- [ ] B2 App: notification toggle rollback/merge touches only its own field
+- [ ] B3 Backend: UserRepo.Update must never re-insert a deleted user (no GORM Save upsert)
+- [ ] B4 Backend+App: PATCH /me/password honours lockout; app skips refresh-retry on it
+- [ ] B5 Backend: atomic failed-attempt increment (parallel guesses can't bypass lockout)

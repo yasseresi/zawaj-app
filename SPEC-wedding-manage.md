@@ -13,7 +13,7 @@ Conventions: [SPEC-common.md](SPEC-common.md) · Map: [SPEC-map.md](SPEC-map.md)
 ## Behaviour
 - `WeddingsProvider` gains `refresh(String id)`: it calls `GET /weddings/:id` and replaces that item in the list (or inserts it if missing). A 404 removes it from the list and shows the "not found / no access" state.
 - The wedding route (`/weddings/:id`) gets its own `WeddingProvider`. It shows the navigation `extra` instantly, then `GET /weddings/:id` refreshes the role, or cold-loads the wedding when there is no `extra` (deep links, notification taps). A 404 shows a not-found state. *(Changed during build: `WeddingsProvider` lives inside the shell and home routes, not above `/weddings/:id`. Making it global would leak one account's weddings into the next after a logout.)*
-- On return from a wedding, home calls `WeddingsProvider.refresh(id)`, so edits, transfers and lost access show in the list.
+- On return from a wedding, home silently reloads `GET /weddings` (`load(silent: true)`): the list stays on screen and picks up edits, guest counts, transfers and lost access. The wedding header shows the guest list's wedding-wide total, because `GET /weddings/:id` has no guest count. *(Changed 2026-10-07: replaced `refresh(id)`, which kept a stale count.)*
 - **Edit wedding:** the owner only sees an "Edit" item in the wedding screen's app-bar overflow menu (⋮) (`guest_list_screen.dart`). It opens a full-screen route `/weddings/:id/edit`.
   - Reuses the create-wedding form fields (extracted into a shared `WeddingForm` widget; `CreateWeddingScreen` uses it too). The fields are prefilled.
   - Name: required, ≤120 characters. Date: adaptive date picker. Description: ≤2000 characters.

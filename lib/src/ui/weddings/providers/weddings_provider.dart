@@ -5,8 +5,6 @@ import '../../../data/repositories/wedding_repository.dart';
 import '../../../data/repositories/wedding_repository_impl.dart';
 import '../../../shared/enums/app_status.dart';
 import '../../../services/storage_service.dart';
-import '../../../utils/failure.dart';
-import '../../../utils/typedefs.dart';
 
 /// Holds the "my weddings" list state for the home screen. Screens bind via
 /// `context.watch` and render off [status] (loading → skeleton, success+empty →
@@ -39,14 +37,19 @@ class WeddingsProvider extends ChangeNotifier {
   }
 
   /// Fetch the caller's weddings. Idempotent; safe to call for pull-to-refresh.
-  Future<void> load() async {
-    _status = AppStatus.loading;
-    _errorMessage = null;
-    notifyListeners();
+  /// [silent] re-syncs in the background (e.g. returning from a wedding):
+  /// the current list stays on screen, and a failure keeps it as is.
+  Future<void> load({bool silent = false}) async {
+    if (!silent) {
+      _status = AppStatus.loading;
+      _errorMessage = null;
+      notifyListeners();
+    }
 
     final result = await _repository.myWeddings();
     result.match(
       (failure) {
+        if (silent && _status.isSuccess) return;
         _status = AppStatus.failure;
         _errorMessage = failure.message;
         notifyListeners();
@@ -90,33 +93,6 @@ class WeddingsProvider extends ChangeNotifier {
         return true;
       },
     );
-  }
-
-  /// Re-fetch one wedding (`GET /weddings/:id`) and sync it into the list:
-  /// replaces the cached item (keeping its guest count, which the endpoint
-  /// doesn't return) or inserts it at the top. A 404 — deleted, or access
-  /// revoked — drops it. Other failures leave the list untouched.
-  FutureEither<Wedding> refresh(String id) async {
-    final result = await _repository.get(id);
-    result.match(
-      (failure) {
-        if (failure is NotFoundFailure) {
-          _weddings = _weddings.where((w) => w.id != id).toList();
-          notifyListeners();
-        }
-      },
-      (fresh) {
-        final cached = weddingById(id);
-        _weddings = cached == null
-            ? [fresh, ..._weddings]
-            : [
-                for (final w in _weddings)
-                  w.id == id ? fresh.copyWith(guestCount: cached.guestCount) : w
-              ];
-        notifyListeners();
-      },
-    );
-    return result;
   }
 
   /// Merge a `PATCH /weddings/:id` result into the cached item. The response
