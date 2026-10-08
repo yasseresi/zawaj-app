@@ -1,3 +1,4 @@
+import '../../config/auth_interceptor.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
 /// Persists the JWT access/refresh pair in platform secure storage
@@ -7,7 +8,7 @@ import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 /// Dio auth interceptor can read/write tokens inline without unwrapping an
 /// [Either]. Backend contract: access TTL 15m, refresh TTL 30d, rotation with
 /// reuse-detection — always overwrite BOTH tokens together on refresh.
-class TokenStorage {
+class TokenStorage implements AuthTokens {
   TokenStorage._();
   static final TokenStorage instance = TokenStorage._();
 
@@ -22,15 +23,18 @@ class TokenStorage {
   String? _accessCache;
   String? _refreshCache;
 
+  @override
   Future<String?> get accessToken async =>
       _accessCache ??= await _storage.read(key: _kAccess);
 
+  @override
   Future<String?> get refreshToken async =>
       _refreshCache ??= await _storage.read(key: _kRefresh);
 
   bool get hasCachedAccess => _accessCache != null;
 
   /// Overwrites both tokens atomically after login/register/refresh/recover.
+  @override
   Future<void> save({required String access, required String refresh}) async {
     _accessCache = access;
     _refreshCache = refresh;
@@ -45,6 +49,7 @@ class TokenStorage {
     _refreshCache = await _storage.read(key: _kRefresh);
   }
 
+  @override
   Future<void> clear() async {
     _accessCache = null;
     _refreshCache = null;

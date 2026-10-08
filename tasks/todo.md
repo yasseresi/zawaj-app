@@ -86,7 +86,7 @@ Details, acceptance criteria and files for each task: [plan.md](plan.md). Specs:
 - [x] K4 Backend tests: close test DB pools; gated 20-goroutine parallel tests; partial-index assertion; row-lock test; cooldown expiry; notification data; audit rows; approve validation; AutoMigrate index parity
 - [x] K5 App: role sheet explicit selection (approve as editor); request age; preview copy/progress/localized load errors; characters.first; RTL-isolated @username; _decide try/finally; share screen widget tests
 - [x] K6 App: join_queue_full localized on preview
-- [ ] K7 App: 401 refresh interceptor tests (refresh+retry, single-flight, logout on failure, skipAuthRefresh)
+- [x] K7 App: 401 refresh interceptor tests (refresh+retry, single-flight, logout on failure, skipAuthRefresh)
 - [x] K8 Backend: lockout lifecycle tests (expiry, reset on success)
 - [x] K9 Backend: deterministic sync instead of RSVP 500ms wait and the 20ms sleep
 - [x] K10 Backend: WeddingRepo.Update column-scoped (no stale owner_id write-back)
