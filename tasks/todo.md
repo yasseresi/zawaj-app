@@ -78,3 +78,16 @@ Details, acceptance criteria and files for each task: [plan.md](plan.md). Specs:
 - [x] J5 App: invite preview "Request sent" state; share screen Join requests section (approve sheet w/ role, decline confirm, optimistic + rollback); revert remove-confirm copy
 - [x] J6 App: notification taps for join_requested (→ share) / join_approved (→ wedding) / join_declined (no nav); API smoke on a fresh SQL-migrated DB passed 17/17. Simulator walkthrough NOT done (needs app pointed at a server with this backend)
 
+
+## Join approval — ship round fixes (approved 2026-10-08)
+- [ ] K1 Backend: CreatePending ON CONFLICT predicate as SQL literal (generic-plan 500 every ~6th accept); parallel test asserts codes; single-conn repeat test
+- [ ] K2 Backend: close pending requests on owner removal + username-invite join; Approve re-checks ceiling under lock (removed → 403), already-member → close quietly; list hides members
+- [ ] K3 Backend: revoke link closes its pending requests; cap 50 pending/wedding (429 join_queue_full, per-wedding lock); owner push skipped while an unread join_requested exists
+- [ ] K4 Backend tests: close test DB pools; gated 20-goroutine parallel tests; partial-index assertion; row-lock test; cooldown expiry; notification data; audit rows; approve validation; AutoMigrate index parity
+- [ ] K5 App: role sheet explicit selection (approve as editor); request age; preview copy/progress/localized load errors; characters.first; RTL-isolated @username; _decide try/finally; share screen widget tests
+- [ ] K6 App: join_queue_full localized on preview
+- [ ] K7 App: 401 refresh interceptor tests (refresh+retry, single-flight, logout on failure, skipAuthRefresh)
+- [ ] K8 Backend: lockout lifecycle tests (expiry, reset on success)
+- [ ] K9 Backend: deterministic sync instead of RSVP 500ms wait and the 20ms sleep
+- [ ] K10 Backend: WeddingRepo.Update column-scoped (no stale owner_id write-back)
+- [ ] K11 App: invite token format validation + URL-encoding in WeddingService
