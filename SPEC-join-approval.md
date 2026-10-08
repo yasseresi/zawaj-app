@@ -22,6 +22,15 @@ Invite links are shareable (group chat, QR) and accounts are free, so a person t
 - Ceilings stay. Demotions still stick (links can't override them), and removed users are still refused before any request is created.
 - Wedding and account deletion also delete `join_requests`. Swagger and the ADR-004 addendum are updated.
 
+- **Limits and hygiene (added 2026-10-08):**
+  - A declined user can't ask again for 24h (`409 join_request_declined`).
+  - At most 50 pending requests per wedding (`429 join_queue_full`).
+  - The owner is pushed only when the queue was empty; later requests are stored in-app silently.
+  - Revoking a link closes the requests made through it.
+  - A request is `closed` (no cooldown) when the user joins another way or is removed.
+  - Approval re-checks the owner's last decision and refuses a removed user (`403 removed_from_wedding`).
+  - The owner's list never shows existing members.
+
 ## App UX
 - **Invite preview → Accept:**
   - `pending`: the card switches to a "Request sent" state: "{wedding} — the owner will review your request. You'll get a notification." with a Done button back to home.
@@ -39,7 +48,7 @@ Invite links are shareable (group chat, QR) and accounts are free, so a person t
 - ar/en/fr strings; RTL-first.
 
 ## Success criteria
-- [ ] Opening a link never makes anyone a member without owner approval (integration test).
+- [x] Opening a link never makes anyone a member without owner approval (integration test).
 - [ ] A removed user is refused at accept, with no request and no notification.
 - [ ] A second account's request appears to the owner, and declining it leaves them out.
 - [ ] The owner can approve at a lower role, but never above what the link grants.
