@@ -93,11 +93,11 @@ Details, acceptance criteria and files for each task: [plan.md](plan.md). Specs:
 - [x] K11 App: invite token format validation + URL-encoding in WeddingService
 
 ## Ship round 6 fixes (2026-10-09)
-- [ ] L1 Backend: resetSchema refuses DBs not named *_test
-- [ ] L2 Backend: wait (bounded) for in-flight pushes on shutdown
-- [ ] L3 Backend: request log uses route template (no invite tokens)
-- [ ] L4 Backend: re-push owner when oldest pending request >24h old
-- [ ] L5 Backend: Swagger note — approve 403 removed still closes request
+- [x] L1 Backend: resetSchema refuses DBs not named *_test
+- [x] L2 Backend: wait (bounded) for in-flight pushes on shutdown
+- [x] L3 Backend: request log uses route template (no invite tokens)
+- [x] L4 Backend: re-push owner when oldest pending request >24h old
+- [x] L5 Backend: Swagger note — approve 403 removed still closes request
 - [x] L6 App: _decide marks settled before onSuccess
 - [x] L7 App: pendingInviteToken stores canonical token
 - [x] L8 App: plural time strings (ar/en/fr)
