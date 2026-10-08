@@ -109,7 +109,7 @@ class _PreviewCard extends StatelessWidget {
           else
             FilledButton(
               onPressed: () {
-                pendingInviteToken = provider.token;
+                pendingInviteToken = provider.canonicalToken;
                 context.go(AppRoutes.login);
               },
               child: Text('share.login_to_accept'.tr()),

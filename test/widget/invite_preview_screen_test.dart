@@ -16,6 +16,7 @@ import 'package:zawaj_app/src/data/repositories/auth_repository.dart';
 import 'package:zawaj_app/src/data/repositories/wedding_repository.dart';
 import 'package:zawaj_app/src/theme/theme.dart';
 import 'package:zawaj_app/src/ui/auth/providers/session_provider.dart';
+import 'package:zawaj_app/src/routing/app_router.dart';
 import 'package:zawaj_app/src/ui/share/invite_preview_screen.dart';
 import 'package:zawaj_app/src/utils/failure.dart';
 import 'package:zawaj_app/src/utils/typedefs.dart';
@@ -46,20 +47,24 @@ class _NoAuth implements AuthRepository {
 }
 
 Future<void> _pump(WidgetTester tester, Either<Failure, JoinResult> accept,
-    {Completer<void>? gate}) async {
-  final session = SessionProvider(repository: _NoAuth())
-    ..setAuthenticated(
+    {Completer<void>? gate,
+    bool signedIn = true,
+    String token = 'MFRGGZDFMZTWQ2LKNNWG23TP'}) async {
+  final session = SessionProvider(repository: _NoAuth());
+  if (signedIn) {
+    session.setAuthenticated(
         const AppUser(id: 'u2', username: 'omar', displayName: 'Omar'));
+  }
   final router = GoRouter(initialLocation: '/i/TOK', routes: [
     GoRoute(path: '/', builder: (_, __) => const Text('home page')),
     GoRoute(
       path: '/i/:token',
       builder: (_, __) => InvitePreviewScreen(
-          token: 'MFRGGZDFMZTWQ2LKNNWG23TP',
-          weddingRepository: _Weddings(accept, gate: gate)),
+          token: token, weddingRepository: _Weddings(accept, gate: gate)),
     ),
     GoRoute(
         path: '/weddings/:id', builder: (_, __) => const Text('wedding page')),
+    GoRoute(path: '/login', builder: (_, __) => const Text('login page')),
   ]);
   await tester.runAsync(() => tester.pumpWidget(EasyLocalization(
         supportedLocales: const [Locale('ar'), Locale('en'), Locale('fr')],
@@ -169,5 +174,24 @@ void main() {
     await tester.tap(find.text('Request to join'));
     await tester.pumpAndSettle();
     expect(find.textContaining('too many pending requests'), findsOneWidget);
+  });
+
+  testWidgets('signing in to accept remembers the canonical token',
+      (tester) async {
+    await _pump(
+        tester,
+        const Right(JoinResult(
+            weddingId: 'w1',
+            weddingName: 'Leila & Karim',
+            role: WeddingRole.editor,
+            isPending: true)),
+        signedIn: false,
+        token: 'mfrggzdfmztwq2lknnwg23tp');
+
+    await tester.tap(find.text('Log in to accept'));
+    await tester.pumpAndSettle();
+    expect(pendingInviteToken, 'MFRGGZDFMZTWQ2LKNNWG23TP');
+    expect(find.text('login page'), findsOneWidget);
+    pendingInviteToken = null;
   });
 }

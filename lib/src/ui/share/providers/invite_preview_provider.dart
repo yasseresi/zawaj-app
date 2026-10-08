@@ -19,6 +19,9 @@ class InvitePreviewProvider extends ChangeNotifier {
 
   /// [token] in canonical form, or null if it can't be a server token.
   late final String? _apiToken = normalizeInviteToken(token);
+
+  /// The canonical token (falls back to [token] if it isn't valid).
+  String get canonicalToken => _apiToken ?? token;
   final WeddingRepository _repository;
 
   AppStatus status = AppStatus.initial;
