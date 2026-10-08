@@ -81,8 +81,11 @@ class _PreviewCard extends StatelessWidget {
               style: context.textTheme.headlineSmall,
               textAlign: TextAlign.center),
           SizedBox(height: 8.h),
-          Text('share.preview_role'
-              .tr(namedArgs: {'role': 'share.role_${preview.role}'.tr()})),
+          Text(
+            'share.preview_request_role'
+                .tr(namedArgs: {'role': 'share.role_${preview.role}'.tr()}),
+            textAlign: TextAlign.center,
+          ),
           if (provider.errorMessage != null) ...[
             SizedBox(height: 12.h),
             Text(provider.errorMessage!,
@@ -93,7 +96,15 @@ class _PreviewCard extends StatelessWidget {
             FilledButton(
               onPressed:
                   provider.isAccepting ? null : () => _requestToJoin(context),
-              child: Text('share.request_to_join'.tr()),
+              child: provider.isAccepting
+                  ? Semantics(
+                      label: 'share.request_to_join'.tr(),
+                      child: SizedBox.square(
+                        dimension: 18.r,
+                        child: const CircularProgressIndicator(strokeWidth: 2),
+                      ),
+                    )
+                  : Text('share.request_to_join'.tr()),
             )
           else
             FilledButton(

@@ -140,26 +140,38 @@ class ShareProvider extends ChangeNotifier {
     joinRequests = joinRequests.where((r) => r.id != request.id).toList();
     notifyListeners();
 
-    final result = await call();
-    final ok = await result.match((f) async {
-      if (f is NotFoundFailure) {
-        errorMessage = 'share.request_already_handled'.tr();
-        await _reloadRequests();
-      } else {
-        errorMessage = AppErrorHandler.userMessage(f);
-        if (!joinRequests.any((r) => r.id == request.id)) {
-          final at = index < 0 ? 0 : index.clamp(0, joinRequests.length);
-          joinRequests = [...joinRequests]..insert(at, request);
-        }
+    void restore() {
+      if (!joinRequests.any((r) => r.id == request.id)) {
+        final at = index < 0 ? 0 : index.clamp(0, joinRequests.length);
+        joinRequests = [...joinRequests]..insert(at, request);
       }
-      return false;
-    }, (_) async {
-      await onSuccess?.call();
-      return true;
-    });
-    _deciding.remove(request.id);
-    notifyListeners();
-    return ok;
+    }
+
+    var settled = false;
+    try {
+      final result = await call();
+      final ok = await result.match((f) async {
+        if (f is NotFoundFailure) {
+          errorMessage = 'share.request_already_handled'.tr();
+          await _reloadRequests();
+        } else {
+          errorMessage = AppErrorHandler.userMessage(f);
+          restore();
+        }
+        return false;
+      }, (_) async {
+        await onSuccess?.call();
+        return true;
+      });
+      settled = true;
+      return ok;
+    } finally {
+      // A thrown (not returned) failure must not leave the row hidden or its
+      // buttons disabled.
+      if (!settled) restore();
+      _deciding.remove(request.id);
+      notifyListeners();
+    }
   }
 
   Future<void> _reloadMembers() async {

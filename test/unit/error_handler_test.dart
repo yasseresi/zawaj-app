@@ -20,6 +20,18 @@ DioException _dioWith(
 
 void main() {
   group('AppErrorHandler.toFailure — envelope mapping', () {
+    test('join_queue_full keeps its code and gets a localized message', () {
+      final f = AppErrorHandler.toFailure(_dioWith(
+        status: 429,
+        data: {
+          'data': null,
+          'error': {'code': 'join_queue_full', 'message': 'too many'},
+        },
+      ));
+      expect(f.code, 'join_queue_full');
+      expect(AppErrorHandler.userMessage(f), 'invites.join_queue_full');
+    });
+
     test('join_request_declined -> ConflictFailure with a localized message',
         () {
       final f = AppErrorHandler.toFailure(_dioWith(

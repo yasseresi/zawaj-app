@@ -36,7 +36,7 @@ class InvitePreviewProvider extends ChangeNotifier {
     result.match(
       (failure) {
         status = AppStatus.failure;
-        errorMessage = failure.message;
+        errorMessage = AppErrorHandler.userMessage(failure);
       },
       (value) {
         status = AppStatus.success;

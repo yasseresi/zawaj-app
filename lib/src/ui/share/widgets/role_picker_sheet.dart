@@ -36,32 +36,40 @@ class RolePickerSheet extends StatelessWidget {
         padding: EdgeInsets.symmetric(vertical: AppSpacing.md.h),
         child: ListTileTheme(
           textColor: cs.onSurface,
-          child: RadioGroup<WeddingRole>(
-            groupValue: selected,
-            onChanged: (role) => Navigator.of(context).pop(role),
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              children: [
-                Padding(
-                  padding: EdgeInsets.symmetric(horizontal: AppSpacing.lg.w),
-                  child: Text(
-                    title,
-                    style:
-                        tt.titleMedium?.copyWith(fontWeight: FontWeight.bold),
-                  ),
+          // Plain rows rather than radios: a radio ignores taps on the option
+          // that's already checked, but here every row is a choice to confirm
+          // (e.g. approving at the requested role).
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              Padding(
+                padding: EdgeInsets.symmetric(horizontal: AppSpacing.lg.w),
+                child: Text(
+                  title,
+                  style: tt.titleMedium?.copyWith(fontWeight: FontWeight.bold),
                 ),
-                SizedBox(height: AppSpacing.sm.h),
-                for (final role in roles)
-                  RadioListTile<WeddingRole>(
-                    value: role,
+              ),
+              SizedBox(height: AppSpacing.sm.h),
+              for (final role in roles)
+                Semantics(
+                  inMutuallyExclusiveGroup: true,
+                  checked: role == selected,
+                  child: ListTile(
+                    key: ValueKey('role-${role.name}'),
+                    selected: role == selected,
+                    selectedColor: cs.primary,
+                    leading: Icon(role == selected
+                        ? Icons.radio_button_checked
+                        : Icons.radio_button_unchecked),
                     title: Text('share.role_${role.name}'.tr()),
                     subtitle: Text((_descriptions[role] ?? '').tr(),
                         style:
                             tt.bodySmall?.copyWith(color: cs.onSurfaceVariant)),
+                    onTap: () => Navigator.of(context).pop(role),
                   ),
-              ],
-            ),
+                ),
+            ],
           ),
         ),
       ),

@@ -83,6 +83,16 @@ void main() {
     expect(j.createdAt, DateTime.utc(2026, 10, 8, 9, 30));
   });
 
+  test('avatar initial keeps a whole emoji / grapheme', () {
+    const j = JoinRequest(
+        id: 'r1',
+        userId: 'u2',
+        username: 'x',
+        displayName: '🎉 Party',
+        role: WeddingRole.viewer);
+    expect(j.avatarInitial, '🎉');
+  });
+
   group('WeddingService join-request contract', () {
     late _FakeApi api;
     late WeddingService service;

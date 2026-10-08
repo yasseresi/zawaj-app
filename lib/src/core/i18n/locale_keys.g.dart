@@ -288,6 +288,7 @@ abstract class  LocaleKeys {
   static const activity_time_at = 'activity.time_at';
   static const activity_filter_coming_soon = 'activity.filter_coming_soon';
   static const activity = 'activity';
+  static const invites_join_queue_full = 'invites.join_queue_full';
   static const invites_join_declined_recently = 'invites.join_declined_recently';
   static const invites_removed_from_wedding = 'invites.removed_from_wedding';
   static const invites_title = 'invites.title';
@@ -309,6 +310,7 @@ abstract class  LocaleKeys {
   static const notifications_empty_title = 'notifications.empty_title';
   static const notifications_empty_subtitle = 'notifications.empty_subtitle';
   static const notifications = 'notifications';
+  static const share_preview_request_role = 'share.preview_request_role';
   static const share_request_to_join = 'share.request_to_join';
   static const share_request_sent_message = 'share.request_sent_message';
   static const share_request_sent_title = 'share.request_sent_title';
@@ -375,5 +377,10 @@ abstract class  LocaleKeys {
   static const phone_invalid = 'phone.invalid';
   static const phone_required = 'phone.required';
   static const phone = 'phone';
+  static const time_days_ago = 'time.days_ago';
+  static const time_hours_ago = 'time.hours_ago';
+  static const time_minutes_ago = 'time.minutes_ago';
+  static const time_just_now = 'time.just_now';
+  static const time = 'time';
 
 }

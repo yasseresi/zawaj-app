@@ -2,6 +2,8 @@ import 'package:qr_flutter/qr_flutter.dart';
 import 'package:share_plus/share_plus.dart';
 import '../../data/models/wedding_model.dart';
 import '../../data/models/wedding_member_model.dart';
+import '../../data/repositories/invite_repository.dart';
+import '../../data/repositories/wedding_repository.dart';
 import '../../data/models/invite_link_model.dart';
 import '../../data/models/join_request_model.dart';
 import '../../imports/core_imports.dart';
@@ -13,14 +15,26 @@ import 'widgets/member_tile.dart';
 import 'widgets/role_picker_sheet.dart';
 
 class ShareScreen extends StatelessWidget {
-  const ShareScreen({super.key, required this.weddingId, this.wedding});
+  const ShareScreen({
+    super.key,
+    required this.weddingId,
+    this.wedding,
+    this.weddingRepository,
+    this.inviteRepository,
+  });
   final String weddingId;
   final Wedding? wedding;
+  final WeddingRepository? weddingRepository;
+  final InviteRepository? inviteRepository;
 
   @override
   Widget build(BuildContext context) => ChangeNotifierProvider(
-        create: (_) =>
-            ShareProvider(weddingId: weddingId, wedding: wedding)..load(),
+        create: (_) => ShareProvider(
+          weddingId: weddingId,
+          wedding: wedding,
+          weddingRepository: weddingRepository,
+          inviteRepository: inviteRepository,
+        )..load(),
         child: _ShareView(wedding: wedding),
       );
 }

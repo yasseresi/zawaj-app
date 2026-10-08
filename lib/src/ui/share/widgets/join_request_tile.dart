@@ -1,6 +1,7 @@
 import '../../../data/models/join_request_model.dart';
 import '../../../imports/core_imports.dart';
 import '../../../imports/packages_imports.dart';
+import '../../../utils/relative_time.dart';
 
 /// A pending request to join through an invite link: who asks, for which role,
 /// and the owner's Approve / Decline actions (disabled while [deciding]).
@@ -22,6 +23,8 @@ class JoinRequestTile extends StatelessWidget {
   Widget build(BuildContext context) {
     final cs = context.colors;
     final tt = context.textTheme;
+    final createdAt = request.createdAt;
+    final age = createdAt == null ? null : relativeTime(createdAt.toLocal());
     return AppCard(
       margin: EdgeInsets.only(bottom: 8.h),
       padding: EdgeInsets.symmetric(horizontal: 12.w, vertical: 10.h),
@@ -45,11 +48,17 @@ class JoinRequestTile extends StatelessWidget {
                           color: cs.onSurface, fontWeight: FontWeight.w700)),
                   Text(
                     'share.join_request_subtitle'.tr(namedArgs: {
-                      'username': request.username,
+                      // First-strong isolate keeps the Latin "@name" intact
+                      // inside right-to-left text.
+                      'username': '\u2068${request.username}\u2069',
                       'role': 'share.role_${request.role.name}'.tr(),
                     }),
                     style: tt.bodyMedium?.copyWith(color: cs.onSurfaceVariant),
                   ),
+                  if (age != null)
+                    Text(age.key.tr(namedArgs: age.args),
+                        style:
+                            tt.bodySmall?.copyWith(color: cs.onSurfaceVariant)),
                 ],
               ),
             ),

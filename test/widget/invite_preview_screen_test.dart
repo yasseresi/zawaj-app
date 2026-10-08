@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -19,8 +21,9 @@ import 'package:zawaj_app/src/utils/failure.dart';
 import 'package:zawaj_app/src/utils/typedefs.dart';
 
 class _Weddings implements WeddingRepository {
-  _Weddings(this.acceptResult);
+  _Weddings(this.acceptResult, {this.gate});
   final Either<Failure, JoinResult> acceptResult;
+  final Completer<void>? gate;
 
   @override
   FutureEither<InvitePreview> previewInvite(String token) async =>
@@ -28,7 +31,10 @@ class _Weddings implements WeddingRepository {
           weddingId: 'w1', weddingName: 'Leila & Karim', role: 'editor'));
 
   @override
-  FutureEither<JoinResult> acceptInviteLink(String token) async => acceptResult;
+  FutureEither<JoinResult> acceptInviteLink(String token) async {
+    await gate?.future;
+    return acceptResult;
+  }
 
   @override
   dynamic noSuchMethod(Invocation invocation) => throw UnimplementedError();
@@ -39,8 +45,8 @@ class _NoAuth implements AuthRepository {
   dynamic noSuchMethod(Invocation invocation) => throw UnimplementedError();
 }
 
-Future<void> _pump(
-    WidgetTester tester, Either<Failure, JoinResult> accept) async {
+Future<void> _pump(WidgetTester tester, Either<Failure, JoinResult> accept,
+    {Completer<void>? gate}) async {
   final session = SessionProvider(repository: _NoAuth())
     ..setAuthenticated(
         const AppUser(id: 'u2', username: 'omar', displayName: 'Omar'));
@@ -49,7 +55,7 @@ Future<void> _pump(
     GoRoute(
       path: '/i/:token',
       builder: (_, __) => InvitePreviewScreen(
-          token: 'TOK', weddingRepository: _Weddings(accept)),
+          token: 'TOK', weddingRepository: _Weddings(accept, gate: gate)),
     ),
     GoRoute(
         path: '/weddings/:id', builder: (_, __) => const Text('wedding page')),
@@ -131,5 +137,36 @@ void main() {
 
     expect(find.text('Leila & Karim'), findsOneWidget);
     expect(find.textContaining('removed you'), findsOneWidget);
+  });
+
+  testWidgets('says the owner will review, and shows progress while sending',
+      (tester) async {
+    final gate = Completer<void>();
+    await _pump(
+        tester,
+        const Right(JoinResult(
+            weddingId: 'w1',
+            weddingName: 'Leila & Karim',
+            role: WeddingRole.editor,
+            isPending: true,
+            requestId: 'r1')),
+        gate: gate);
+
+    expect(find.textContaining("You'll ask to join as"), findsOneWidget);
+    await tester.tap(find.text('Request to join'));
+    await tester.pump();
+    expect(find.byType(CircularProgressIndicator), findsOneWidget);
+
+    gate.complete();
+    await tester.pumpAndSettle();
+    expect(find.text('Request sent'), findsOneWidget);
+  });
+
+  testWidgets('a full request queue is explained on the card', (tester) async {
+    await _pump(
+        tester, const Left(ServerFailure('too many', code: 'join_queue_full')));
+    await tester.tap(find.text('Request to join'));
+    await tester.pumpAndSettle();
+    expect(find.textContaining('too many pending requests'), findsOneWidget);
   });
 }

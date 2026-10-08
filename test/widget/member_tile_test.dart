@@ -63,9 +63,9 @@ void main() {
     await tester.tap(find.text('open'));
     await tester.pumpAndSettle();
 
-    final editor = tester.widget<RadioListTile<WeddingRole>>(
-        find.byType(RadioListTile<WeddingRole>).first);
-    expect(editor.value, WeddingRole.editor);
+    final editor =
+        tester.widget<ListTile>(find.byKey(const ValueKey('role-editor')));
+    expect(editor.selected, isTrue);
     expect(find.text('share.role_viewer_desc'), findsOneWidget);
 
     await tester.tap(find.text('share.role_viewer'));
@@ -105,7 +105,33 @@ void main() {
     await tester.tap(find.text('open'));
     await tester.pumpAndSettle();
 
-    expect(find.byType(RadioListTile<WeddingRole>), findsOneWidget);
+    expect(find.byType(ListTile), findsOneWidget);
     expect(find.text('share.role_editor'), findsNothing);
+  });
+
+  testWidgets('tapping the already-selected role still picks it',
+      (tester) async {
+    WeddingRole? picked;
+    var popped = false;
+    await tester.pumpWidget(_host(Builder(
+      builder: (context) => TextButton(
+        onPressed: () async {
+          picked = await showModalBottomSheet<WeddingRole>(
+            context: context,
+            builder: (_) => const RolePickerSheet(
+                title: 'Approve as', selected: WeddingRole.editor),
+          );
+          popped = true;
+        },
+        child: const Text('open'),
+      ),
+    )));
+    await tester.tap(find.text('open'));
+    await tester.pumpAndSettle();
+
+    await tester.tap(find.text('share.role_editor'));
+    await tester.pumpAndSettle();
+    expect(popped, isTrue);
+    expect(picked, WeddingRole.editor);
   });
 }

@@ -119,10 +119,13 @@ class _FakeWeddingRepository implements WeddingRepository {
     return Right(requestList);
   }
 
+  bool approveThrows = false;
+
   @override
   FutureEither<void> approveJoinRequest(String weddingId, String requestId,
       {WeddingRole? role}) async {
     approvals.add((requestId, role));
+    if (approveThrows) throw StateError('transport blew up');
     return approveResult;
   }
 
@@ -333,6 +336,16 @@ void main() {
       await q.load();
       expect(await q.declineRequest(_request), isFalse);
       expect(q.joinRequests, [_request]);
+    });
+
+    test('a decision that throws still clears the in-flight guard', () async {
+      final repo = _FakeWeddingRepository()..approveThrows = true;
+      final p = _provider(repo, wedding: _wedding(WeddingRole.owner));
+      await p.load();
+
+      await expectLater(p.approveRequest(_request), throwsStateError);
+      expect(p.isDeciding('r1'), isFalse);
+      expect(p.joinRequests, [_request]);
     });
 
     test('ignores a second decision while one is in flight', () async {

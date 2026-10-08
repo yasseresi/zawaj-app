@@ -55,6 +55,9 @@ class AppErrorHandler {
     if (failure.code == 'join_request_declined') {
       return _tr('invites.join_declined_recently');
     }
+    if (failure.code == 'join_queue_full') {
+      return _tr('invites.join_queue_full');
+    }
     if (failure is LockedFailure) return _tr('errors.locked');
     if (failure is RateLimitFailure) return _tr('errors.rate_limited');
     if (failure is ValidationFailure) return _tr('errors.validation');
