@@ -299,7 +299,7 @@
     "time_at": "At {time}",
     "filter_coming_soon": "Filtering will be added later"
   },
-  "invites": {"join_queue_full":"This wedding has too many pending requests right now. Try again later.","join_declined_recently":"The owner declined your request. You can ask again later.","removed_from_wedding":"The owner removed you from this wedding. Ask them to invite you again.",
+  "invites": {"invalid_link":"This invite link isn't valid. Ask for a new one.","join_queue_full":"This wedding has too many pending requests right now. Try again later.","join_declined_recently":"The owner declined your request. You can ask again later.","removed_from_wedding":"The owner removed you from this wedding. Ask them to invite you again.",
     "title": "Pending Invites",
     "empty_title": "No pending invites",
     "empty_subtitle": "New invitations to collaborate on guest lists will appear here",

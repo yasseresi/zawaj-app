@@ -90,4 +90,4 @@ Details, acceptance criteria and files for each task: [plan.md](plan.md). Specs:
 - [x] K8 Backend: lockout lifecycle tests (expiry, reset on success)
 - [x] K9 Backend: deterministic sync instead of RSVP 500ms wait and the 20ms sleep
 - [x] K10 Backend: WeddingRepo.Update column-scoped (no stale owner_id write-back)
-- [ ] K11 App: invite token format validation + URL-encoding in WeddingService
+- [x] K11 App: invite token format validation + URL-encoding in WeddingService

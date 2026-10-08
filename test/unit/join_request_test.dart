@@ -118,6 +118,12 @@ void main() {
       expect(result.getOrElse((_) => throw 'failed').isPending, isTrue);
     });
 
+    test('the token is URL-encoded into the path', () async {
+      api.reply = const Right({'status': 'pending'});
+      await service.acceptInviteLink('A/B');
+      expect(api.calls.single.path, '/invite/A%2FB/accept');
+    });
+
     test('listJoinRequests reads the items list', () async {
       api.reply = const Right({
         'items': [

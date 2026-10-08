@@ -288,6 +288,7 @@ abstract class  LocaleKeys {
   static const activity_time_at = 'activity.time_at';
   static const activity_filter_coming_soon = 'activity.filter_coming_soon';
   static const activity = 'activity';
+  static const invites_invalid_link = 'invites.invalid_link';
   static const invites_join_queue_full = 'invites.join_queue_full';
   static const invites_join_declined_recently = 'invites.join_declined_recently';
   static const invites_removed_from_wedding = 'invites.removed_from_wedding';

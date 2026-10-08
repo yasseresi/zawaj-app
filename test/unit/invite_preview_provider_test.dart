@@ -35,13 +35,18 @@ class _FakeWeddingRepository implements WeddingRepository {
         requestId: 'r1'),
   );
 
-  @override
-  FutureEither<InvitePreview> previewInvite(String token) async =>
-      previewResult;
+  int previewCalls = 0;
+  String? previewedToken;
 
   @override
-  FutureEither<JoinResult> acceptInviteLink(String token) async =>
-      acceptResult;
+  FutureEither<InvitePreview> previewInvite(String token) async {
+    previewCalls++;
+    previewedToken = token;
+    return previewResult;
+  }
+
+  @override
+  FutureEither<JoinResult> acceptInviteLink(String token) async => acceptResult;
   @override
   FutureEither<List<JoinRequest>> listJoinRequests(String weddingId) =>
       throw UnimplementedError();
@@ -81,10 +86,30 @@ class _FakeWeddingRepository implements WeddingRepository {
       throw UnimplementedError();
 }
 
+const _token = 'MFRGGZDFMZTWQ2LKNNWG23TP';
+
 void main() {
+  test('a lower-cased link is sent in canonical form', () async {
+    final repo = _FakeWeddingRepository();
+    await InvitePreviewProvider(token: _token.toLowerCase(), repository: repo)
+        .load();
+    expect(repo.previewedToken, _token);
+  });
+
+  test('a malformed token fails without calling the server', () async {
+    final repo = _FakeWeddingRepository();
+    final provider = InvitePreviewProvider(token: '../x', repository: repo);
+
+    await provider.load();
+
+    expect(repo.previewCalls, 0);
+    expect(provider.preview, isNull);
+    expect(provider.errorMessage, 'invites.invalid_link');
+  });
+
   test('loads preview and accepts the invite through the repository', () async {
     final provider = InvitePreviewProvider(
-      token: 'TOKEN',
+      token: _token,
       repository: _FakeWeddingRepository(),
     );
 
@@ -99,10 +124,10 @@ void main() {
 
   test('a removed user accepting a link sees why they were refused', () async {
     final provider = InvitePreviewProvider(
-      token: 'TOKEN',
+      token: _token,
       repository: _FakeWeddingRepository()
-        ..acceptResult = const Left(ForbiddenFailure('removed',
-            code: 'removed_from_wedding')),
+        ..acceptResult = const Left(
+            ForbiddenFailure('removed', code: 'removed_from_wedding')),
     );
     await provider.load();
 
@@ -112,7 +137,7 @@ void main() {
 
   test('surfaces preview failures', () async {
     final provider = InvitePreviewProvider(
-      token: 'TOKEN',
+      token: _token,
       repository: _FakeWeddingRepository()
         ..previewResult = const Left(ServerFailure('invalid invite')),
     );

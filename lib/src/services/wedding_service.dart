@@ -144,7 +144,7 @@ class WeddingService {
           parse: parseVoid);
 
   FutureEither<InvitePreview> previewInvite(String token) =>
-      _api.get<InvitePreview>('/invite/$token',
+      _api.get<InvitePreview>('/invite/${Uri.encodeComponent(token)}',
           parse: (d) =>
               InvitePreview.fromJson((d as Map).cast<String, dynamic>()));
 
@@ -152,7 +152,7 @@ class WeddingService {
   /// approve, or the caller's role if they're already a member. Errors:
   /// `removed_from_wedding` (403), `join_request_declined` (409, cooldown).
   FutureEither<JoinResult> acceptInviteLink(String token) =>
-      _api.post<JoinResult>('/invite/$token/accept',
+      _api.post<JoinResult>('/invite/${Uri.encodeComponent(token)}/accept',
           parse: (d) =>
               JoinResult.fromJson((d as Map).cast<String, dynamic>()));
 

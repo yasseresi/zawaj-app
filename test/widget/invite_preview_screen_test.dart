@@ -55,7 +55,8 @@ Future<void> _pump(WidgetTester tester, Either<Failure, JoinResult> accept,
     GoRoute(
       path: '/i/:token',
       builder: (_, __) => InvitePreviewScreen(
-          token: 'TOK', weddingRepository: _Weddings(accept, gate: gate)),
+          token: 'MFRGGZDFMZTWQ2LKNNWG23TP',
+          weddingRepository: _Weddings(accept, gate: gate)),
     ),
     GoRoute(
         path: '/weddings/:id', builder: (_, __) => const Text('wedding page')),

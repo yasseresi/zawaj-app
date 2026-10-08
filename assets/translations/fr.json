@@ -299,7 +299,7 @@
     "time_at": "À {time}",
     "filter_coming_soon": "Le filtrage sera ajouté plus tard"
   },
-  "invites": {"join_queue_full":"Ce mariage a trop de demandes en attente pour le moment. Réessayez plus tard.","join_declined_recently":"Le propriétaire a refusé votre demande. Vous pourrez redemander plus tard.","removed_from_wedding":"Le propriétaire vous a retiré de ce mariage. Demandez-lui de vous inviter à nouveau.",
+  "invites": {"invalid_link":"Ce lien d'invitation n'est pas valide. Demandez-en un nouveau.","join_queue_full":"Ce mariage a trop de demandes en attente pour le moment. Réessayez plus tard.","join_declined_recently":"Le propriétaire a refusé votre demande. Vous pourrez redemander plus tard.","removed_from_wedding":"Le propriétaire vous a retiré de ce mariage. Demandez-lui de vous inviter à nouveau.",
     "title": "Invitations en attente",
     "empty_title": "Aucune invitation en attente",
     "empty_subtitle": "Les nouvelles invitations à collaborer sur les listes d'invités apparaîtront ici",
