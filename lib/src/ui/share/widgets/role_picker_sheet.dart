@@ -59,9 +59,13 @@ class RolePickerSheet extends StatelessWidget {
                     key: ValueKey('role-${role.name}'),
                     selected: role == selected,
                     selectedColor: cs.primary,
-                    leading: Icon(role == selected
-                        ? Icons.radio_button_checked
-                        : Icons.radio_button_unchecked),
+                    // Decorative: the Semantics wrapper already announces
+                    // the checked state.
+                    leading: ExcludeSemantics(
+                      child: Icon(role == selected
+                          ? Icons.radio_button_checked
+                          : Icons.radio_button_unchecked),
+                    ),
                     title: Text('share.role_${role.name}'.tr()),
                     subtitle: Text((_descriptions[role] ?? '').tr(),
                         style:

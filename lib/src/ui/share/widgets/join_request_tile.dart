@@ -56,7 +56,10 @@ class JoinRequestTile extends StatelessWidget {
                     style: tt.bodyMedium?.copyWith(color: cs.onSurfaceVariant),
                   ),
                   if (age != null)
-                    Text(age.key.tr(namedArgs: age.args),
+                    Text(
+                        age.count == null
+                            ? age.key.tr()
+                            : age.key.plural(age.count!),
                         style:
                             tt.bodySmall?.copyWith(color: cs.onSurfaceVariant)),
                 ],

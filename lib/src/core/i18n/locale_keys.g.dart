@@ -378,10 +378,10 @@ abstract class  LocaleKeys {
   static const phone_invalid = 'phone.invalid';
   static const phone_required = 'phone.required';
   static const phone = 'phone';
-  static const time_days_ago = 'time.days_ago';
-  static const time_hours_ago = 'time.hours_ago';
-  static const time_minutes_ago = 'time.minutes_ago';
   static const time_just_now = 'time.just_now';
+  static const time_minutes_ago = 'time.minutes_ago';
+  static const time_hours_ago = 'time.hours_ago';
+  static const time_days_ago = 'time.days_ago';
   static const time = 'time';
 
 }

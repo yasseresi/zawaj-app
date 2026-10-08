@@ -327,5 +327,5 @@
     "invalid": "Saisissez un numéro algérien valide, ex. 0672 85 99 65",
     "required": "Le numéro de téléphone est obligatoire"
   },
-  "time": {"days_ago":"il y a {count} j","hours_ago":"il y a {count} h","minutes_ago":"il y a {count} min","just_now":"À l'instant"}
+  "time": {"just_now": "À l'instant", "minutes_ago": {"one": "il y a 1 min", "other": "il y a {} min"}, "hours_ago": {"one": "il y a 1 heure", "other": "il y a {} heures"}, "days_ago": {"one": "il y a 1 jour", "other": "il y a {} jours"}}
 }
