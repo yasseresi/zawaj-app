@@ -15,6 +15,7 @@ import '../../../services/export_service.dart';
 import '../../../utils/error_handler.dart';
 import '../../../utils/failure.dart';
 import '../../../utils/input_validation.dart';
+import '../../../utils/logger.dart';
 import '../../../utils/typedefs.dart';
 
 /// Share screen state: collaborators, join requests, invite links and exports.
@@ -160,7 +161,14 @@ class ShareProvider extends ChangeNotifier {
         }
         return false;
       }, (_) async {
-        await onSuccess?.call();
+        // The decision is made; a failing follow-up (e.g. reloading members)
+        // must not put the request back.
+        settled = true;
+        try {
+          await onSuccess?.call();
+        } catch (e) {
+          AppLogger.warning('join decision follow-up failed: $e');
+        }
         return true;
       });
       settled = true;

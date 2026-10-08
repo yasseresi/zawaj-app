@@ -48,9 +48,12 @@ class _FakeWeddingRepository implements WeddingRepository {
     return getResult!;
   }
 
+  bool membersThrow = false;
+
   @override
   FutureEither<List<WeddingMember>> members(String id) async {
     memberCalls++;
+    if (membersThrow) throw StateError('reload blew up');
     return _members();
   }
 
@@ -346,6 +349,18 @@ void main() {
       await expectLater(p.approveRequest(_request), throwsStateError);
       expect(p.isDeciding('r1'), isFalse);
       expect(p.joinRequests, [_request]);
+    });
+
+    test('an approval stays approved if the follow-up reload throws',
+        () async {
+      final repo = _FakeWeddingRepository();
+      final p = _provider(repo, wedding: _wedding(WeddingRole.owner));
+      await p.load();
+      repo.membersThrow = true;
+
+      expect(await p.approveRequest(_request), isTrue);
+      expect(p.joinRequests, isEmpty); // not put back
+      expect(p.isDeciding('r1'), isFalse);
     });
 
     test('ignores a second decision while one is in flight', () async {
