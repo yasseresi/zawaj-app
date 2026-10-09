@@ -59,7 +59,7 @@ class JoinRequestTile extends StatelessWidget {
                     Text(
                         age.count == null
                             ? age.key.tr()
-                            : age.key.plural(age.count!),
+                            : age.key.pluralOrZero(age.count!),
                         style:
                             tt.bodySmall?.copyWith(color: cs.onSurfaceVariant)),
                 ],

@@ -128,7 +128,7 @@ class _DeleteAccountViewState extends State<_DeleteAccountView> {
           ],
           if (provider.sharedCount > 0) ...[
             SizedBox(height: AppSpacing.md.h),
-            Text('settings.delete_shared'.plural(provider.sharedCount),
+            Text('settings.delete_shared'.pluralOrZero(provider.sharedCount),
                 style: tt.bodyMedium),
           ],
           if (provider.owned.isEmpty && provider.sharedCount == 0)
@@ -159,8 +159,8 @@ class _DeleteAccountViewState extends State<_DeleteAccountView> {
               style: tt.titleMedium?.copyWith(fontWeight: FontWeight.w600)),
           SizedBox(height: 2.h),
           Text(
-            '${'weddings.guests_count'.plural(w.guestCount)} · '
-            '${'settings.delete_collaborators'.plural(owned.collaborators)}',
+            '${'weddings.guests_count'.pluralOrZero(w.guestCount)} · '
+            '${'settings.delete_collaborators'.pluralOrZero(owned.collaborators)}',
             style: tt.bodySmall?.copyWith(color: cs.onSurfaceVariant),
           ),
           if (owned.collaborators > 0)

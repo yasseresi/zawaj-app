@@ -209,7 +209,7 @@ class _GuestListViewState extends State<_GuestListView> {
     // its wedding-wide total is the source of truth (also after adds/deletes,
     // and across later reloads or their failures).
     final total = context.select((GuestsProvider p) => p.knownCounts?.all);
-    final count = 'weddings.guests_count'.plural(total ?? w.guestCount);
+    final count = 'weddings.guests_count'.pluralOrZero(total ?? w.guestCount);
     final text = w.eventDate == null
         ? count
         : 'guests.count_date'.tr(namedArgs: {

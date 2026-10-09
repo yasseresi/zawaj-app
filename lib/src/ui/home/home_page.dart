@@ -260,7 +260,7 @@ class _MetaRow extends StatelessWidget {
       runSpacing: 4.h,
       children: [
         _meta(Icons.people_alt_outlined,
-            'weddings.guests_count'.plural(wedding.guestCount), style, cs),
+            'weddings.guests_count'.pluralOrZero(wedding.guestCount), style, cs),
         if (wedding.eventDate != null)
           _meta(Icons.calendar_today_outlined,
               wedding.eventDate!.toIso8601DateOnly, style, cs),
