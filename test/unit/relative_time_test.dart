@@ -19,4 +19,14 @@ void main() {
     final d = relativeTime(now.subtract(const Duration(days: 2)), now: now);
     expect((d.key, d.count), ('time.days_ago', 2));
   });
+
+  test('unit boundaries: 59m, 1h, 23h59m, 24h', () {
+    ({String key, int? count}) at(Duration d) =>
+        relativeTime(now.subtract(d), now: now);
+    expect(at(const Duration(minutes: 59)), (key: 'time.minutes_ago', count: 59));
+    expect(at(const Duration(hours: 1)), (key: 'time.hours_ago', count: 1));
+    expect(at(const Duration(hours: 23, minutes: 59)),
+        (key: 'time.hours_ago', count: 23));
+    expect(at(const Duration(hours: 24)), (key: 'time.days_ago', count: 1));
+  });
 }
