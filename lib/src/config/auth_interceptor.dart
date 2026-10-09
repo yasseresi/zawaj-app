@@ -1,6 +1,7 @@
 import 'dart:math';
 
 import 'package:dio/dio.dart';
+import 'package:flutter/foundation.dart' show visibleForTesting;
 
 import '../utils/logger.dart';
 
@@ -68,7 +69,7 @@ class AuthInterceptor extends Interceptor {
       options.headers['Authorization'] = 'Bearer $token';
     }
     options.headers['X-Request-ID'] = _requestId();
-    AppLogger.info('🌐 [DIO] ${options.method} ${options.path}');
+    AppLogger.info('🌐 [DIO] ${options.method} ${_logPath(options.path)}');
     handler.next(options);
   }
 
@@ -76,7 +77,7 @@ class AuthInterceptor extends Interceptor {
   void onResponse(
       Response<dynamic> response, ResponseInterceptorHandler handler) {
     AppLogger.info(
-        '✅ [DIO] ${response.statusCode} ${response.requestOptions.path}');
+        '✅ [DIO] ${response.statusCode} ${_logPath(response.requestOptions.path)}');
     handler.next(response);
   }
 
@@ -85,7 +86,7 @@ class AuthInterceptor extends Interceptor {
       DioException err, ErrorInterceptorHandler handler) async {
     final status = err.response?.statusCode;
     final opts = err.requestOptions;
-    AppLogger.error('❌ [DIO] $status ${opts.path}');
+    AppLogger.error('❌ [DIO] $status ${_logPath(opts.path)}');
 
     final recoverable = status == 401 &&
         !_authPaths.any(opts.path.endsWith) &&
@@ -142,3 +143,11 @@ class AuthInterceptor extends Interceptor {
     return '$ts-$r';
   }
 }
+
+/// [path] with the invite token masked: debug logs must not hold a bearer
+/// token for joining a wedding (the backend logs route templates likewise).
+@visibleForTesting
+String logPathForTesting(String path) => _logPath(path);
+
+String _logPath(String path) =>
+    path.replaceAll(RegExp(r'/invite/[^/?]+'), '/invite/:token');

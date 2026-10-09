@@ -227,4 +227,10 @@ void main() {
     expect(
         AppConfig.dio.interceptors.whereType<AuthInterceptor>(), hasLength(1));
   });
+
+  test('debug log paths mask invite tokens', () {
+    expect(logPathForTesting('/invite/MFRGGZDFMZTWQ2LK/accept'),
+        '/invite/:token/accept');
+    expect(logPathForTesting('/weddings/1'), '/weddings/1');
+  });
 }
