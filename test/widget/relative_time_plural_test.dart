@@ -2,17 +2,14 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:zawaj_app/src/shared/wrappers/localization_wrapper.dart';
 import 'package:zawaj_app/src/utils/plural.dart';
 
 Future<List<String>> _render(
     WidgetTester tester, Locale locale, List<(String, int)> cases) async {
   final out = <String>[];
-  await tester.runAsync(() => tester.pumpWidget(EasyLocalization(
-        supportedLocales: const [Locale('ar'), Locale('en'), Locale('fr')],
-        path: 'assets/translations',
-        fallbackLocale: const Locale('en'),
+  await tester.runAsync(() => tester.pumpWidget(LocalizationWrapper(
         startLocale: locale,
-        ignorePluralRules: false,
         child: Builder(
           builder: (context) => MaterialApp(
             localizationsDelegates: context.localizationDelegates,
