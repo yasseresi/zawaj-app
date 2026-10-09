@@ -7,6 +7,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:zawaj_app/src/config/app_config.dart';
 import 'package:zawaj_app/src/config/auth_interceptor.dart';
+import 'package:zawaj_app/src/utils/error_handler.dart';
 
 /// In-memory tokens, recording what the interceptor saves and clears.
 class _Tokens implements AuthTokens {
@@ -58,6 +59,12 @@ class _Server implements HttpClientAdapter {
               'data': null,
               'error': {'code': 'unauthenticated', 'message': 'expired'}
             });
+    }
+    if (o.path.endsWith('/accept')) {
+      return _json(429, {
+        'data': null,
+        'error': {'code': 'join_queue_full', 'message': 'queue full'}
+      });
     }
     final ok = o.headers['Authorization'] == 'Bearer $validAccess';
     return ok
@@ -176,6 +183,19 @@ void main() {
         s.dio.get<dynamic>('/weddings'), throwsA(isA<DioException>()));
     expect(s.server.refreshCalls, 1);
     expect(s.server.requests.where((r) => r.path == '/weddings'), hasLength(2));
+  });
+
+  test('a 429 join_queue_full passes through untouched to the error handler',
+      () async {
+    final s = _setup(access: 'new-access');
+    final err = await s.dio
+        .post<dynamic>('/invite/ABC/accept')
+        .then<DioException?>((_) => null,
+            onError: (Object e) => e as DioException);
+    expect(s.server.refreshCalls, 0);
+    final f = AppErrorHandler.toFailure(err!);
+    expect(f.code, 'join_queue_full');
+    expect(AppErrorHandler.userMessage(f), 'invites.join_queue_full');
   });
 
   group('wiring', () {
