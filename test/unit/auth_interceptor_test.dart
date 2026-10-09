@@ -4,6 +4,8 @@ import 'dart:typed_data';
 
 import 'package:dio/dio.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:zawaj_app/src/config/app_config.dart';
 import 'package:zawaj_app/src/config/auth_interceptor.dart';
 
 /// In-memory tokens, recording what the interceptor saves and clears.
@@ -174,5 +176,35 @@ void main() {
         s.dio.get<dynamic>('/weddings'), throwsA(isA<DioException>()));
     expect(s.server.refreshCalls, 1);
     expect(s.server.requests.where((r) => r.path == '/weddings'), hasLength(2));
+  });
+
+  group('wiring', () {
+    // refreshDio must be a bare client: if it carried this interceptor, a 401
+    // from /auth/refresh would recurse into another refresh.
+    test('rejects the main client reused as the refresh client', () {
+      final dio = Dio();
+      expect(
+          () => AuthInterceptor(dio: dio, refreshDio: dio, tokens: _Tokens()),
+          throwsA(isA<AssertionError>()));
+    });
+
+    test('rejects a refresh client that already has an AuthInterceptor', () {
+      final refreshDio = Dio();
+      refreshDio.interceptors.add(AuthInterceptor(
+          dio: refreshDio, refreshDio: Dio(), tokens: _Tokens()));
+      expect(
+          () => AuthInterceptor(
+              dio: Dio(), refreshDio: refreshDio, tokens: _Tokens()),
+          throwsA(isA<AssertionError>()));
+    });
+  });
+
+  test('AppConfig.init wires exactly one AuthInterceptor on the shared client',
+      () async {
+    TestWidgetsFlutterBinding.ensureInitialized();
+    dotenv.loadFromString(envString: 'API_BASE_URL=https://api.test');
+    await AppConfig.init();
+    expect(
+        AppConfig.dio.interceptors.whereType<AuthInterceptor>(), hasLength(1));
   });
 }

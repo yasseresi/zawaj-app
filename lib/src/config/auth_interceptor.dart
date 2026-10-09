@@ -33,7 +33,11 @@ class AuthInterceptor extends Interceptor {
     required Dio refreshDio,
     required AuthTokens tokens,
     this.onSessionExpired,
-  })  : _dio = dio,
+  })  : assert(!identical(dio, refreshDio),
+            'refreshDio must be a separate client from dio'),
+        assert(!refreshDio.interceptors.any((i) => i is AuthInterceptor),
+            'refreshDio must not carry an AuthInterceptor'),
+        _dio = dio,
         _refreshDio = refreshDio,
         _tokens = tokens;
 
