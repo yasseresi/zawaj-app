@@ -31,6 +31,20 @@ abstract interface class GuestRepository {
     String? note,
   });
 
+  /// `PATCH /weddings/:id/guests/:gid` — edit any guest field (editor+).
+  /// Only non-null fields are sent; `''` clears an optional field.
+  FutureEither<Guest> update(
+    String weddingId,
+    String guestId, {
+    String? fullName,
+    String? contact,
+    String? relationship,
+    String? status,
+    int? companions,
+    String? tableLabel,
+    String? meal,
+  });
+
   /// `PATCH /weddings/:id/guests/:gid/status` — set a guest's RSVP status
   /// (editor+). [status] is a wire value. Returns the updated guest.
   FutureEither<Guest> setStatus(String weddingId, String guestId, String status);

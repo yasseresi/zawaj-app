@@ -9,6 +9,20 @@ import 'package:zawaj_app/src/utils/failure.dart';
 import 'package:zawaj_app/src/utils/typedefs.dart';
 
 class _FakeGuestRepository implements GuestRepository {
+  @override
+  FutureEither<Guest> update(
+    String weddingId,
+    String guestId, {
+    String? fullName,
+    String? contact,
+    String? relationship,
+    String? status,
+    int? companions,
+    String? tableLabel,
+    String? meal,
+  }) async =>
+      throw UnimplementedError();
+
   Either<Failure, GuestListResult>? result;
   Either<Failure, void>? deleteResult;
   int calls = 0;
@@ -123,6 +137,29 @@ void main() {
       expect(repo.lastArgs?.query, 'Hind');
     });
 
+    group('knownCounts', () {
+      test('is null until the first successful load', () async {
+        expect(provider.knownCounts, isNull);
+        repo.result = const Left(NetworkFailure('offline'));
+        await provider.load();
+        expect(provider.knownCounts, isNull);
+      });
+
+      test('keeps the last total while a reload is pending or fails', () async {
+        repo.result = const Right(_result);
+        await provider.load();
+
+        repo.result = const Left(NetworkFailure('offline'));
+        final reload = provider.setFilter(GuestFilter.confirmed);
+        expect(provider.status, AppStatus.loading);
+        expect(provider.knownCounts?.all, 2); // mid-reload
+        await reload;
+
+        expect(provider.status, AppStatus.failure);
+        expect(provider.knownCounts?.all, 2); // after a failed reload
+      });
+    });
+
     test('failure sets the error message and status', () async {
       repo.result = const Left(NetworkFailure('offline'));
 
@@ -165,6 +202,60 @@ void main() {
       await provider.load();
 
       expect(provider.isEmpty, isTrue);
+    });
+
+    group('replace', () {
+      test('swaps the row in place without a refetch', () async {
+        repo.result = const Right(_result);
+        await provider.load();
+        final before = repo.calls;
+
+        provider.replace(const Guest(
+            id: 'g1', fullName: 'Hind B.', status: RsvpStatus.confirmed));
+
+        expect(provider.guests.first.fullName, 'Hind B.');
+        expect(provider.counts, _result.counts);
+        expect(repo.calls, before);
+      });
+
+      test('moves the counts when the status changed', () async {
+        repo.result = const Right(_result);
+        await provider.load();
+
+        provider.replace(const Guest(
+            id: 'g2', fullName: 'Youssef', status: RsvpStatus.declined));
+
+        expect(provider.counts,
+            const GuestCounts(all: 2, confirmed: 1, pending: 0, declined: 1));
+      });
+
+      test('drops the row when it no longer matches the active filter',
+          () async {
+        repo.result = const Right(GuestListResult(
+          items: [
+            Guest(id: 'g2', fullName: 'Youssef', status: RsvpStatus.pending)
+          ],
+          counts: GuestCounts(all: 2, confirmed: 1, pending: 1),
+        ));
+        await provider.setFilter(GuestFilter.pending);
+
+        provider.replace(const Guest(
+            id: 'g2', fullName: 'Youssef', status: RsvpStatus.confirmed));
+
+        expect(provider.guests, isEmpty);
+        expect(provider.counts.confirmed, 2);
+      });
+
+      test('ignores guests not on the current page', () async {
+        repo.result = const Right(_result);
+        await provider.load();
+
+        provider.replace(
+            const Guest(id: 'zz', fullName: 'X', status: RsvpStatus.declined));
+
+        expect(provider.guests, _result.items);
+        expect(provider.counts, _result.counts);
+      });
     });
   });
 }

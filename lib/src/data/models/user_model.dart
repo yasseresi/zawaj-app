@@ -1,16 +1,18 @@
 import 'package:equatable/equatable.dart';
 
-/// Domain user. The backend returns two shapes:
-/// - minimal `{id, username, display_name}` from register/login/`GET /me`;
-/// - full `{…, email, dark_mode, notif_*, is_premium}` from `PATCH /me/settings`.
+/// Domain user. The backend's public shape is `{id, username, display_name,
+/// phone?, dark_mode, notif_push, notif_rsvp}` (`GET /me`, `PATCH /me`,
+/// `PATCH /me/settings`, auth responses).
 ///
-/// [fromJson] tolerates both (preference fields default to sane values when the
-/// minimal shape omits them). Hand-written — the stack uses no build_runner.
+/// [fromJson] is lenient: preference fields default to sane values when absent.
+/// [phone] is an Algerian national-format number (`0672859965`) or null.
+/// Hand-written — the stack uses no build_runner.
 class AppUser extends Equatable {
   final String id;
   final String username;
   final String displayName;
   final String? email;
+  final String? phone;
   final bool darkMode;
   final bool notifPush;
   final bool notifEmail;
@@ -22,6 +24,7 @@ class AppUser extends Equatable {
     required this.username,
     required this.displayName,
     this.email,
+    this.phone,
     this.darkMode = false,
     this.notifPush = true,
     this.notifEmail = false,
@@ -41,6 +44,7 @@ class AppUser extends Equatable {
       username: (json['username'] ?? '').toString(),
       displayName: (json['display_name'] ?? json['username'] ?? '').toString(),
       email: json['email']?.toString(),
+      phone: json['phone']?.toString(),
       darkMode: _bool(json['dark_mode'], false),
       notifPush: _bool(json['notif_push'], true),
       notifEmail: _bool(json['notif_email'], false),
@@ -54,6 +58,7 @@ class AppUser extends Equatable {
         'username': username,
         'display_name': displayName,
         if (email != null) 'email': email,
+        if (phone != null) 'phone': phone,
         'dark_mode': darkMode,
         'notif_push': notifPush,
         'notif_email': notifEmail,
@@ -75,6 +80,7 @@ class AppUser extends Equatable {
         username: username,
         displayName: displayName ?? this.displayName,
         email: email ?? this.email,
+        phone: phone,
         darkMode: darkMode ?? this.darkMode,
         notifPush: notifPush ?? this.notifPush,
         notifEmail: notifEmail ?? this.notifEmail,
@@ -92,7 +98,7 @@ class AppUser extends Equatable {
 
   @override
   List<Object?> get props =>
-      [id, username, displayName, email, darkMode, notifPush, notifEmail, notifRsvp, isPremium];
+      [id, username, displayName, email, phone, darkMode, notifPush, notifEmail, notifRsvp, isPremium];
 }
 
 /// Result of register/login/recover: the user plus token pair, and (only on

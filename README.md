@@ -162,7 +162,7 @@ After editing translations, regenerate the keys file:
 flutter pub run easy_localization:generate \
   -S assets/translations \
   -O lib/src/core/i18n \
-  -o locale_keys.g.dart
+  -o locale_keys.g.dart -f keys
 ```
 
 Arabic is the primary language; the UI is **RTL-first**.
@@ -206,7 +206,7 @@ flutter pub get
 flutter pub run easy_localization:generate \
   -S assets/translations \
   -O lib/src/core/i18n \
-  -o locale_keys.g.dart
+  -o locale_keys.g.dart -f keys
 ```
 
 ---

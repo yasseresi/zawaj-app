@@ -2,6 +2,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:fpdart/fpdart.dart';
 import 'package:zawaj_app/src/data/models/wedding_member_model.dart';
 import 'package:zawaj_app/src/data/models/invite_link_model.dart';
+import 'package:zawaj_app/src/data/models/join_request_model.dart';
 import 'package:zawaj_app/src/data/models/wedding_model.dart';
 import 'package:zawaj_app/src/data/repositories/wedding_repository.dart';
 import 'package:zawaj_app/src/shared/enums/app_status.dart';
@@ -10,6 +11,10 @@ import 'package:zawaj_app/src/utils/failure.dart';
 import 'package:zawaj_app/src/utils/typedefs.dart';
 
 class _FakeWeddingRepository implements WeddingRepository {
+  @override
+  FutureEither<void> transferOwnership(String id, String userId) async =>
+      throw UnimplementedError();
+
   @override
   FutureEither<InviteLink> createInviteLink(String id, String role) =>
       throw UnimplementedError();
@@ -23,11 +28,30 @@ class _FakeWeddingRepository implements WeddingRepository {
   FutureEither<InvitePreview> previewInvite(String token) =>
       throw UnimplementedError();
   @override
-  FutureEither<InvitePreview> acceptInviteLink(String token) =>
+  FutureEither<JoinResult> acceptInviteLink(String token) =>
+      throw UnimplementedError();
+  @override
+  FutureEither<List<JoinRequest>> listJoinRequests(String weddingId) =>
+      throw UnimplementedError();
+  @override
+  FutureEither<void> approveJoinRequest(String weddingId, String requestId,
+          {WeddingRole? role}) =>
+      throw UnimplementedError();
+  @override
+  FutureEither<void> declineJoinRequest(String weddingId, String requestId) =>
       throw UnimplementedError();
   Either<Failure, List<Wedding>>? result;
   Either<Failure, void>? deleteResult;
   final List<String> deletedIds = [];
+  Either<Failure, Wedding>? getResult;
+
+  @override
+  FutureEither<Wedding> get(String id) async => getResult!;
+
+  @override
+  FutureEither<Wedding> update(String id,
+          {String? name, String? eventDate, String? description}) async =>
+      throw UnimplementedError();
 
   @override
   FutureEither<List<Wedding>> myWeddings() async => result!;
@@ -140,6 +164,60 @@ void main() {
       expect(ok, isFalse);
       expect(provider.weddings, [_wedding]);
       expect(provider.errorMessage, 'nope');
+    });
+  });
+
+  group('single-wedding sync', () {
+    const cached = Wedding(
+        id: 'w1',
+        name: 'Old',
+        ownerId: 'u1',
+        role: WeddingRole.owner,
+        guestCount: 12);
+    const other = Wedding(
+        id: 'w2', name: 'Other', ownerId: 'u2', role: WeddingRole.viewer);
+
+    Future<WeddingsProvider> loaded(_FakeWeddingRepository repo) async {
+      repo.result = const Right([cached, other]);
+      final p = WeddingsProvider(repository: repo);
+      await p.load();
+      return p;
+    }
+
+    test('applyUpdate merges edited fields and keeps role and guest count',
+        () async {
+      final repo = _FakeWeddingRepository();
+      final p = await loaded(repo);
+
+      // PATCH returns the bare wedding: no my_role (parses as viewer), no count.
+      p.applyUpdate(Wedding(
+          id: 'w1',
+          name: 'Renamed',
+          ownerId: 'u1',
+          role: WeddingRole.viewer,
+          eventDate: DateTime(2026, 12, 1),
+          description: 'Hall B'));
+
+      final w = p.weddingById('w1')!;
+      expect(w.name, 'Renamed');
+      expect(w.eventDate, DateTime(2026, 12, 1));
+      expect(w.description, 'Hall B');
+      expect(w.role, WeddingRole.owner);
+      expect(w.guestCount, 12);
+    });
+
+    test('silent reload keeps the list visible and picks up new counts',
+        () async {
+      final repo = _FakeWeddingRepository();
+      final p = await loaded(repo);
+      repo.result = Right([cached.copyWith(guestCount: 15), other]);
+
+      final statuses = <AppStatus>[];
+      p.addListener(() => statuses.add(p.status));
+      await p.load(silent: true);
+
+      expect(statuses, isNot(contains(AppStatus.loading)));
+      expect(p.weddingById('w1')!.guestCount, 15);
     });
   });
 }

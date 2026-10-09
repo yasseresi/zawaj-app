@@ -43,12 +43,8 @@ Future<void> main() async {
   await PushNotificationService.instance.initialize();
 
   runApp(
-    EasyLocalization(
-      startLocale: const Locale('ar'), // Arabic-first (RTL) by default
-      supportedLocales: const [Locale('ar'), Locale('en'), Locale('fr')],
-      path: 'assets/translations',
-      fallbackLocale: const Locale('ar'),
-      child: const StateWrapper(
+    const LocalizationWrapper(
+      child: StateWrapper(
         child: App(),
       ),
     ),

@@ -6,5 +6,6 @@ export 'input_formatters.dart';
 export 'input_validation.dart';
 export 'logger.dart';
 export 'platform_info.dart';
+export 'plural.dart';
 export 'task_runner.dart';
 export 'typedefs.dart';

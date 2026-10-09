@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:fpdart/fpdart.dart';
 
 import '../data/models/user_model.dart';
@@ -14,11 +15,17 @@ import '../utils/utils.dart';
 /// Backend contract: username + password + one-time recovery code; JWT access
 /// (15m) + refresh (30d) with rotation.
 class AuthService {
-  AuthService._();
+  AuthService._({ApiClient? api, TokenStorage? tokens})
+      : _api = api ?? ApiClient.instance,
+        _tokens = tokens ?? TokenStorage.instance;
   static final AuthService instance = AuthService._();
 
-  final ApiClient _api = ApiClient.instance;
-  final TokenStorage _tokens = TokenStorage.instance;
+  @visibleForTesting
+  factory AuthService.test({required ApiClient api, TokenStorage? tokens}) =>
+      AuthService._(api: api, tokens: tokens);
+
+  final ApiClient _api;
+  final TokenStorage _tokens;
 
   /// `POST /auth/register` → user + tokens + one-time recovery code (201).
   FutureEither<AuthResult> register({
@@ -81,7 +88,8 @@ class AuthService {
   FutureEitherVoid logout() async {
     final refresh = await _tokens.refreshToken;
     if (refresh != null && refresh.isNotEmpty) {
-      await _api.post<void>('/auth/logout', body: {'refresh': refresh}, parse: parseVoid);
+      await _api.post<void>('/auth/logout',
+          body: {'refresh': refresh}, parse: parseVoid);
     }
     await _tokens.clear();
     return const Right<Failure, void>(null);
@@ -93,32 +101,57 @@ class AuthService {
         parse: (d) => AppUser.fromJson((d as Map).cast<String, dynamic>()),
       );
 
-  /// `PATCH /me` — update display name.
-  FutureEither<AppUser> updateProfile({required String displayName}) => _api.patch<AppUser>(
+  /// `PATCH /me` — update display name and/or phone. Only non-null fields are
+  /// sent; `phone: ''` clears the phone.
+  FutureEither<AppUser> updateProfile({String? displayName, String? phone}) =>
+      _api.patch<AppUser>(
         '/me',
-        body: {'display_name': displayName},
+        body: {
+          if (displayName != null) 'display_name': displayName,
+          if (phone != null) 'phone': phone,
+        },
         parse: (d) => AppUser.fromJson((d as Map).cast<String, dynamic>()),
       );
 
   /// `PATCH /me/password` — kills all sessions; caller must re-authenticate.
-  FutureEitherVoid changePassword({required String oldPassword, required String newPassword}) =>
-      _api.patch<void>(
-        '/me/password',
-        body: {'old_password': oldPassword, 'new_password': newPassword},
-        parse: parseVoid,
-      );
+  /// `PATCH /me/password`. 401 = wrong current password, 423 = locked. Same
+  /// pre-flight + no-retry contract as [deleteAccount], so a wrong password
+  /// counts once toward the lockout.
+  FutureEitherVoid changePassword(
+      {required String oldPassword, required String newPassword}) async {
+    final fresh = await getMe();
+    if (fresh.isLeft()) return fresh.map((_) {});
+    return _api.patch<void>(
+      '/me/password',
+      body: {'old_password': oldPassword, 'new_password': newPassword},
+      skipAuthRefresh: true,
+      parse: parseVoid,
+    );
+  }
 
-  /// `PATCH /me/settings` — update preferences (email/dark_mode/notif_*); returns
-  /// the full user model.
-  FutureEither<AppUser> updateSettings(Map<String, dynamic> patch) => _api.patch<AppUser>(
+  /// `PATCH /me/settings` — update preferences (`notif_push`, `notif_rsvp`, …);
+  /// returns the updated user.
+  FutureEither<AppUser> updateSettings(Map<String, dynamic> patch) =>
+      _api.patch<AppUser>(
         '/me/settings',
         body: patch,
         parse: (d) => AppUser.fromJson((d as Map).cast<String, dynamic>()),
       );
 
-  /// `DELETE /me` — hard-delete account + cascade owned weddings.
-  FutureEitherVoid deleteAccount() async {
-    final result = await _api.delete<void>('/me', parse: parseVoid);
+  /// `DELETE /me` `{password}` — hard-delete the account and cascade owned
+  /// weddings (server also drops device tokens). 401 = wrong password, 423 =
+  /// locked. A `GET /me` first refreshes an expired access token, so the
+  /// DELETE can skip the 401 refresh-retry: a retry would replay the wrong
+  /// password and count twice toward the lockout.
+  FutureEitherVoid deleteAccount({required String password}) async {
+    final fresh = await getMe();
+    if (fresh.isLeft()) return fresh.map((_) {});
+    final result = await _api.delete<void>(
+      '/me',
+      body: {'password': password},
+      skipAuthRefresh: true,
+      parse: parseVoid,
+    );
     if (result.isRight()) await _tokens.clear();
     return result;
   }

@@ -6,14 +6,21 @@ import 'package:zawaj_app/src/data/models/guest_model.dart';
 import 'package:zawaj_app/src/data/repositories/guest_repository.dart';
 import 'package:zawaj_app/src/ui/weddings/providers/guest_detail_provider.dart';
 import 'package:zawaj_app/src/ui/weddings/widgets/add_note_sheet.dart';
+import 'package:zawaj_app/src/ui/weddings/widgets/contact_actions_sheet.dart';
+import 'package:zawaj_app/src/utils/phone.dart';
 import 'package:zawaj_app/src/ui/weddings/widgets/edit_status_sheet.dart';
 
 /// Navigation payload for the guest-detail route: the tapped guest (for an
 /// instant header) plus whether the caller may edit it.
 class GuestDetailArgs {
-  const GuestDetailArgs({this.initial, this.canEdit = false});
+  const GuestDetailArgs(
+      {this.initial, this.canEdit = false, this.onGuestUpdated});
   final Guest? initial;
   final bool canEdit;
+
+  /// Called after a full edit saves, so the opener (guest list) can swap the
+  /// row in place instead of refetching.
+  final ValueChanged<Guest>? onGuestUpdated;
 }
 
 /// Screen 7 (guest detail) wired to `GET /weddings/:id/guests/:gid`. Shows the
@@ -27,6 +34,7 @@ class GuestDetailScreen extends StatelessWidget {
     required this.guestId,
     this.initial,
     this.canEdit = false,
+    this.onGuestUpdated,
     this.repository,
   });
 
@@ -34,6 +42,7 @@ class GuestDetailScreen extends StatelessWidget {
   final String guestId;
   final Guest? initial;
   final bool canEdit;
+  final ValueChanged<Guest>? onGuestUpdated;
   final GuestRepository? repository;
 
   @override
@@ -44,16 +53,37 @@ class GuestDetailScreen extends StatelessWidget {
         guestId: guestId,
         repository: repository,
       )..load(),
-      child: _GuestDetailView(initial: initial, canEdit: canEdit),
+      child: _GuestDetailView(
+          weddingId: weddingId,
+          initial: initial,
+          canEdit: canEdit,
+          onGuestUpdated: onGuestUpdated),
     );
   }
 }
 
 class _GuestDetailView extends StatelessWidget {
-  const _GuestDetailView({this.initial, this.canEdit = false});
+  const _GuestDetailView({
+    required this.weddingId,
+    this.initial,
+    this.canEdit = false,
+    this.onGuestUpdated,
+  });
 
+  final String weddingId;
   final Guest? initial;
   final bool canEdit;
+  final ValueChanged<Guest>? onGuestUpdated;
+
+  Future<void> _editGuest(BuildContext context, Guest guest) async {
+    final provider = context.read<GuestDetailProvider>();
+    final updated = await context.push<Guest>(
+        '/weddings/$weddingId/guests/${guest.id}/edit',
+        extra: guest);
+    if (updated == null) return;
+    onGuestUpdated?.call(updated);
+    await provider.load(); // header + history ("guest updated")
+  }
 
   Future<void> _editStatus(BuildContext context, RsvpStatus current) async {
     final provider = context.read<GuestDetailProvider>();
@@ -106,9 +136,14 @@ class _GuestDetailView extends StatelessWidget {
                   onPressed: () => _addNote(context),
                 ),
                 IconButton(
-                  icon: const Icon(Icons.edit_outlined),
+                  icon: const Icon(Icons.how_to_reg_outlined),
                   tooltip: 'guests.edit_status_title'.tr(),
                   onPressed: () => _editStatus(context, guest.status),
+                ),
+                IconButton(
+                  icon: const Icon(Icons.edit_outlined),
+                  tooltip: 'guests.edit_action'.tr(),
+                  onPressed: () => _editGuest(context, guest),
                 ),
               ]
             : null,
@@ -219,22 +254,19 @@ class _InfoCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final phone = normalizePhone(guest.contact);
     final rows = <(IconData, String, String)>[
       if (guest.contact.isNotEmpty)
-        (Icons.mail_outline, 'guests.info_contact'.tr(), guest.contact),
+        (
+          phone != null ? Icons.phone_outlined : Icons.mail_outline,
+          'guests.info_contact'.tr(),
+          phone != null ? formatPhone(phone) : guest.contact
+        ),
       (
         Icons.group_outlined,
         'guests.info_companions'.tr(),
         '${guest.companions}'
       ),
-      if (guest.tableLabel.isNotEmpty)
-        (
-          Icons.table_restaurant_outlined,
-          'guests.info_table'.tr(),
-          guest.tableLabel
-        ),
-      if (guest.meal.isNotEmpty)
-        (Icons.restaurant_outlined, 'guests.info_meal'.tr(), guest.meal),
     ];
 
     return AppCard(
@@ -242,7 +274,15 @@ class _InfoCard extends StatelessWidget {
         children: [
           for (final (i, row) in rows.indexed) ...[
             if (i > 0) const AppDivider(),
-            _InfoRow(icon: row.$1, label: row.$2, value: row.$3),
+            _InfoRow(
+              icon: row.$1,
+              label: row.$2,
+              value: row.$3,
+              // Only the contact row (first, when present) is actionable.
+              onTap: (i == 0 && phone != null)
+                  ? () => showContactActionsSheet(context, phone)
+                  : null,
+            ),
           ],
         ],
       ),
@@ -252,16 +292,20 @@ class _InfoCard extends StatelessWidget {
 
 class _InfoRow extends StatelessWidget {
   const _InfoRow(
-      {required this.icon, required this.label, required this.value});
+      {required this.icon,
+      required this.label,
+      required this.value,
+      this.onTap});
   final IconData icon;
   final String label;
   final String value;
+  final VoidCallback? onTap;
 
   @override
   Widget build(BuildContext context) {
     final cs = context.colors;
     final tt = context.textTheme;
-    return Padding(
+    final row = Padding(
       padding: EdgeInsets.symmetric(vertical: AppSpacing.sm.h),
       child: Row(
         children: [
@@ -272,8 +316,26 @@ class _InfoRow extends StatelessWidget {
                 style: tt.bodyMedium?.copyWith(color: cs.onSurfaceVariant)),
           ),
           Text(value,
-              style: tt.bodyMedium?.copyWith(fontWeight: FontWeight.w600)),
+              textDirection: onTap != null ? TextDirection.ltr : null,
+              style: tt.bodyMedium?.copyWith(
+                  fontWeight: FontWeight.w600,
+                  color: onTap != null ? cs.primary : null)),
+          if (onTap != null) ...[
+            SizedBox(width: AppSpacing.xs.w),
+            Icon(Icons.chevron_right_rounded,
+                size: 18.sp, color: cs.onSurfaceVariant),
+          ],
         ],
+      ),
+    );
+    if (onTap == null) return row;
+    return Semantics(
+      button: true,
+      child: InkWell(
+        onTap: onTap,
+        borderRadius: BorderRadius.circular(8),
+        child: ConstrainedBox(
+            constraints: const BoxConstraints(minHeight: 48), child: row),
       ),
     );
   }

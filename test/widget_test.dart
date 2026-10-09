@@ -18,6 +18,10 @@ import 'package:zawaj_app/src/utils/typedefs.dart';
 
 class _FakeAuthRepository implements AuthRepository {
   @override
+  FutureEitherVoid deleteAccount({required String password}) async =>
+      throw UnimplementedError();
+
+  @override
   FutureEitherVoid changePassword(
           {required String oldPassword, required String newPassword}) async =>
       const Right(null);
@@ -44,6 +48,14 @@ class _FakeAuthRepository implements AuthRepository {
   FutureEitherVoid logout() async => const Right(null);
   @override
   FutureEither<AppUser> me() async => const Left(AuthFailure('nope'));
+
+  @override
+  FutureEither<AppUser> updateProfile({String? displayName, String? phone}) async =>
+      throw UnimplementedError();
+
+  @override
+  FutureEither<AppUser> updateSettings({bool? notifPush, bool? notifRsvp}) async =>
+      throw UnimplementedError();
 }
 
 void main() {

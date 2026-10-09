@@ -29,15 +29,27 @@ class WeddingsProvider extends ChangeNotifier {
   /// genuine empty state from the initial/loading states.
   bool get isEmpty => _status.isSuccess && _weddings.isEmpty;
 
+  Wedding? weddingById(String id) {
+    for (final w in _weddings) {
+      if (w.id == id) return w;
+    }
+    return null;
+  }
+
   /// Fetch the caller's weddings. Idempotent; safe to call for pull-to-refresh.
-  Future<void> load() async {
-    _status = AppStatus.loading;
-    _errorMessage = null;
-    notifyListeners();
+  /// [silent] re-syncs in the background (e.g. returning from a wedding):
+  /// the current list stays on screen, and a failure keeps it as is.
+  Future<void> load({bool silent = false}) async {
+    if (!silent) {
+      _status = AppStatus.loading;
+      _errorMessage = null;
+      notifyListeners();
+    }
 
     final result = await _repository.myWeddings();
     result.match(
       (failure) {
+        if (silent && _status.isSuccess) return;
         _status = AppStatus.failure;
         _errorMessage = failure.message;
         notifyListeners();
@@ -81,5 +93,14 @@ class WeddingsProvider extends ChangeNotifier {
         return true;
       },
     );
+  }
+
+  /// Merge a `PATCH /weddings/:id` result into the cached item. The response
+  /// has no role or guest count, so only the editable fields are taken.
+  void applyUpdate(Wedding updated) {
+    _weddings = [
+      for (final w in _weddings) w.id == updated.id ? w.withEdits(updated) : w
+    ];
+    notifyListeners();
   }
 }

@@ -34,6 +34,9 @@ class AppTextField extends StatelessWidget {
     this.suffixIcon,
     this.initialValue,
     this.autofocus = false,
+    this.inputFormatters,
+    this.autofillHints,
+    this.textDirection,
   });
 
   final String? label;
@@ -54,6 +57,9 @@ class AppTextField extends StatelessWidget {
   final Widget? suffixIcon;
   final String? initialValue;
   final bool autofocus;
+  final List<TextInputFormatter>? inputFormatters;
+  final Iterable<String>? autofillHints;
+  final TextDirection? textDirection;
 
   @override
   Widget build(BuildContext context) {
@@ -75,6 +81,11 @@ class AppTextField extends StatelessWidget {
       maxLines: obscureText ? 1 : maxLines,
       minLines: minLines,
       autofocus: autofocus,
+      inputFormatters: inputFormatters,
+      autofillHints: autofillHints,
+      // Passwords are Latin by nature; in RTL layouts a trailing symbol
+      // (e.g. "!") would otherwise render at the start.
+      textDirection: textDirection ?? (obscureText ? TextDirection.ltr : null),
       style: tt.bodyLarge?.copyWith(color: cs.onSurface),
       cursorColor: cs.primary,
       decoration: InputDecoration(

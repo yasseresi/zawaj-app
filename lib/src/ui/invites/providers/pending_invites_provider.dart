@@ -5,6 +5,7 @@ import '../../../data/repositories/invite_repository.dart';
 import '../../../data/repositories/invite_repository_impl.dart';
 import '../../../shared/enums/app_status.dart';
 import '../../../utils/typedefs.dart';
+import '../../../utils/error_handler.dart';
 
 export '../../../data/models/pending_invite_model.dart' show PendingInvite;
 
@@ -64,7 +65,7 @@ class PendingInvitesProvider extends ChangeNotifier {
     final result = await action;
     return result.match(
       (failure) {
-        _errorMessage = failure.message;
+        _errorMessage = AppErrorHandler.userMessage(failure);
         _actionLoadingId = null;
         notifyListeners();
         return false;

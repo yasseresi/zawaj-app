@@ -146,11 +146,17 @@ class _WeddingTile extends StatelessWidget {
     );
   }
 
-  VoidCallback _open(BuildContext context) => () => context.pushNamed(
-        'wedding',
-        pathParameters: {'id': wedding.id},
-        extra: wedding,
-      );
+  /// Open the wedding; on return, silently re-sync the list so edits, guest
+  /// counts, a transfer, or lost access show without a loading flash.
+  VoidCallback _open(BuildContext context) => () async {
+        final provider = context.read<WeddingsProvider>();
+        await context.pushNamed(
+          'wedding',
+          pathParameters: {'id': wedding.id},
+          extra: wedding,
+        );
+        await provider.load(silent: true);
+      };
 
   /// Owner-only: the backend delete is gated on the owner role, so hide the
   /// affordance for shared weddings entirely.
@@ -254,7 +260,7 @@ class _MetaRow extends StatelessWidget {
       runSpacing: 4.h,
       children: [
         _meta(Icons.people_alt_outlined,
-            'weddings.guests_count'.plural(wedding.guestCount), style, cs),
+            'weddings.guests_count'.pluralOrZero(wedding.guestCount), style, cs),
         if (wedding.eventDate != null)
           _meta(Icons.calendar_today_outlined,
               wedding.eventDate!.toIso8601DateOnly, style, cs),

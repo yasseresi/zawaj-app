@@ -3,6 +3,24 @@ import 'package:zawaj_app/src/data/models/user_model.dart';
 
 void main() {
   group('AppUser.fromJson', () {
+    test('parses phone and treats a missing phone as null', () {
+      final withPhone = AppUser.fromJson(const {
+        'id': 'a', 'username': 'u', 'display_name': 'U', 'phone': '0672859965',
+      });
+      expect(withPhone.phone, '0672859965');
+      expect(withPhone.toJson()['phone'], '0672859965');
+
+      final without = AppUser.fromJson(const {'id': 'a', 'username': 'u'});
+      expect(without.phone, isNull);
+      expect(without.toJson().containsKey('phone'), isFalse);
+    });
+
+    test('phone participates in equality', () {
+      const a = AppUser(id: '1', username: 'u', displayName: 'U', phone: '0672859965');
+      const b = AppUser(id: '1', username: 'u', displayName: 'U');
+      expect(a == b, isFalse);
+    });
+
     test('parses the minimal login/me shape and defaults preferences', () {
       final u = AppUser.fromJson(const {
         'id': 'abc',

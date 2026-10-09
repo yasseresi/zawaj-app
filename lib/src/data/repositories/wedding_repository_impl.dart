@@ -2,6 +2,7 @@ import '../../services/wedding_service.dart';
 import '../../utils/typedefs.dart';
 import '../models/wedding_member_model.dart';
 import '../models/invite_link_model.dart';
+import '../models/join_request_model.dart';
 import '../models/wedding_model.dart';
 import 'wedding_repository.dart';
 
@@ -26,6 +27,15 @@ class WeddingRepositoryImpl implements WeddingRepository {
           name: name, eventDate: eventDate, description: description);
 
   @override
+  FutureEither<Wedding> get(String id) => _service.get(id);
+
+  @override
+  FutureEither<Wedding> update(String id,
+          {String? name, String? eventDate, String? description}) =>
+      _service.update(id,
+          name: name, eventDate: eventDate, description: description);
+
+  @override
   FutureEither<void> delete(String id) => _service.delete(id);
 
   @override
@@ -38,6 +48,10 @@ class WeddingRepositoryImpl implements WeddingRepository {
   @override
   FutureEither<void> removeMember(String id, String userId) =>
       _service.removeMember(id, userId);
+
+  @override
+  FutureEither<void> transferOwnership(String id, String userId) =>
+      _service.transferOwnership(id, userId);
 
   @override
   FutureEither<InviteLink> createInviteLink(String id, String role) =>
@@ -54,6 +68,19 @@ class WeddingRepositoryImpl implements WeddingRepository {
       _service.previewInvite(token);
 
   @override
-  FutureEither<InvitePreview> acceptInviteLink(String token) =>
+  FutureEither<JoinResult> acceptInviteLink(String token) =>
       _service.acceptInviteLink(token);
+
+  @override
+  FutureEither<List<JoinRequest>> listJoinRequests(String weddingId) =>
+      _service.listJoinRequests(weddingId);
+
+  @override
+  FutureEither<void> approveJoinRequest(String weddingId, String requestId,
+          {WeddingRole? role}) =>
+      _service.approveJoinRequest(weddingId, requestId, role: role);
+
+  @override
+  FutureEither<void> declineJoinRequest(String weddingId, String requestId) =>
+      _service.declineJoinRequest(weddingId, requestId);
 }

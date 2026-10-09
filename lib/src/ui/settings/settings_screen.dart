@@ -3,6 +3,7 @@ import '../../imports/packages_imports.dart';
 import '../../shared/providers/theme_provider.dart';
 import '../auth/providers/session_provider.dart';
 import 'providers/settings_provider.dart';
+import 'widgets/edit_profile_sheet.dart';
 import 'widgets/profile_card.dart';
 import 'widgets/settings_section.dart';
 
@@ -52,7 +53,7 @@ class _SettingsView extends StatelessWidget {
                   SettingsRow(
                     label: 'settings.edit_profile'.tr(),
                     icon: Icons.person_outline_rounded,
-                    onTap: () => _showComingSoonToast(context),
+                    onTap: () => _showEditProfile(context),
                   ),
                   SettingsRow(
                     label: 'settings.change_password'.tr(),
@@ -103,6 +104,34 @@ class _SettingsView extends StatelessWidget {
               ),
               SizedBox(height: AppSpacing.lg.h),
               SettingsSection(
+                title: 'settings.notifications_section'.tr(),
+                children: [
+                  SettingsRow(
+                    label: 'settings.notif_push'.tr(),
+                    icon: Icons.notifications_active_outlined,
+                    trailing: Switch.adaptive(
+                      value: session.user?.notifPush ?? true,
+                      onChanged: (value) => _togglePreference(
+                          context, (p) => p.setNotifPush(value)),
+                    ),
+                  ),
+                  SettingsRow(
+                    label: 'settings.notif_rsvp'.tr(),
+                    subtitle: 'settings.notif_rsvp_subtitle'.tr(),
+                    icon: Icons.how_to_reg_outlined,
+                    trailing: Switch.adaptive(
+                      value: session.user?.notifRsvp ?? true,
+                      // RSVP alerts arrive by push, so they need push enabled.
+                      onChanged: (session.user?.notifPush ?? true)
+                          ? (value) => _togglePreference(
+                              context, (p) => p.setNotifRsvp(value))
+                          : null,
+                    ),
+                  ),
+                ],
+              ),
+              SizedBox(height: AppSpacing.lg.h),
+              SettingsSection(
                 title: 'settings.collaboration_section'.tr(),
                 children: [
                   SettingsRow(
@@ -126,6 +155,18 @@ class _SettingsView extends StatelessWidget {
                 onPressed: () => _showLogoutDialog(context),
               ),
               SizedBox(height: AppSpacing.xl.h),
+              SettingsSection(
+                title: 'settings.danger_zone'.tr(),
+                children: [
+                  SettingsRow(
+                    label: 'settings.delete_account'.tr(),
+                    icon: Icons.delete_forever_outlined,
+                    destructive: true,
+                    onTap: () => context.push(AppRoutes.deleteAccount),
+                  ),
+                ],
+              ),
+              SizedBox(height: AppSpacing.xl.h),
             ],
           ),
         ),
@@ -141,8 +182,41 @@ class _SettingsView extends StatelessWidget {
     };
   }
 
-  void _showComingSoonToast(BuildContext context) {
-    context.showSnackBar('settings.coming_soon'.tr());
+  Future<void> _togglePreference(BuildContext context,
+      Future<bool> Function(SettingsProvider) toggle) async {
+    final settings = context.read<SettingsProvider>();
+    if (!await toggle(settings) && settings.preferencesErrorMessage != null) {
+      showGlobalToast(
+          message: settings.preferencesErrorMessage!, status: 'error');
+    }
+  }
+
+  Future<void> _showEditProfile(BuildContext context) async {
+    final user = context.read<SessionProvider>().user;
+    if (user == null) return;
+    final settings = context.read<SettingsProvider>();
+    final saved = await showModalBottomSheet<bool>(
+      context: context,
+      isScrollControlled: true,
+      useSafeArea: true,
+      backgroundColor: Colors.transparent,
+      builder: (_) => EditProfileSheet(
+        user: user,
+        onSave: (name, phone) async {
+          final ok =
+              await settings.updateProfile(displayName: name, phone: phone);
+          if (!ok) {
+            showGlobalToast(
+                message: settings.profileErrorMessage ?? 'errors.unknown'.tr(),
+                status: 'error');
+          }
+          return ok;
+        },
+      ),
+    );
+    if (saved ?? false) {
+      showGlobalToast(message: 'settings.profile_saved'.tr());
+    }
   }
 
   void _showLanguagePicker(BuildContext context) {

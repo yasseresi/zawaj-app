@@ -115,6 +115,19 @@ void main() {
       expect(provider.invites.length, 2); // unchanged
     });
 
+    test('a stale invite after removal surfaces the localized reason', () async {
+      final repo = _FakeInviteRepository(
+        listResult: const Right(_invites),
+        acceptResult: const Left(
+            ForbiddenFailure('removed', code: 'removed_from_wedding')),
+      );
+      final provider = PendingInvitesProvider(repository: repo);
+      await provider.load();
+
+      expect(await provider.acceptInvite('1'), isFalse);
+      expect(provider.errorMessage, 'invites.removed_from_wedding');
+    });
+
     test('isEmpty is true after loading an empty list', () async {
       final provider = PendingInvitesProvider(
         repository: _FakeInviteRepository(listResult: const Right([])),

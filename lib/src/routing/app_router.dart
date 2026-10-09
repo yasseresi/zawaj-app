@@ -2,6 +2,7 @@ import 'package:flutter/widgets.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 
+import '../data/models/guest_model.dart';
 import '../data/models/wedding_model.dart';
 import '../ui/activity/activity_log_screen.dart';
 import '../ui/analytics/analytics_screen.dart';
@@ -13,6 +14,7 @@ import '../ui/home/home_page.dart';
 import '../ui/invites/pending_invites_screen.dart';
 import '../ui/notifications/notifications_screen.dart';
 import '../ui/onboarding/onboarding_page.dart';
+import '../ui/settings/delete_account_screen.dart';
 import '../ui/settings/settings_screen.dart';
 import '../ui/settings/change_password_screen.dart';
 import '../ui/settings/providers/settings_provider.dart';
@@ -20,6 +22,8 @@ import '../ui/share/share_screen.dart';
 import '../ui/share/invite_preview_screen.dart';
 import '../ui/shell/main_navigation_shell.dart';
 import '../ui/weddings/create_wedding_screen.dart';
+import '../ui/weddings/edit_guest_screen.dart';
+import '../ui/weddings/edit_wedding_screen.dart';
 import '../ui/weddings/guest_detail_screen.dart';
 import '../ui/weddings/guest_list_screen.dart';
 import '../services/storage_service.dart';
@@ -51,6 +55,11 @@ final GoRouter appRouter = GoRouter(
       path: AppRoutes.recover,
       name: 'recover',
       builder: (context, state) => const RecoverScreen(),
+    ),
+    GoRoute(
+      path: AppRoutes.deleteAccount,
+      name: 'delete_account',
+      builder: (context, state) => const DeleteAccountScreen(),
     ),
     GoRoute(
       path: AppRoutes.changePassword,
@@ -117,6 +126,17 @@ final GoRouter appRouter = GoRouter(
       ),
     ),
     GoRoute(
+      path: AppRoutes.editWedding,
+      name: 'edit_wedding',
+      // Needs the wedding (with the caller's role) from the wedding screen;
+      // a cold deep link goes to the wedding itself instead.
+      redirect: (context, state) => state.extra is Wedding
+          ? null
+          : '/weddings/${state.pathParameters['id']}',
+      builder: (context, state) =>
+          EditWeddingScreen(wedding: state.extra! as Wedding),
+    ),
+    GoRoute(
       path: AppRoutes.guestDetail,
       name: 'guest_detail',
       builder: (context, state) {
@@ -128,8 +148,21 @@ final GoRouter appRouter = GoRouter(
           guestId: state.pathParameters['gid'] ?? '',
           initial: args.initial,
           canEdit: args.canEdit,
+          onGuestUpdated: args.onGuestUpdated,
         );
       },
+    ),
+    GoRoute(
+      path: AppRoutes.editGuest,
+      name: 'edit_guest',
+      // Needs the guest from the detail screen; a cold deep link goes there.
+      redirect: (context, state) => state.extra is Guest
+          ? null
+          : '/weddings/${state.pathParameters['id']}/guests/${state.pathParameters['gid']}',
+      builder: (context, state) => EditGuestScreen(
+        weddingId: state.pathParameters['id'] ?? '',
+        guest: state.extra! as Guest,
+      ),
     ),
     GoRoute(
       path: AppRoutes.activity,

@@ -40,4 +40,19 @@ class AuthRepositoryImpl implements AuthRepository {
 
   @override
   FutureEither<AppUser> me() => _service.getMe();
+
+  @override
+  FutureEither<AppUser> updateProfile({String? displayName, String? phone}) =>
+      _service.updateProfile(displayName: displayName, phone: phone);
+
+  @override
+  FutureEither<AppUser> updateSettings({bool? notifPush, bool? notifRsvp}) =>
+      _service.updateSettings({
+        if (notifPush != null) 'notif_push': notifPush,
+        if (notifRsvp != null) 'notif_rsvp': notifRsvp,
+      });
+
+  @override
+  FutureEitherVoid deleteAccount({required String password}) =>
+      _service.deleteAccount(password: password);
 }

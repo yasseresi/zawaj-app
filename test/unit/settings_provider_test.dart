@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:fpdart/fpdart.dart';
@@ -6,6 +8,7 @@ import 'package:zawaj_app/src/data/repositories/auth_repository.dart';
 import 'package:zawaj_app/src/shared/providers/theme_provider.dart';
 import 'package:zawaj_app/src/ui/auth/providers/session_provider.dart';
 import 'package:zawaj_app/src/ui/settings/providers/settings_provider.dart';
+import 'package:zawaj_app/src/utils/failure.dart';
 import 'package:zawaj_app/src/utils/typedefs.dart';
 
 class _FakeAuthRepository implements AuthRepository {
@@ -52,6 +55,45 @@ class _FakeAuthRepository implements AuthRepository {
 
   @override
   FutureEither<AppUser> me() async => throw UnimplementedError();
+
+  Either<Failure, void> deleteResult = const Right(null);
+  String? deletedWithPassword;
+
+  @override
+  FutureEitherVoid deleteAccount({required String password}) async {
+    deletedWithPassword = password;
+    return deleteResult;
+  }
+
+  /// Recorded calls + canned results for profile/settings writes.
+  final profileCalls = <({String? displayName, String? phone})>[];
+  final settingsCalls = <({bool? notifPush, bool? notifRsvp})>[];
+  Either<Failure, AppUser>? profileResult;
+  Either<Failure, AppUser>? settingsResult;
+
+  /// When true, settings writes wait until the test completes them, in call
+  /// order, so overlapping toggles can be exercised.
+  bool holdSettings = false;
+  final pendingSettings = <Completer<Either<Failure, AppUser>>>[];
+
+  @override
+  FutureEither<AppUser> updateProfile(
+      {String? displayName, String? phone}) async {
+    profileCalls.add((displayName: displayName, phone: phone));
+    return profileResult!;
+  }
+
+  @override
+  FutureEither<AppUser> updateSettings(
+      {bool? notifPush, bool? notifRsvp}) async {
+    settingsCalls.add((notifPush: notifPush, notifRsvp: notifRsvp));
+    if (holdSettings) {
+      final reply = Completer<Either<Failure, AppUser>>();
+      pendingSettings.add(reply);
+      return reply.future;
+    }
+    return settingsResult!;
+  }
 }
 
 void main() {
@@ -166,6 +208,189 @@ void main() {
       await providerWithTheme.setThemeMode(ThemeMode.dark);
       expect(themeProvider.mode, ThemeMode.dark);
       expect(providerWithTheme.isDarkMode, isTrue);
+    });
+
+    group('updateProfile', () {
+      const current = AppUser(
+          id: 'u1',
+          username: 'sarah',
+          displayName: 'Sarah',
+          phone: '0672859965');
+
+      setUp(() => session.setAuthenticated(current));
+
+      test('sends only the changed display name and updates the session',
+          () async {
+        repo.profileResult = Right(current.copyWith(displayName: 'Sara'));
+
+        final ok = await provider.updateProfile(
+            displayName: ' Sara ', phone: '0672 85 99 65');
+
+        expect(ok, isTrue);
+        expect(repo.profileCalls.single, (displayName: 'Sara', phone: null));
+        expect(session.user!.displayName, 'Sara');
+      });
+
+      test('sends an empty phone to clear it', () async {
+        repo.profileResult = const Right(
+            AppUser(id: 'u1', username: 'sarah', displayName: 'Sarah'));
+
+        await provider.updateProfile(displayName: 'Sarah', phone: '');
+
+        expect(repo.profileCalls.single, (displayName: null, phone: ''));
+        expect(session.user!.phone, isNull);
+      });
+
+      test('normalizes a changed phone before sending', () async {
+        repo.profileResult = const Right(current);
+
+        await provider.updateProfile(
+            displayName: 'Sarah', phone: '+213 551 23 45 67');
+
+        expect(
+            repo.profileCalls.single, (displayName: null, phone: '0551234567'));
+      });
+
+      test('makes no request when nothing changed', () async {
+        final ok = await provider.updateProfile(
+            displayName: 'Sarah', phone: '0672859965');
+
+        expect(ok, isTrue);
+        expect(repo.profileCalls, isEmpty);
+      });
+
+      test('keeps the session and exposes an error on failure', () async {
+        repo.profileResult = const Left(ServerFailure('boom'));
+
+        final ok = await provider.updateProfile(
+            displayName: 'Other', phone: '0672859965');
+
+        expect(ok, isFalse);
+        expect(provider.profileErrorMessage, isNotNull);
+        expect(provider.isSavingProfile, isFalse);
+        expect(session.user, current);
+      });
+    });
+
+    group('notification preferences', () {
+      const current =
+          AppUser(id: 'u1', username: 'sarah', displayName: 'Sarah');
+
+      setUp(() => session.setAuthenticated(current));
+
+      test(
+          'push toggle updates the session optimistically and keeps the server copy',
+          () async {
+        repo.settingsResult = Right(current.copyWith(notifPush: false));
+
+        final pending = provider.setNotifPush(false);
+        expect(
+            session.user!.notifPush, isFalse); // optimistic, before the reply
+        final ok = await pending;
+
+        expect(ok, isTrue);
+        expect(repo.settingsCalls.single, (notifPush: false, notifRsvp: null));
+        expect(session.user!.notifPush, isFalse);
+      });
+
+      test('a failed toggle rolls back and exposes an error', () async {
+        repo.settingsResult = const Left(ServerFailure('boom'));
+
+        final ok = await provider.setNotifRsvp(false);
+
+        expect(ok, isFalse);
+        expect(repo.settingsCalls.single, (notifPush: null, notifRsvp: false));
+        expect(session.user!.notifRsvp, isTrue);
+        expect(provider.preferencesErrorMessage, isNotNull);
+      });
+
+      test('a failed toggle keeps a change made to another field meanwhile',
+          () async {
+        repo.holdSettings = true;
+
+        final push = provider.setNotifPush(false);
+        final rsvp = provider.setNotifRsvp(false);
+        // RSVP succeeds first; the server copy reflects both pending writes.
+        repo.pendingSettings[1].complete(
+            Right(current.copyWith(notifPush: false, notifRsvp: false)));
+        await rsvp;
+        repo.pendingSettings[0].complete(const Left(ServerFailure('boom')));
+        await push;
+
+        expect(session.user!.notifPush, isTrue); // rolled back
+        expect(session.user!.notifRsvp, isFalse); // kept
+      });
+
+      test('a reply for one toggle does not revert another still in flight',
+          () async {
+        repo.holdSettings = true;
+
+        final push = provider.setNotifPush(false);
+        final rsvp = provider.setNotifRsvp(false);
+        // The push reply was produced before the RSVP write landed.
+        repo.pendingSettings[0]
+            .complete(Right(current.copyWith(notifPush: false)));
+        await push;
+
+        expect(session.user!.notifRsvp, isFalse); // still optimistic
+        repo.pendingSettings[1].complete(
+            Right(current.copyWith(notifPush: false, notifRsvp: false)));
+        await rsvp;
+        expect(session.user!.notifRsvp, isFalse);
+      });
+
+      test('a failed toggle keeps a profile edit saved meanwhile', () async {
+        repo.holdSettings = true;
+        repo.profileResult = Right(current.copyWith(displayName: 'Sara'));
+
+        final push = provider.setNotifPush(false);
+        await provider.updateProfile(displayName: 'Sara', phone: '');
+        repo.pendingSettings[0].complete(const Left(ServerFailure('boom')));
+        await push;
+
+        expect(session.user!.displayName, 'Sara');
+        expect(session.user!.notifPush, isTrue);
+      });
+
+      test('ignores taps while a request for the same switch is in flight',
+          () async {
+        repo.settingsResult = Right(current.copyWith(notifPush: false));
+
+        final first = provider.setNotifPush(false);
+        expect(provider.isSavingNotifPush, isTrue);
+        final second = await provider.setNotifPush(true);
+        await first;
+
+        expect(second, isFalse);
+        expect(repo.settingsCalls, hasLength(1));
+        expect(provider.isSavingNotifPush, isFalse);
+      });
+    });
+
+    group('SessionProvider.deleteAccount', () {
+      const user = AppUser(id: 'u1', username: 'sarah', displayName: 'Sarah');
+
+      setUp(() => session.setAuthenticated(user));
+
+      test('signs out locally after the server deletes the account', () async {
+        final failure = await session.deleteAccount('Password123!');
+
+        expect(failure, isNull);
+        expect(repo.deletedWithPassword, 'Password123!');
+        expect(session.status, SessionStatus.unauthenticated);
+        expect(session.user, isNull);
+      });
+
+      test('stays signed in and returns the failure on a wrong password',
+          () async {
+        repo.deleteResult = const Left(AuthFailure('password is incorrect'));
+
+        final failure = await session.deleteAccount('nope');
+
+        expect(failure, isA<AuthFailure>());
+        expect(session.status, SessionStatus.authenticated);
+        expect(session.user, user);
+      });
     });
   });
 }

@@ -70,6 +70,34 @@ class GuestService {
         parse: (d) => Guest.fromJson((d as Map).cast<String, dynamic>()),
       );
 
+  /// `PATCH /weddings/:id/guests/:gid` → the updated guest (200, editor+).
+  /// Only non-null fields are sent; `''` clears an optional field. Never send
+  /// an empty [fullName] (the server would store it).
+  FutureEither<Guest> update(
+    String weddingId,
+    String guestId, {
+    String? fullName,
+    String? contact,
+    String? relationship,
+    String? status,
+    int? companions,
+    String? tableLabel,
+    String? meal,
+  }) =>
+      _api.patch<Guest>(
+        '/weddings/$weddingId/guests/$guestId',
+        body: {
+          if (fullName != null) 'full_name': fullName,
+          if (contact != null) 'contact': contact,
+          if (relationship != null) 'relationship': relationship,
+          if (status != null) 'status': status,
+          if (companions != null) 'companions': companions,
+          if (tableLabel != null) 'table_label': tableLabel,
+          if (meal != null) 'meal': meal,
+        },
+        parse: (d) => Guest.fromJson((d as Map).cast<String, dynamic>()),
+      );
+
   /// `PATCH /weddings/:id/guests/:gid/status` → the updated guest (200,
   /// editor+). [status] is a wire value (`pending|confirmed|declined`).
   FutureEither<Guest> setStatus(

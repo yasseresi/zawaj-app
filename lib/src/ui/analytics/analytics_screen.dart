@@ -9,6 +9,7 @@ import '../../data/repositories/stats_repository.dart';
 import '../../extensions/context_extension.dart';
 import '../../shared/helpers/show_app_sheet.dart';
 import '../../shared/widgets/widgets.dart';
+import '../../utils/plural.dart';
 import 'providers/analytics_provider.dart';
 import 'widgets/donut_chart_widget.dart';
 import 'widgets/guest_capacity_chart_widget.dart';
@@ -335,7 +336,7 @@ class _WeddingPickerSheet extends StatelessWidget {
                   contentPadding: EdgeInsets.zero,
                   title: Text(wedding.name),
                   subtitle:
-                      Text('weddings.guests_count'.plural(wedding.guestCount)),
+                      Text('weddings.guests_count'.pluralOrZero(wedding.guestCount)),
                   leading: Icon(Icons.event_note_outlined,
                       color: context.colors.primary),
                   trailing: wedding.id == selectedId

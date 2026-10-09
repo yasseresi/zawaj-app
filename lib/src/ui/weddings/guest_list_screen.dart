@@ -3,37 +3,61 @@ import 'package:zawaj_app/src/imports/packages_imports.dart';
 
 import 'package:zawaj_app/src/data/models/guest_model.dart';
 import 'package:zawaj_app/src/data/models/wedding_model.dart';
+import 'package:zawaj_app/src/data/repositories/guest_repository.dart';
+import 'package:zawaj_app/src/data/repositories/wedding_repository.dart';
 import 'package:zawaj_app/src/ui/weddings/add_guest_screen.dart';
 import 'package:zawaj_app/src/ui/weddings/guest_detail_screen.dart';
 import 'package:zawaj_app/src/ui/weddings/providers/guests_provider.dart';
+import 'package:zawaj_app/src/ui/weddings/providers/wedding_provider.dart';
+import 'package:zawaj_app/src/utils/phone.dart';
 
 /// Screen 5 (guest list) wired to `GET /weddings/:id/guests`. Header shows the
 /// wedding name + "N guests · date", a search box and four RSVP filter tabs with
 /// wedding-wide counts drive server-side filtering, and the body renders the
 /// filtered guests (loading / empty / error / list). RTL-first per the mockup.
 class GuestListScreen extends StatelessWidget {
-  const GuestListScreen({super.key, required this.weddingId, this.wedding});
+  const GuestListScreen({
+    super.key,
+    required this.weddingId,
+    this.wedding,
+    this.weddingRepository,
+    this.guestRepository,
+  });
 
   final String weddingId;
 
   /// The wedding passed through navigation `extra` (name/date/count for the
-  /// header). Null when the screen is deep-linked — the header falls back to a
-  /// generic title.
+  /// header), shown instantly. Null when deep-linked or opened from a
+  /// notification — [WeddingProvider] then cold-loads it.
   final Wedding? wedding;
+  final WeddingRepository? weddingRepository;
+  final GuestRepository? guestRepository;
 
   @override
   Widget build(BuildContext context) {
-    return ChangeNotifierProvider<GuestsProvider>(
-      create: (_) => GuestsProvider(weddingId: weddingId)..load(),
-      child: _GuestListView(wedding: wedding, weddingId: weddingId),
+    return MultiProvider(
+      providers: [
+        ChangeNotifierProvider<WeddingProvider>(
+          create: (_) => WeddingProvider(
+              weddingId: weddingId,
+              initial: wedding,
+              repository: weddingRepository)
+            ..load(),
+        ),
+        ChangeNotifierProvider<GuestsProvider>(
+          create: (_) =>
+              GuestsProvider(weddingId: weddingId, repository: guestRepository)
+                ..load(),
+        ),
+      ],
+      child: _GuestListView(weddingId: weddingId),
     );
   }
 }
 
 class _GuestListView extends StatefulWidget {
-  const _GuestListView({this.wedding, required this.weddingId});
+  const _GuestListView({required this.weddingId});
 
-  final Wedding? wedding;
   final String weddingId;
 
   @override
@@ -76,19 +100,76 @@ class _GuestListViewState extends State<_GuestListView> {
     if (added ?? false) await provider.load();
   }
 
+  /// Share can change the caller's role (ownership transfer), so re-check it
+  /// on return.
+  Future<void> _openShare(Wedding wedding) async {
+    final weddingState = context.read<WeddingProvider>();
+    await context.push('/weddings/${widget.weddingId}/share', extra: wedding);
+    await weddingState.load();
+  }
+
+  Future<void> _openEdit(Wedding wedding) async {
+    final weddingState = context.read<WeddingProvider>();
+    final updated = await context.push<Wedding>('/weddings/${wedding.id}/edit',
+        extra: wedding);
+    if (updated != null) weddingState.applyUpdate(updated);
+  }
+
   @override
   Widget build(BuildContext context) {
-    final canEdit = widget.wedding?.role.canEdit ?? false;
+    final weddingState = context.watch<WeddingProvider>();
+    final wedding = weddingState.wedding;
+
+    if (weddingState.isNotFound) {
+      return Scaffold(
+        appBar: AppTopBar(title: 'home.title'.tr()),
+        body: AppEmptyState(
+          icon: Icons.event_busy_outlined,
+          title: 'weddings.not_found_title'.tr(),
+          subtitle: 'weddings.not_found_subtitle'.tr(),
+        ),
+      );
+    }
+    if (wedding == null) {
+      return Scaffold(
+        appBar: AppTopBar(title: 'home.title'.tr()),
+        body: weddingState.status.isFailure
+            ? AppErrorWidget(
+                title: 'weddings.error_title'.tr(),
+                message: weddingState.errorMessage,
+                onRetry: () => context.read<WeddingProvider>().load(),
+              )
+            : AppLoading(message: 'weddings.loading'.tr()),
+      );
+    }
+
+    final canEdit = wedding.role.canEdit;
     return Scaffold(
       appBar: AppTopBar(
-        title: widget.wedding?.name ?? 'home.title'.tr(),
+        title: wedding.name,
         actions: [
           IconButton(
               icon: const Icon(Icons.share_outlined),
               tooltip: 'share.title'.tr(),
-              onPressed: () => context.push(
-                  '/weddings/${widget.weddingId}/share',
-                  extra: widget.wedding))
+              onPressed: () => _openShare(wedding)),
+          if (wedding.role.isOwner)
+            PopupMenuButton<_WeddingAction>(
+              tooltip: 'weddings.more_actions'.tr(),
+              onSelected: (action) => switch (action) {
+                _WeddingAction.edit => _openEdit(wedding),
+              },
+              itemBuilder: (_) => [
+                PopupMenuItem(
+                  value: _WeddingAction.edit,
+                  child: ListTile(
+                    contentPadding: EdgeInsets.zero,
+                    leading: const Icon(Icons.edit_outlined),
+                    title: Text('weddings.edit'.tr(),
+                        style: TextStyle(color: context.colors.onSurface)),
+                  ),
+                ),
+              ],
+            ),
         ],
       ),
       floatingActionButton: canEdit
@@ -101,8 +182,7 @@ class _GuestListViewState extends State<_GuestListView> {
         top: false,
         child: Column(
           children: [
-            if (widget.wedding != null)
-              _headerSubtitle(context, widget.wedding!),
+            _headerSubtitle(context, wedding),
             Padding(
               padding: EdgeInsets.fromLTRB(AppSpacing.lg.w, AppSpacing.sm.h,
                   AppSpacing.lg.w, AppSpacing.sm.h),
@@ -125,7 +205,11 @@ class _GuestListViewState extends State<_GuestListView> {
   Widget _headerSubtitle(BuildContext context, Wedding w) {
     final cs = context.colors;
     final tt = context.textTheme;
-    final count = 'weddings.guests_count'.plural(w.guestCount);
+    // GET /weddings/:id has no guest count, so once the guest list has loaded
+    // its wedding-wide total is the source of truth (also after adds/deletes,
+    // and across later reloads or their failures).
+    final total = context.select((GuestsProvider p) => p.knownCounts?.all);
+    final count = 'weddings.guests_count'.pluralOrZero(total ?? w.guestCount);
     final text = w.eventDate == null
         ? count
         : 'guests.count_date'.tr(namedArgs: {
@@ -297,7 +381,11 @@ class _GuestTile extends StatelessWidget {
     final updated = await context.pushNamed<Object?>(
       'guest_detail',
       pathParameters: {'id': weddingId, 'gid': guest.id},
-      extra: GuestDetailArgs(initial: guest, canEdit: canEdit),
+      extra: GuestDetailArgs(
+        initial: guest,
+        canEdit: canEdit,
+        onGuestUpdated: context.read<GuestsProvider>().replace,
+      ),
     );
     if (updated == true && context.mounted) {
       await context.read<GuestsProvider>().load();
@@ -359,7 +447,14 @@ class _GuestTile extends StatelessWidget {
                 if (guest.contact.isNotEmpty) ...[
                   SizedBox(height: 2.h),
                   Text(
-                    guest.contact,
+                    // Phones grouped like guest detail; other contacts as-is.
+                    switch (normalizePhone(guest.contact)) {
+                      final phone? => formatPhone(phone),
+                      null => guest.contact,
+                    },
+                    textDirection: normalizePhone(guest.contact) != null
+                        ? TextDirection.ltr
+                        : null,
                     style: tt.bodySmall?.copyWith(color: cs.onSurfaceVariant),
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
@@ -410,3 +505,5 @@ class _GuestTile extends StatelessWidget {
     );
   }
 }
+
+enum _WeddingAction { edit }

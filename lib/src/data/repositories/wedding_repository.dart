@@ -1,5 +1,6 @@
 import '../models/wedding_member_model.dart';
 import '../models/invite_link_model.dart';
+import '../models/join_request_model.dart';
 import '../models/wedding_model.dart';
 import '../../utils/typedefs.dart';
 
@@ -18,6 +19,14 @@ abstract interface class WeddingRepository {
     String? description,
   });
 
+  /// `GET /weddings/:id` — one wedding with the caller's role (no guest count).
+  FutureEither<Wedding> get(String id);
+
+  /// `PATCH /weddings/:id` — owner edits; only non-null fields are sent.
+  /// [eventDate] is `YYYY-MM-DD`; `description: ''` clears the description.
+  FutureEither<Wedding> update(String id,
+      {String? name, String? eventDate, String? description});
+
   /// `DELETE /weddings/:id` — permanently delete a wedding. Owner-only.
   FutureEither<void> delete(String id);
 
@@ -29,9 +38,17 @@ abstract interface class WeddingRepository {
 
   /// `DELETE /weddings/:id/members/:userId` — remove a collaborator.
   FutureEither<void> removeMember(String id, String userId);
+  /// `POST /weddings/:id/transfer` — hand ownership to an existing member
+  /// (owner). The caller becomes an editor.
+  FutureEither<void> transferOwnership(String id, String userId);
+
   FutureEither<InviteLink> createInviteLink(String id, String role);
   FutureEither<List<InviteLink>> listInviteLinks(String id);
   FutureEither<void> revokeInviteLink(String id, String linkId);
   FutureEither<InvitePreview> previewInvite(String token);
-  FutureEither<InvitePreview> acceptInviteLink(String token);
+  FutureEither<JoinResult> acceptInviteLink(String token);
+  FutureEither<List<JoinRequest>> listJoinRequests(String weddingId);
+  FutureEither<void> approveJoinRequest(String weddingId, String requestId,
+      {WeddingRole? role});
+  FutureEither<void> declineJoinRequest(String weddingId, String requestId);
 }

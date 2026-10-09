@@ -107,7 +107,13 @@
     "delete_confirm_action": "حذف",
     "cancel": "إلغاء",
     "deleted_toast": "تم حذف القائمة بنجاح",
-    "delete_error": "تعذّر حذف القائمة"
+    "delete_error": "تعذّر حذف القائمة",
+    "not_found_title": "العرس غير متاح",
+    "not_found_subtitle": "ربما حُذف أو لم يعد لديك صلاحية الوصول إليه.",
+    "edit": "تعديل التفاصيل",
+    "edit_title": "تعديل العرس",
+    "updated_toast": "تم تحديث العرس",
+    "more_actions": "المزيد من الإجراءات"
   },
   "guests": {
     "loading": "جارٍ تحميل الضيوف…",
@@ -143,8 +149,6 @@
     "detail_error_title": "تعذّر تحميل بيانات الضيف",
     "info_contact": "جهة الاتصال",
     "info_companions": "عدد المرافقين",
-    "info_table": "الطاولة المخصصة",
-    "info_meal": "الوجبة",
     "notes_title": "الملاحظات",
     "notes_empty": "لا توجد ملاحظات بعد",
     "history_title": "سجل التغييرات",
@@ -172,12 +176,29 @@
     "delete_title": "هل تريد حذف هذا الضيف؟",
     "delete_message": "سيتم حذف «{name}» من قائمة الضيوف نهائياً.",
     "deleted_toast": "تم حذف الضيف",
-    "delete_error": "تعذّر حذف الضيف"
+    "delete_error": "تعذّر حذف الضيف",
+    "contact_call": "اتصال",
+    "contact_whatsapp": "واتساب",
+    "contact_copy": "نسخ الرقم",
+    "contact_copied": "تم نسخ الرقم",
+    "contact_launch_failed": "تعذّر فتح التطبيق",
+    "contact_legacy_hint": "جهة الاتصال المحفوظة ليست رقم هاتف. استبدلها برقم أو اتركها كما هي.",
+    "relationship_label": "صلة القرابة",
+    "relationship_hint": "مثال: ابن العم، زميل",
+    "field_too_long": "يجب ألا يتجاوز {max} حرفًا",
+    "edit_action": "تعديل الضيف",
+    "edit_title": "تعديل الضيف",
+    "updated_toast": "تم تحديث الضيف"
   },
   "actions": {
     "cancel": "إلغاء",
     "done": "تم",
-    "retry": "إعادة المحاولة"
+    "retry": "إعادة المحاولة",
+    "save": "حفظ",
+    "discard": "تجاهل",
+    "keep_editing": "متابعة التعديل",
+    "discard_title": "تجاهل التغييرات؟",
+    "discard_message": "ستفقد التغييرات غير المحفوظة."
   },
   "settings": {
     "title": "الإعدادات",
@@ -200,7 +221,32 @@
     "coming_soon": "ستتوفر هذه الميزة قريباً.",
     "collaboration_section": "التعاون",
     "pending_invites": "الدعوات المعلقة",
-    "notifications": "الإشعارات"
+    "notifications": "الإشعارات",
+    "display_name_too_long": "يجب ألا يتجاوز الاسم 80 حرفًا",
+    "phone_helper": "اختياري. رقم للتواصل معك، ولا يُستخدم لتسجيل الدخول.",
+    "profile_saved": "تم تحديث الملف الشخصي",
+    "notifications_section": "الإشعارات",
+    "notif_push": "الإشعارات الفورية",
+    "notif_rsvp": "تحديثات الردود",
+    "notif_rsvp_subtitle": "عند تغيّر حالة أحد الضيوف",
+    "danger_zone": "منطقة الخطر",
+    "delete_account": "حذف الحساب",
+    "delete_title": "حذف حسابك؟",
+    "delete_subtitle": "هذا الإجراء نهائي ولا يمكن التراجع عنه.",
+    "delete_owned_title": "الأعراس التي تملكها",
+    "delete_owned_warning": "ستُحذف هذه الأعراس وجميع ضيوفها لدى كل المتعاونين. انقل الملكية أولاً للاحتفاظ بها.",
+    "delete_collaborators": {"zero": "لا يوجد متعاونون آخرون", "one": "متعاون واحد", "two": "متعاونان", "few": "{} متعاونين", "many": "{} متعاوناً", "other": "{} متعاون"},
+    "delete_transfer": "نقل الملكية",
+    "delete_shared": {"zero": "لست متعاوناً في أعراس أخرى.", "one": "ستُزال من عرس مشترك واحد.", "two": "ستُزال من عرسين مشتركين.", "few": "ستُزال من {} أعراس مشتركة.", "many": "ستُزال من {} عرساً مشتركاً.", "other": "ستُزال من {} عرس مشترك."},
+    "delete_no_weddings": "ليس لديك أي عرس. سيُحذف حسابك فقط.",
+    "delete_continue": "متابعة",
+    "delete_confirm_title": "أكّد بكلمة المرور",
+    "delete_confirm_subtitle": "أدخل كلمة المرور الحالية لحذف حسابك نهائياً.",
+    "delete_permanently": "حذف نهائياً",
+    "delete_back": "رجوع",
+    "delete_wrong_password": "كلمة المرور غير صحيحة",
+    "toggle_password": "إظهار أو إخفاء كلمة المرور",
+    "account_deleted": "تم حذف الحساب"
   },
   "errors": {
     "no_connection": "لا يوجد اتصال بالإنترنت. تحقّق من اتصالك وحاول مجدداً.",
@@ -256,7 +302,7 @@
     "time_at": "الساعة {time}",
     "filter_coming_soon": "خاصية التصفية ستُضاف لاحقاً"
   },
-  "invites": {
+  "invites": {"invalid_link":"رابط الدعوة هذا غير صالح. اطلب رابطًا جديدًا.","join_queue_full":"يوجد عدد كبير من طلبات الانضمام المعلّقة لهذا الزفاف حاليًا. حاول لاحقًا.","join_declined_recently":"رفض المالك طلبك. يمكنك الطلب مجددًا لاحقًا.","removed_from_wedding":"أزالك المالك من هذا الزفاف. اطلب منه دعوتك من جديد.",
     "title": "الدعوات المعلقة",
     "empty_title": "لا توجد دعوات معلقة",
     "empty_subtitle": "ستظهر هنا الدعوات الجديدة للتعاون في قوائم الضيوف",
@@ -277,5 +323,12 @@
     "empty_title": "لا توجد إشعارات",
     "empty_subtitle": "ستظهر هنا التحديثات على قوائمك"
   },
-  "share": {"title":"مشاركة وتصدير","collaborators":"المتعاونون","username_hint":"أدخل اسم المستخدم","username_not_found":"لم يتم العثور على حساب بهذا الاسم","invite_already_pending":"توجد دعوة معلقة لهذا المستخدم بالفعل","already_collaborator":"هذا المستخدم متعاون بالفعل","cannot_invite_self":"لا يمكنك دعوة نفسك","invite_sent":"تم إرسال الدعوة","link_created":"تم إنشاء رابط الدعوة","link_section":"مشاركة رابط الدعوة","link":"رابط","qr":"رمز QR","create_link":"إنشاء رابط دعوة","copied":"تم نسخ الرابط","share_link":"مشاركة الرابط","export_section":"تصدير قائمة المدعوين","export_csv":"CSV","export_xlsx":"Excel","export_pdf":"PDF","remove_title":"إزالة المتعاون","remove_message":"إزالة {name} من هذا الحفل؟","remove_confirm":"إزالة","invite_preview":"دعوة","preview_role":"ستنضم بصلاحية {role}","accept_invite":"قبول الدعوة","login_to_accept":"سجّل الدخول للقبول","role_owner":"المالك","role_editor":"يمكنه التعديل","role_viewer":"يمكنه العرض فقط"}
+  "share": {"preview_request_role":"ستطلب الانضمام بصفة {role}، وسيراجع المالك طلبك.","request_to_join":"طلب الانضمام","request_sent_message":"سيراجع مالك {wedding} طلبك، وسيصلك إشعار عند اتخاذ القرار.","request_sent_title":"تم إرسال الطلب","request_already_handled":"تمت معالجة هذا الطلب مسبقًا.","request_declined":"تم رفض الطلب","request_approved":"انضم {name} بصفة {role}","decline_message":"لن ينضم إلى هذا الزفاف. يمكنه الطلب مجددًا بعد 24 ساعة.","decline_title":"رفض طلب {name}؟","approve_title":"قبول {name} بصفة","decline":"رفض","approve":"قبول","join_request_subtitle":"@{username} · يطلب الانضمام بصفة {role}","join_requests":"طلبات الانضمام ({count})","title":"مشاركة وتصدير","collaborators":"المتعاونون","username_hint":"أدخل اسم المستخدم","username_not_found":"لم يتم العثور على حساب بهذا الاسم","invite_already_pending":"توجد دعوة معلقة لهذا المستخدم بالفعل","already_collaborator":"هذا المستخدم متعاون بالفعل","cannot_invite_self":"لا يمكنك دعوة نفسك","invite_sent":"تم إرسال الدعوة","link_created":"تم إنشاء رابط الدعوة","link_section":"مشاركة رابط الدعوة","link":"رابط","qr":"رمز QR","create_link":"إنشاء رابط دعوة","copied":"تم نسخ الرابط","share_link":"مشاركة الرابط","export_section":"تصدير قائمة المدعوين","export_csv":"CSV","export_xlsx":"Excel","export_pdf":"PDF","remove_title":"إزالة المتعاون","remove_message":"إزالة {name} من هذا الزفاف؟","remove_confirm":"إزالة","invite_preview":"دعوة","preview_role":"ستنضم بصلاحية {role}","accept_invite":"قبول الدعوة","login_to_accept":"سجّل الدخول للقبول","role_owner":"المالك","role_editor":"يمكنه التعديل","role_viewer":"يمكنه العرض فقط","member_actions":"إجراءات العضو","change_role":"تغيير الصلاحية","change_role_title":"صلاحية {name}","role_editor_desc":"يمكنه إضافة الضيوف وتعديلهم","role_viewer_desc":"يمكنه عرض القائمة فقط","role_changed":"أصبح {name}: {role}","make_owner":"تعيين كمالك","active_links":"الروابط النشطة ({count})","link_grants":"ينضم بصلاحية: {role}","link_created_on":"أُنشئ في {date}","revoke_link":"إلغاء","revoke_title":"إلغاء هذا الرابط؟","revoke_message":"لن يتمكن من لم ينضم بعد من استخدامه. يحتفظ المتعاونون الذين انضموا بصلاحياتهم.","link_revoked":"تم إلغاء الرابط","transfer_title":"تعيين كمالك؟","transfer_message":"سيصبح {name} مالك العرس. ستصبح محررًا وتفقد صلاحيات المالك (تعديل العرس أو حذفه، وإدارة الأعضاء والروابط). لا يمكن التراجع إلا من طرف المالك الجديد.","transfer_confirm":"تعيين كمالك","transferred":"أصبح {name} المالك"},
+  "phone": {
+    "label": "رقم الهاتف",
+    "hint": "0672 85 99 65",
+    "invalid": "أدخل رقمًا جزائريًا صحيحًا، مثل 0672 85 99 65",
+    "required": "رقم الهاتف مطلوب"
+  },
+  "time": {"just_now": "الآن", "minutes_ago": {"one": "منذ دقيقة", "two": "منذ دقيقتين", "few": "منذ {} دقائق", "many": "منذ {} دقيقة", "other": "منذ {} دقيقة"}, "hours_ago": {"one": "منذ ساعة", "two": "منذ ساعتين", "few": "منذ {} ساعات", "many": "منذ {} ساعة", "other": "منذ {} ساعة"}, "days_ago": {"one": "منذ يوم", "two": "منذ يومين", "few": "منذ {} أيام", "many": "منذ {} يومًا", "other": "منذ {} يوم"}}
 }

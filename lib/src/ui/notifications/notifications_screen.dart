@@ -2,6 +2,7 @@ import '../../imports/core_imports.dart';
 import '../../imports/packages_imports.dart';
 import '../../data/repositories/notification_repository.dart';
 import 'providers/notifications_provider.dart';
+import 'notification_route.dart';
 
 /// The current user's notification feed (invites received, guest added, guest
 /// status changed). Reachable from Settings → Notifications.
@@ -94,10 +95,8 @@ class _NotificationsView extends StatelessWidget {
   Future<void> _handleTap(BuildContext context, AppNotification item) async {
     await context.read<NotificationsProvider>().markRead(item.id);
     if (!context.mounted) return;
-    final weddingId = item.weddingId;
-    if (weddingId != null && weddingId.isNotEmpty) {
-      context.push('/weddings/$weddingId');
-    }
+    final route = notificationRoute(item);
+    if (route != null) context.push(route);
   }
 
   Widget _buildSkeletonLoading() {

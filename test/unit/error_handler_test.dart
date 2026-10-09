@@ -20,6 +20,49 @@ DioException _dioWith(
 
 void main() {
   group('AppErrorHandler.toFailure — envelope mapping', () {
+    test('join_queue_full keeps its code and gets a localized message', () {
+      final f = AppErrorHandler.toFailure(_dioWith(
+        status: 429,
+        data: {
+          'data': null,
+          'error': {'code': 'join_queue_full', 'message': 'too many'},
+        },
+      ));
+      expect(f.code, 'join_queue_full');
+      expect(AppErrorHandler.userMessage(f), 'invites.join_queue_full');
+    });
+
+    test('join_request_declined -> ConflictFailure with a localized message',
+        () {
+      final f = AppErrorHandler.toFailure(_dioWith(
+        status: 409,
+        data: {
+          'data': null,
+          'error': {'code': 'join_request_declined', 'message': 'declined'},
+        },
+      ));
+      expect(f, isA<ConflictFailure>());
+      expect(f.code, 'join_request_declined');
+      expect(AppErrorHandler.userMessage(f), 'invites.join_declined_recently');
+    });
+
+    test('removed_from_wedding -> ForbiddenFailure with a localized message',
+        () {
+      final f = AppErrorHandler.toFailure(_dioWith(
+        status: 403,
+        data: {
+          'data': null,
+          'error': {
+            'code': 'removed_from_wedding',
+            'message': 'you were removed from this wedding'
+          },
+        },
+      ));
+      expect(f, isA<ForbiddenFailure>());
+      expect(f.code, 'removed_from_wedding');
+      expect(AppErrorHandler.userMessage(f), 'invites.removed_from_wedding');
+    });
+
     test('validation_error -> ValidationFailure with server message', () {
       final f = AppErrorHandler.toFailure(_dioWith(
         status: 400,
